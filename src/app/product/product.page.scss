@@ -1,0 +1,107 @@
+page-product {
+    .bar-button-menutoggle-md {
+        display: block !important;
+    }
+
+    .ico-und {
+        position: fixed;
+        z-index: 9;
+        width: 40px;
+        height: 40px;
+        background-color: white;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        right: 20px;
+        top: 25px;
+
+        div {
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #E30025;
+            margin-top: 6px;
+        }
+    }
+
+    .image {
+        width: 55vh;
+        height: 40vh;
+        margin-left: auto;
+        margin-right: auto;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .card-md ion-list {
+        width: 100%;
+    }
+
+    .list-header-md {
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .countbtn {
+        height: 34px !important;
+
+        ion-icon {
+            font-size: 40px;
+        }
+
+        span {
+            font-size: 20px;
+        }
+    }
+
+    .price {
+        color: #e30025;
+        font-size: 30px;
+        font-weight: bold;
+        font-family: Serif;
+    }
+
+    .butnsholder {
+        margin-top: 20px;
+
+        .loginbtn {
+            border-radius: 25px;
+            color: #ffffff !important;
+            font-size: 1.5em;
+            height: 50px;
+            background-color: #e30025;
+        }
+    }
+
+    .disabled {
+        pointer-events:none; //This makes it not clickable
+        opacity:0.3;         //This grays it out to look disabled
+    }
+
+    .allergen-container {
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+
+        .allergen {
+            margin-left: 20px;
+            img {
+                height: 53px;
+                width: auto;
+                max-width: auto;
+            }
+        }
+    }
+
+    .halfpizza {
+        color: #e30025;
+
+        img {
+            height: 60px;
+            width: auto;
+        }
+    }
+}

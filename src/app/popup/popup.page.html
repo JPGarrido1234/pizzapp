@@ -1,0 +1,26 @@
+<!--
+  Generated template for the PopupPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+
+
+<ion-content>
+    <div class="overlay" (click)="dismiss()"></div>
+  <div class="icontent">
+      <lottie-animation-view
+      [options]="lottieConfig"
+      [width]="300"
+      [height]="240"
+      (animCreated)="handleAnimation($event)">
+      
+</lottie-animation-view>
+
+<div class="details" text-center padding>
+  <h1>Thank you for using our service</h1>
+  <h2>Your pizza is on the way</h2>
+</div>
+  </div>
+
+</ion-content>

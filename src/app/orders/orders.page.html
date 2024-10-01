@@ -1,0 +1,50 @@
+<ion-header>
+  <!--
+  <ion-navbar #navbar color='lred'>
+    <ion-title text-center>Tus pedidos</ion-title>
+  </ion-navbar>
+  -->
+</ion-header>
+
+<ion-content>
+  <div class='icontent' padding-vertical>
+    <div padding-vertical>
+      <ion-list>
+        <ion-item *ngFor='let order of orders'>
+          <ion-row>
+            <div class='orderDate'>
+              {{order.date}}
+            </div>
+          </ion-row>
+          <div style='height: 5px'></div>
+          <ion-row>
+            <div class='orderInfo'>
+              <ion-row>
+                <ion-col col-7>
+                  <div style='height: 10px'></div>
+                  PEDIDO #{{order.number}}
+                  <br>
+                  {{order.total | number: '1.2-2'}} €
+                  <br>
+                  <div *ngFor='let line of order.lines' class='productsDiv'>
+                    <small>
+                      {{line.und}} x {{line.productName}}
+                    </small>
+                  </div>
+                </ion-col>
+                <ion-col class='butnsholder' col-5>
+                  <button (click)='cloneOrder(order)' block color='light' ion-button>
+                    REPETIR
+                  </button>
+                </ion-col>
+              </ion-row>
+            </div>
+          </ion-row>
+        </ion-item>
+      </ion-list>
+    </div>
+
+
+  </div>
+
+</ion-content>

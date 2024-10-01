@@ -1,0 +1,57 @@
+<ion-content>
+  <div class='icontent' padding-vertical>
+    <h3 class='title'>REGISTRO EN LA APP</h3>
+    <div class='detailsholder' padding text-center>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.name' placeholder='Nombre' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.phone' placeholder='Teléfono' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.login' class='email' placeholder='Email' type='email'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.address' placeholder='Dirección' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.zip' placeholder='Código postal' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.password' placeholder='Contraseña' type='password'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='registerForm.passwordRepeated' placeholder='Repetir contraseña'
+                   type='password'></ion-input>
+      </ion-item>
+
+      <div style='height: 10px;'></div>
+      <label for='birthDate'>Fecha de nacimiento (opcional)</label>
+      <div style='height: 10px;'></div>
+
+      <ion-item>
+
+        <ion-datetime
+          [(ngModel)]='registerForm.birthDate'
+          displayFormat='DD-MM-YYYY'
+          presentation='date'
+        ></ion-datetime>
+      </ion-item>
+    </div>
+
+    <div class='text'>
+      <p>Asegurate de introducir bien tu número de móvil, ya que en el siguiente paso te vamos a enviar un sms con un
+        código de verificación</p>
+    </div>
+
+    <div class='butnsholder' padding>
+      <button (click)='register()' block class='registerbtn' color='light' ion-button>REGISTRARME</button>
+
+      <button (click)='goToLogin()' block class='registerbtn registerbtn-dark' color='light' ion-button>YA TENGO
+        CUENTA
+      </button>
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,113 @@
+page-register {
+
+  .title {
+    text-align: center;
+    color: white;
+  }
+
+  .text {
+    color: white;
+    width: 90%;
+    margin: auto;
+    font-size: 1.2em;
+  }
+
+  label {
+    color: white;
+    margin-bottom: 4px;
+    font-size: 1.2em;
+  }
+
+  ion-content {
+    background-color: #E30025 !important;
+  }
+
+  .logoholder {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+
+    p {
+      color: #A5A5A5 !important;
+    }
+  }
+
+  .detailsholder {
+    ion-item {
+      border-radius: 25px !important;
+      margin-left: -0.1rem;
+      padding-left: 30px !important;
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      border-bottom: 0px !important;
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.103);
+      height: 20px;
+
+      ion-icon {
+        color: #E30025 !important;
+      }
+    }
+
+    ion-input {
+      background-color: #ffffff;
+      width: 90vw;
+
+      margin: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+
+      ::-webkit-input-placeholder {
+
+        // text-align: center;
+        //  color: rgb(169, 253, 207);
+
+      }
+
+      :-moz-placeholder { /* Firefox 18- */
+
+        text-align: center;
+
+      }
+
+      ::-moz-placeholder { /* Firefox 19+ */
+
+        text-align: center;
+
+      }
+
+      :-ms-input-placeholder {
+
+        text-align: center;
+
+      }
+    }
+  }
+
+  .butnsholder {
+    .loginbtn {
+      border-radius: 25px;
+      color: #ffffff !important;
+      font-size: 1.5em;
+      height: 50px;
+      // margin-top:2vh;
+      // background-color: rgb(237, 255, 244);
+      background-color: #CC0020;
+
+
+    }
+
+    .registerbtn {
+      border-radius: 25px;
+      color: #CC0020 !important;
+      font-size: 1.5em;
+      height: 50px;
+      margin-top: 10px;
+
+      &-dark {
+        background-color: #CCC;
+      }
+    }
+  }
+
+}

@@ -1,0 +1,119 @@
+<ion-header>
+<!--
+  <ion-navbar color="lred">
+    <ion-title text-center>The Pizza</ion-title>
+    <ion-buttons end>
+      <button large ion-button icon-only (click)="goCart()">
+        <ion-icon name="ios-cart-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+-->
+</ion-header>
+
+
+<ion-content>
+  <div class="icontent">
+    <div class="pizzaimg animated rotateIn" padding>
+        <img src="./assets/imgs/white.png" alt="">
+    </div>
+    <div class="details">
+      <ion-card padding>
+          <h1 text-center>Italian Pizza</h1>
+          <div padding>
+            <p>Pizza is a traditional Italian dish consisting of a yeasted flatbread typically topped with tomato sauce and cheese and baked in an oven. It can also be topped with additional vegetables, meats, and condiments, and can be made without cheese.</p>
+
+          </div>
+          <div  text-center>
+              <span class="rating review-star">
+                  <span class="star-icon" >&#x2605;</span>
+                  <span class="star-icon" >&#x2605;</span>
+                  <span class="star-icon" >&#x2605;</span>
+                  <span class="star-icon" >&#x2605;</span>
+                  <span class="star-icon" >&#x2605;</span>
+                  </span>
+          </div>
+          <ion-row radio-group [(ngModel)]="pizzaSize">
+              <ion-col col-5>
+                  <ion-list-header>
+                      Select size
+                    </ion-list-header>
+              <ion-item>
+                <ion-label>Small</ion-label>
+                <ion-radio color="lred" value="cord"></ion-radio>
+              </ion-item>
+
+
+              <ion-item>
+                <ion-label>Medium</ion-label>
+                <ion-radio color="lred" value="duesenberg"></ion-radio>
+              </ion-item>
+
+
+
+              <ion-item>
+                <ion-label>Large</ion-label>
+                <ion-radio color="lred" value="hudson"></ion-radio>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-row>
+                    <ion-col>
+
+                      <ion-list>
+                          <ion-list-header>
+                              Select size
+                            </ion-list-header>
+                          <ion-item>
+                            <ion-label>Sausage</ion-label>
+                            <ion-checkbox color="lred" [(ngModel)]="pepperoni"></ion-checkbox>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label>Pan</ion-label>
+                            <ion-checkbox color="lred" [(ngModel)]="sausage"></ion-checkbox>
+                          </ion-item>
+
+                          <ion-item>
+                            <ion-label text-wrap>Stuffed</ion-label>
+                            <ion-checkbox color="lred" [(ngModel)]="mushrooms"></ion-checkbox>
+                          </ion-item>
+
+                        </ion-list>
+                    </ion-col>
+
+                  </ion-row>
+            </ion-col>
+      </ion-row>
+
+      <div>
+          <h2>Select Quantity</h2>
+          <ion-item no-lines text-center padding-vertical>
+              <button ion-button  color="lred" icon-only class="countbtn" no-margin item-left clear (click)="deleteFromCart()">
+                <ion-icon   ios="ios-remove-circle-outline" md="ios-remove-circle-outline">
+                </ion-icon>
+              </button>
+              <button class="countbtn" ion-button item-left color="lred" clear>
+                <!-- {{item.value.quantity}} -->{{tquantity}}
+              </button>
+              <button class="countbtn" ion-button icon-only class="" no-margin item-left clear  color="lred" (click)="addToCart()">
+                <ion-icon ios="ios-add-circle-outline" md="ios-add-circle-outline">
+                </ion-icon>
+              </button>
+              <h3 item-right>${{20*tquantity}}</h3>
+            </ion-item>
+      </div>
+      <div class="butnsholder" padding-horizontal>
+          <button  class="loginbtn" color="light" ion-button block>Add to cart</button>
+
+
+      </div>
+
+
+      </ion-card>
+
+
+    </div>
+  </div>
+
+</ion-content>

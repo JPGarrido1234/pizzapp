@@ -1,0 +1,20 @@
+<ion-content>
+  <div class="overlay" (click)="dismiss()"></div>
+  <div class="icontent">
+    <lottie-animation-view
+      [options]="lottieConfig"
+      [width]="300"
+      [height]="240"
+      (animCreated)="handleAnimation($event)"
+    >
+    </lottie-animation-view>
+
+    <div class="details" text-center padding>
+      <h1>Gracias por tu pedido</h1>
+      <h2>
+        Recuerda venir a recogerlo a las <strong>{{pickupTime}}h.</strong>
+      </h2>
+      <button color="light" ion-button block (click)="dismiss()">OK!</button>
+    </div>
+  </div>
+</ion-content>

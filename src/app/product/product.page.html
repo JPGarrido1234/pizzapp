@@ -1,0 +1,161 @@
+<ion-header>
+    <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
+        <div>{{unds}}</div>
+    </div>
+    <ion-navbar color="lred">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title text-center *ngIf="category != undefined">{{category.name}}</ion-title>
+        <ion-buttons end>
+            <button large ion-button icon-only (click)="goCart()">
+                <ion-icon name="ios-cart-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <div class="icontent" *ngIf="product != undefined && category != undefined">
+        <div class="image" padding>
+            <img src="{{product.image}}" alt="{{product.name}}">
+        </div>
+        <div class="details">
+            <ion-card padding>
+                <h1 text-center>{{product.name}}</h1>
+                <div padding>
+                    <p>{{product.description}}</p>
+                    <div class="butnsholder" *ngIf="category.isPizzaCategory()">
+                        <button *ngIf="mode == 'add'" class="loginbtn" color="light" ion-button block
+                                (click)="addLineToOrder()">Añadir
+                        </button>
+                    </div>
+                    <div class="allergen-container" *ngIf="product.allergens != null && product.allergens.length > 0">
+                        <div *ngFor="let allergen of product.allergens" class="allergen">
+                            <img src="{{backend_url}}/assets/allergens/{{allergen}}.png"/>
+                        </div>
+                    </div>
+                </div>
+
+
+                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                    <ion-col col-12>
+                        <ion-list-header>
+                            Selecciona tamaño
+                        </ion-list-header>
+                        <ion-item col-8 *ngFor="let size of sizesForCheckbox">
+                            <ion-label>{{size.name}} - <strong>{{size.price | number:'1.2-2'}} €</strong></ion-label>
+                            <ion-radio color="lred" value="{{size.code}}" [checked]="currentLine.size == size.code"
+                                       (click)="setSize(size.code)"></ion-radio>
+                        </ion-item>
+
+                    </ion-col>
+                </ion-row>
+
+                <ion-row>
+                    <ion-list-header>
+                        Selecciona cantidad
+                    </ion-list-header>
+                    <ion-item no-lines text-center padding-vertical>
+                        <button ion-button color="lred" icon-only class="countbtn" no-margin item-left clear
+                                (click)="removeUnd();">
+                            <ion-icon ios="ios-remove-circle-outline" md="ios-remove-circle-outline"></ion-icon>
+                        </button>
+                        <button class="countbtn" ion-button item-left color="lred" clear>{{currentLine.und}}</button>
+                        <button ion-button icon-only class="countbtn" no-margin item-left clear color="lred"
+                                (click)="addUnd();">
+                            <ion-icon ios="ios-add-circle-outline" md="ios-add-circle-outline"></ion-icon>
+                        </button>
+                        <div class="price" item-right>{{currentLine.priceTotal | number:'1.2-2'}} €</div>
+
+                    </ion-item>
+
+                    <ion-item *ngIf="category.isPizzaCategory() && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf()" class="halfpizza">
+                        <div style="display: flex; justify-content: center">
+                            <div>
+                                <img src="assets/imgs/half-pizza.png">
+                            </div>
+                            <div style="margin-left: 10px; text-align: right;">
+                                <div><em>... quiero <strong>media</strong> pizza</em></div>
+                                <div style="flex-wrap: wrap; font-size: .7em; margin-top: 10px; color: dimgray;"><em>(la tendrás que combinar <br>con otra media en <br>la pantalla siguiente)</em></div>
+                            </div>
+                        </div>
+                    </ion-item>
+
+                </ion-row>
+                <br>
+                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                    <ion-list>
+                        <ion-list-header (click)="ingredientsBaseVisible = !ingredientsBaseVisible">
+                            <span item-left *ngIf="!ingredientsBaseVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsBaseVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            Ingredientes base
+                        </ion-list-header>
+                        <div *ngIf="ingredientsBaseVisible">
+                            <div *ngFor="let ingredient of ingredientsBaseForCheckbox">
+                                <ion-item *ngIf="ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
+                                    <ion-label>{{ingredient.name}}</ion-label>
+                                    <ion-checkbox color="lred" [checked]="ingredient.isChecked"
+                                                  [(ngModel)]="ingredient.isChecked"
+                                                  (ionChange)="setIngredientsToRemove(ingredient)"></ion-checkbox>
+                                </ion-item>
+                            </div>
+                        </div>
+                    </ion-list>
+                </ion-row>
+
+                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                    <ion-list>
+                        <ion-list-header (click)="ingredientsPizzaVisible = !ingredientsPizzaVisible">
+                            <span item-left *ngIf="!ingredientsPizzaVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsPizzaVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            Ingredientes de la pizza
+                        </ion-list-header>
+                        <div *ngIf="ingredientsPizzaVisible">
+                            <div *ngFor="let ingredient of ingredientsBaseForCheckbox">
+                                <ion-item *ngIf="!ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
+                                    <ion-label>{{ingredient.name}}</ion-label>
+                                    <ion-checkbox color="lred" [checked]="ingredient.isChecked"
+                                                  [(ngModel)]="ingredient.isChecked"
+                                                  (ionChange)="setIngredientsToRemove(ingredient)"></ion-checkbox>
+                                </ion-item>
+                            </div>
+                        </div>
+                    </ion-list>
+                </ion-row>
+
+                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                    <ion-list>
+                        <ion-list-header (click)="ingredientsExtraVisible = !ingredientsExtraVisible">
+                            <span item-left *ngIf="!ingredientsExtraVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsExtraVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            Ingredientes extra
+                        </ion-list-header>
+                        <div *ngIf="ingredientsExtraVisible">
+                            <div *ngFor="let ingredient of ingredientsExtraForCheckbox">
+                                <ion-item *ngIf="!ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
+                                    <ion-label>{{ingredient.name}}
+                                        (+{{(ingredient.price * currentLine.getMultiplier()) | number:'1.2-2'}}€)
+                                    </ion-label>
+                                    <ion-checkbox color="lred" [(ngModel)]="ingredient.isChecked"
+                                                  (click)="setIngredientsToAdd(ingredient)"></ion-checkbox>
+                                </ion-item>
+                            </div>
+                        </div>
+                    </ion-list>
+                </ion-row>
+
+                <div class="butnsholder" padding-horizontal>
+                    <button *ngIf="mode == 'add'" class="loginbtn" color="light" ion-button block
+                            (click)="addLineToOrder()">Añadir
+                    </button>
+                    <button *ngIf="mode == 'edit'" class="loginbtn" color="light" ion-button block (click)="editLine()">
+                        Actualizar
+                    </button>
+                </div>
+                <div style="height: 50px;"></div>
+                &nbsp;
+            </ion-card>
+        </div>
+    </div>
+</ion-content>

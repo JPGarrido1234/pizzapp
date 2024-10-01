@@ -1,0 +1,63 @@
+page-orders {
+  .title {
+    text-align: center;
+    color: black;
+  }
+
+  .icontent {
+    min-height: 100%;
+    background: linear-gradient(#e30025 0 0) calc(1 * 100% / 6);
+    background-size: 1px 100%; /* Control the width here*/
+    background-repeat: no-repeat;
+  }
+
+  .item-md {
+    background: none;
+  }
+
+  .list-md .item-block .item-inner {
+    border: none;
+  }
+
+  .orderDate {
+    background-color: #e30025;
+    color: white;
+    font-weight: bold;
+    border-radius: 20px;
+    padding: 5px 0 5px 20px;
+    width: 150px;
+  }
+
+  .orderInfo {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    font-size: 20px;
+    border: 1px solid #e30025;
+    border-radius: 20px;
+    padding: 5px 0 5px 20px;
+    width: 100%;
+  }
+
+  .butnsholder {
+    button {
+      margin-top: 10px;
+      border-radius: 25px;
+      color: #ffffff !important;
+      font-size: 1em;
+      height: 50px;
+      background-color: #e30025;
+    }
+  }
+
+  .productsDiv {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  small {
+    font-weight: normal;
+  }
+
+}

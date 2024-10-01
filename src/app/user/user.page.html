@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-navbar #navbar color='lred'>
+    <ion-title text-center>Tus datos personales</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <div class='icontent' padding-vertical>
+    <div *ngIf='userForm' class='detailsholder' padding text-center>
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.name' placeholder='Nombre' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.login' placeholder='Email' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.address' placeholder='Dirección' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.zip' placeholder='Código postal' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+
+        <ion-datetime
+          [(ngModel)]='userForm.birthDate'
+          displayFormat='DD-MM-YYYY'
+          placeholder='Fecha de nacimiento'
+          presentation='date'
+        ></ion-datetime>
+      </ion-item>
+
+      <div class='text'>
+        Completa los siguientes campos si quieres cambiar tu contraseña
+      </div>
+
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.password' placeholder='Contraseña' type='password'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='userForm.repeated' placeholder='Repetir contraseña' type='password'></ion-input>
+      </ion-item>
+    </div>
+
+    <div class='butnsholder' padding>
+      <button (click)='updateUser()' block class='registerbtn' color='light' ion-button>CAMBIAR DATOS</button>
+
+      <button (click)='removeUser()' block class='registerbtn registerbtn-dark' color='light' ion-button>
+        ELIMINAR CUENTA
+      </button>
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,93 @@
+<ion-header>
+<!--
+  <ion-navbar color="lred">
+      <button ion-button menuToggle>
+          <ion-icon  name="menu"></ion-icon>
+        </button>
+      <ion-buttons end>
+      <button large ion-button icon-only (click)="goCart()">
+        <ion-icon name="ios-cart-outline"></ion-icon>
+      </button>
+    </ion-buttons>
+    <ion-title text-center>Pizzas</ion-title>
+
+  </ion-navbar>
+-->
+</ion-header>
+
+
+<ion-content>
+  <div class="icontent">
+    <ion-list>
+        <ion-card class="pizzacard animated bounceInDown" (click)="goPizzapage()">
+              <ion-row>
+                  <ion-col col-5>
+                      <ion-thumbnail item-start padding>
+                          <img src="https://ricco-ricco.davidsantiago.net/api/v1/products/5e49274b545a125179261392/image?nocache=66df3038-8f24-4acc-a597-16cd6a6ec02b" alt="">
+
+                      </ion-thumbnail>
+                  </ion-col>
+                  <ion-col>
+                      <div class="details">
+                          <h2>Pizza Margarita</h2>
+                          <p text-wrap>Esta es la descripción del producto.</p>
+                        </div>
+                  </ion-col>
+                </ion-row>
+        </ion-card>
+
+        <ion-card class="pizzacard animated bounceInDown" (click)="goPizzapage()">
+            <ion-row>
+                <ion-col col-5>
+                    <ion-thumbnail item-start padding>
+                        <img src="https://ricco-ricco.davidsantiago.net/api/v1/products/5e49274b545a125179261392/image?nocache=66df3038-8f24-4acc-a597-16cd6a6ec02b" alt="">
+
+                    </ion-thumbnail>
+                </ion-col>
+                <ion-col>
+                    <div class="details">
+                        <h2>Pizza Vegetal</h2>
+                        <p text-wrap>bla bla bla bla bla...</p>
+                      </div>
+                </ion-col>
+              </ion-row>
+      </ion-card>
+
+      <ion-card class="pizzacard animated bounceInDown" (click)="goPizzapage()">
+          <ion-row>
+              <ion-col col-5>
+                  <ion-thumbnail item-start padding>
+                      <img src="https://ricco-ricco.davidsantiago.net/api/v1/products/5e491d92545a125179261391/image?nocache=e6bbb64a-e6ce-47b8-8f6e-5d14df165831" alt="">
+
+                  </ion-thumbnail>
+              </ion-col>
+              <ion-col>
+                  <div class="details">
+                      <h2>Pizza</h2>
+                      <p text-wrap>bla bla bla bla bla...</p>
+                    </div>
+              </ion-col>
+            </ion-row>
+    </ion-card>
+
+    <ion-card class="pizzacard animated bounceInDown" (click)="goPizzapage()">
+        <ion-row>
+            <ion-col col-5>
+                <ion-thumbnail item-start padding>
+                    <img src="./assets/imgs/white.png" alt="">
+
+                </ion-thumbnail>
+            </ion-col>
+            <ion-col>
+                <div class="details">
+                    <h2>Pizza</h2>
+                    <p text-wrap>bla bla bla bla bla...</p>
+                  </div>
+            </ion-col>
+          </ion-row>
+  </ion-card>
+
+    </ion-list>
+  </div>
+
+</ion-content>

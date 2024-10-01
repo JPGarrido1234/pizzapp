@@ -1,0 +1,32 @@
+page-pizzamenu {
+
+    ion-card{
+        margin-right: 0 ;
+
+        h2{
+            color: #E30025 !important;
+        }
+
+
+        ion-thumbnail
+        {
+            height: 120px;
+            width: 120px;
+            margin-top:0;
+            margin-bottom: 0;
+            background-color: #e7e7e7 !important;
+            img{
+                height: 80px;
+            width: 80px;
+            }
+            
+        }
+    }
+
+    ion-item
+    {
+        padding-left: 0 !important;
+    }
+    
+    
+}

@@ -1,0 +1,86 @@
+page-user {
+  .title {
+    text-align: center;
+    color: black;
+  }
+
+  .text {
+    color: black;
+    width: 90%;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+  }
+
+  .detailsholder {
+    ion-item {
+      border: 1px solid #e30025;
+      border-radius: 25px !important;
+      margin-left: -0.1rem;
+      padding-left: 30px !important;
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      height: 20px;
+    }
+
+    ion-input {
+      background-color: #ffffff;
+      width: 90vw;
+
+      margin: 10px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+
+
+      ::-webkit-input-placeholder {
+
+        // text-align: center;
+        //  color: rgb(169, 253, 207);
+
+      }
+
+      :-moz-placeholder { /* Firefox 18- */
+
+        text-align: center;
+
+      }
+
+      ::-moz-placeholder { /* Firefox 19+ */
+
+        text-align: center;
+
+      }
+
+      :-ms-input-placeholder {
+
+        text-align: center;
+
+      }
+    }
+  }
+
+  .butnsholder {
+    .loginbtn {
+      border-radius: 25px;
+      color: #ffffff !important;
+      font-size: 1.5em;
+      height: 50px;
+
+      background-color: #CC0020;
+
+
+    }
+
+    .registerbtn {
+      border-radius: 25px;
+      color: #CC0020 !important;
+      font-size: 1.5em;
+      height: 50px;
+      margin-top: 10px;
+
+      &-dark {
+        background-color: #CCC;
+      }
+    }
+  }
+}

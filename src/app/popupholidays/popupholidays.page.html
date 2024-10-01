@@ -1,0 +1,20 @@
+<ion-content>
+    <div class="overlay" (click)="dismiss()"></div>
+    <div class="icontent">
+        <lottie-animation-view 
+            [options]="lottieConfig" 
+            [width]="300" 
+            [height]="240"
+            (animCreated)="handleAnimation($event)">
+
+        </lottie-animation-view>
+
+        <div class="details" text-center padding>
+            <div style="height: 10px;"></div>
+            <h3>{{description}}</h3>
+            <p>Estamos cerrados hasta el <strong>{{opening}}</strong></p>
+            <p>Puedes navegar libremente por la app, pero no podrás enviarnos tu pedido</p>
+        </div>
+    </div>
+
+</ion-content>

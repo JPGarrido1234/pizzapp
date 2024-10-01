@@ -1,0 +1,35 @@
+<ion-header>
+    <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
+        <div>{{unds}}</div>
+    </div>
+    <!--
+    <ion-navbar color="lred">
+        <ion-title text-center>Selecciona la otra mitad</ion-title>
+    </ion-navbar>
+    -->
+</ion-header>
+
+<ion-content>
+    <div class="icontent">
+        <ion-list>
+            <ion-card *ngFor="let product of products" class="pizzacard animated">
+                <ion-row *ngIf="product.id != halfPizzaId">
+                    <ion-col col-4>
+                        <ion-thumbnail item-start padding (click)="setHalf(product)">
+                            <img src="{{product.image}}" alt="{{product.name}}">
+                        </ion-thumbnail>
+                    </ion-col>
+                    <ion-col col-8>
+                        <div class="details" (click)="setHalf(product)">
+                            <h2>{{product.name}}</h2>
+                            <p text-wrap>{{product.description}}</p>
+                            <div class="price">
+                                {{product.price | number:'1.2-2'}} €
+                            </div>
+                        </div>
+                    </ion-col>
+                </ion-row>
+            </ion-card>
+        </ion-list>
+    </div>
+</ion-content>

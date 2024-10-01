@@ -1,0 +1,34 @@
+page-pizzapage {
+
+    .pizzaimg
+    {
+        width: 40vh;
+        height: 40vh;
+        margin-left: auto;
+    margin-right: auto;
+        
+        img{
+           
+        }
+    }
+
+    .rating {
+        .star-icon {
+            color: #FFAC11;
+            font-size: 1.8em;
+            position: relative;
+        }
+    }
+
+    .butnsholder{
+        .loginbtn{
+            border-radius: 25px;
+            color: #ffffff!important;
+            font-size: 1.5em;
+        height: 50px;
+        background-color: #E30025;
+    
+            
+        }
+    }
+}
