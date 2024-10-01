@@ -1,0 +1,108 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Mi pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="icontent" *ngIf="currentOrder != undefined">
+        <ion-list *ngIf="currentOrder.lines.length > 0">
+            <ion-card class="pizzacard" *ngFor="let line of currentOrder.lines">
+                <ion-row>
+                    <ion-col col-4>
+                        <ion-thumbnail item-start padding (click)="editLine(line)">
+                            <img *ngIf="line.product != undefined" src="{{line.product.image}}" alt="{{line.productName}}">
+                        </ion-thumbnail>
+                    </ion-col>
+                    <ion-col col-8>
+                        <div class="details">
+                            <h2>{{line.productName}}</h2>
+                            <p *ngIf="line.sizeText != ''"><small>Tamaño: {{line.sizeText}}</small> <span *ngIf="line.half">(1/2 pizza)</span></p>
+                            <p *ngIf="line.ingredientsToRemoveText != ''"><small>Quitar: {{line.ingredientsToRemoveText}}</small></p>
+                            <p *ngIf="line.ingredientsToAddText != ''"><small>Añadir: {{line.ingredientsToAddText}}</small></p>
+                            <p *ngIf="line.product && line.product.ingredientsNotAvailable.length > 0">
+                                Ingredientes no disponibles: <strong style="color: red;">{{ line.product.ingredientsNotAvailable.join(', ') }}</strong>
+                            </p>
+                        </div>
+
+                        <ion-item>
+                            <ion-label></ion-label>
+                            <button *ngIf="!line.isHalfAndHalf" ion-button icon-only class="countbtn" no-margin item-left clear color="lred"
+                                (click)="removeUnd(line);">
+                                <ion-icon ios="ios-remove-circle-outline" md="ios-remove-circle-outline">
+                                </ion-icon>
+                            </button>
+                            <button *ngIf="!line.isHalfAndHalf" class="countbtn" ion-button item-left color="lred" clear>
+                                {{line.und}}
+                            </button>
+                            <button *ngIf="!line.isHalfAndHalf" class="countbtn" ion-button icon-only no-margin item-left clear
+                                color="lred" (click)="addUnd(line);">
+                                <ion-icon ios="ios-add-circle-outline" md="ios-add-circle-outline">
+                                </ion-icon>
+                            </button>
+                            <div class="price" item-right>{{line.priceTotal | number: '1.2-2'}} €</div>
+                        </ion-item>
+
+                        <ion-item (click)="removeLine(line)">
+                            <div class="trash-container">
+                                <div><img class="ico-trash" src="assets/imgs/trash.png" alt="Eliminar"></div>
+                                <div>
+                                    <div style="height: 6px;"></div>
+                                    Eliminar
+                                </div>
+                            </div>
+                        </ion-item>
+                    </ion-col>
+                </ion-row>
+            </ion-card>
+        </ion-list>
+
+        <ion-list padding *ngIf="isOpen && currentOrder.total > 0">
+
+            <span *ngIf="isManager">
+                <ion-list-header>
+                    Escribe los datos del cliente
+                </ion-list-header>
+                <ion-item>
+                    <ion-input [(ngModel)]="currentOrder.name" placeholder="Nombre"> </ion-input>
+                </ion-item>
+                <ion-item>
+                    <ion-input type="tel" [(ngModel)]="currentOrder.phone" placeholder="Teléfono"> </ion-input>
+                </ion-item>
+                <!--<ion-item>
+                    <ion-input type="email" [(ngModel)]="currentOrder.email" placeholder="Tu email"> </ion-input>
+                </ion-item>-->
+            </span>
+
+            <ion-item *ngIf="!numProductsOverload">
+                <ion-label>Hora de recogida</ion-label>
+                <ion-select [(ngModel)]="pickupTime">
+                    <!-- <ion-option *ngFor="let gap of gaps" value="{{gap.timestamp}}" [disabled]="!gap.available">{{gap.text}}</ion-option> -->
+                </ion-select>
+            </ion-item>
+
+            <div *ngIf="numProductsOverload">
+                <br>
+                <p class="message">En este momento no es posible atender tal cantidad de pizzas. Por favor, llame al 961 78 08 73. Gracias.</p>
+            </div>
+
+        </ion-list>
+
+        <div class="butnsholder" *ngIf="isOpen && currentOrder != null && currentOrder.lines.length > 0 && !numProductsOverload" padding-horizontal>
+            <!-- <button class="loginbtn" color="light" ion-button block (click)="goCheckout()" [disabled]="!orderReady() || orderInProccess">Confirmar pedido</button> -->
+        </div>
+        <div style="height: 80px;"></div>
+        &nbsp;
+    </div>
+
+</ion-content>
+
+
+<ion-footer>
+    <div *ngIf="currentOrder != undefined && currentOrder.total > 0">
+        Total: {{currentOrder.total | number: '1.2-2'}} €
+    </div>
+</ion-footer>

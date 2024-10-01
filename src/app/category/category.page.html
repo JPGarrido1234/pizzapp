@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>CATEGORÍAS</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-card *ngFor="let product of products" class="pizzacard animated bounceInDown" [ngClass]="!product.available ? 'notavailable' : ''">
+        <ion-row>
+            <ion-col col-4>
+                <ion-thumbnail item-start padding (click)="goProductPage(product)">
+                    <img src="{{product.image}}" alt="{{product.name}}">
+                </ion-thumbnail>
+            </ion-col>
+            <ion-col col-8>
+                <div class="details" (click)="goProductPage(product)">
+                    <h2>{{product.name}}</h2>
+                    <p text-wrap>
+                        {{product.description}}
+                    </p>
+                    <div class="price">
+                        {{product.price | number:'1.2-2'}} €
+                    </div>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row *ngIf="product.ingredientsNotAvailable.length > 0">
+            <ion-col col-12>
+                <div style="padding: 10px 10px 0 10px;">
+                    Ingredientes no disponibles: <strong style="color: red;">{{ product.ingredientsNotAvailable.join(', ') }}</strong>
+                </div>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col col-12>
+                <ion-row class="butnsholder" style="margin-top: 0">
+                    <ion-col col-6>
+                        <button color="light" ion-button block (click)="addLineToOrder(product)">Añadir</button>
+                    </ion-col>
+                    <ion-col col-6>
+                        <button color="light" ion-button block (click)="goProductPage(product)" *ngIf="isPizzaCategory">Personalizar</button>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ion-card>
+</ion-list>
+</ion-content>

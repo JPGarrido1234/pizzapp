@@ -1,0 +1,19 @@
+<svg id="Group_56" data-name="Group 56" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 52.083 52.749">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        clip-path: url(#clip-path);
+      }
+    </style>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_36" data-name="Rectangle 36" class="cls-1" width="52.083" height="52.749"/>
+    </clipPath>
+  </defs>
+  <g id="Group_55" data-name="Group 55" class="cls-2">
+    <image id="Rectangle_35" data-name="Rectangle 35" width="52.083" height="52.749" xlink:href="Group%2056-image.png"/>
+  </g>
+</svg>

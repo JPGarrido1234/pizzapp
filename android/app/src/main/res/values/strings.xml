@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">pizzapp</string>
+    <string name="title_activity_main">pizzapp</string>
+    <string name="package_name">ionic.pizzapp</string>
+    <string name="custom_url_scheme">ionic.pizzapp</string>
+</resources>

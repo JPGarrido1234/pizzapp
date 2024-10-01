@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>MENÚ</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list *ngIf="categories">
+    <ion-card *ngFor="let item of categories" class="cardleft animated bounceInLeft" (click)="goCategory(item.id, item.name)">
+        <ion-item>
+            <div class="details">
+                <h1>{{item.name}}</h1>
+            </div>
+        </ion-item>
+    </ion-card>
+  </ion-list>
+</ion-content>

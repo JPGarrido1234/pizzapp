@@ -1,0 +1,27 @@
+<ion-app>
+  <div #topScrollAnchor></div>
+  <ion-split-pane when="xl" contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-content>
+        <img alt='' src='assets/imgs/ricco-ricco-logo.png'>
+        <!--
+        <ion-item style="margin-top: 50px;display:block;line-height: 1.8;">
+          <h4 *ngIf="user == null || user == ''" style="margin:0;">Hola, invitado/a</h4>
+          <div *ngIf="user != null && user != ''" style="display:block;padding-bottom:5px">
+            <h4 style="width:100%;margin:0;">Hola, {{ user.name }}</h4>
+            <small style="width:100%;font-size:14px;color:#5b5b5b">Ref: {{ user.id }}</small>
+          </div>
+        </ion-item>
+        -->
+        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+          <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+            <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+            <ion-label>{{ p.title }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>
+

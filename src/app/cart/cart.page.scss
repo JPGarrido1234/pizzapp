@@ -1,0 +1,107 @@
+page-cart {
+    .bar-button-menutoggle-md {
+        display: block !important;
+    }
+
+    .butnsholder{
+        .loginbtn{
+            border-radius: 25px;
+            color: #ffffff!important;
+            font-size: 1.5em;
+        height: 50px;
+        background-color: #E30025;
+
+
+        }
+    }
+
+    ion-card {
+        margin-right: 0;
+
+        h2 {
+            color: #e30025 !important;
+        }
+
+        ion-thumbnail {
+            padding: 0 !important;
+            height: 80px;
+            background-color: #f9f9f9 !important;
+            overflow: hidden;
+            img {
+                height: 100%;
+                width: auto;
+                min-width: 100%;
+                max-width: inherit;
+            }
+        }
+    }
+
+    ion-item {
+        padding-left: 0 !important;
+
+        .countbtn {
+            height: 34px !important;
+
+            ion-icon {
+                font-size: 30px;
+            }
+
+            span {
+                font-size: 20px;
+            }
+        }
+
+        .price {
+            color: #e30025;
+            font-size: 25px;
+            font-weight: bold;
+            font-family: Serif;
+        }
+    }
+
+    .long-text {
+        color: lightgrey;
+    }
+
+    .details {
+        p {margin-bottom: 0;}
+    }
+
+    .trash-container {
+        display: flex;
+
+        div {
+            margin-right: 5px;
+        }
+    }
+
+    .ico-trash {
+        height: 30px;
+        width: auto;
+    }
+
+    ion-footer {
+        background-color: #e30025;
+        color: white;
+
+        div {
+            width: 100%;
+            font-size: 30px;
+            font-weight: bold;
+            font-family: Serif;
+            padding: 8px;
+            text-align: center;
+        }
+    }
+
+    .message {
+        background-color: #E30025;
+        border-radius: 10px;
+        color: white;
+        padding: 10px;
+        font-weight: bold;
+        font-size: 1.2em;
+        text-align: center;
+        white-space: normal;
+    }
+}

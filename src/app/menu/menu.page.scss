@@ -1,0 +1,47 @@
+page-menu {
+
+  .ico-und {
+      position: fixed;
+      z-index: 9;
+      width: 40px;
+      height: 40px;
+      background-color: white;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      right: 20px;
+      top: 25px;
+
+      div {
+          width: 100%;
+          text-align: center;
+          font-size: 18px;
+          font-weight: bold;
+          color: #E30025;
+          margin-top: 6px;
+      }
+  }
+
+  .icontent{
+      margin-top: 10vh;
+  }
+
+  .cardleft{
+      margin-left: 0 !important;
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+      margin-bottom: 20px !important;
+      box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.103);
+
+      h1{
+          color: #E30025 !important;
+          font-size:2.2em;
+      }
+
+  }
+
+  .details {
+      margin-left: 20vw;
+  }
+
+
+}
