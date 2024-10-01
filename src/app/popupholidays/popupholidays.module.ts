@@ -1,15 +1,31 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { PopupHolidaysPage } from './popupholidays';
-import { LottieAnimationViewModule } from 'ng-lottie';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+import { RouterModule, Routes } from '@angular/router';
+
+import { PopupHolidaysPageRoutingModule } from './popupholidays-routing.module';
+
+import { PopupHolidaysPage } from './popupholidays.page';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    component: PopupHolidaysPage
+  }
+];
+
 
 @NgModule({
-    declarations: [
-        PopupHolidaysPage,
-    ],
-    imports: [
-        IonicPageModule.forChild(PopupHolidaysPage),
-        LottieAnimationViewModule.forRoot()
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    PopupHolidaysPageRoutingModule,
+    RouterModule.forChild(routes)
+  ],
+  declarations: [PopupHolidaysPage]
 })
-export class PopupHolidaysPageModule { }
+export class PopupHolidaysPageModule {}

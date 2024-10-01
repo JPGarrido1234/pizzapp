@@ -1,15 +1,31 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { PopupPage } from './popup';
-import { LottieAnimationViewModule } from 'ng-lottie';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+import { RouterModule, Routes } from '@angular/router';
+
+import { PopupPageRoutingModule } from './popup-routing.module';
+
+import { PopupPage } from './popup.page';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    component: PopupPage
+  }
+];
+
 
 @NgModule({
-  declarations: [
-    PopupPage,
-  ],
   imports: [
-    IonicPageModule.forChild(PopupPage),
-    LottieAnimationViewModule.forRoot()
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    PopupPageRoutingModule,
+    RouterModule.forChild(routes)
   ],
+  declarations: [PopupPage]
 })
 export class PopupPageModule {}

@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
-import {IonicPage} from 'ionic-angular';
 
-@IonicPage()
 @Component({
-    selector: 'page-who',
-    templateUrl: 'who.html',
+  selector: 'app-who',
+  templateUrl: './who.page.html',
+  styleUrls: ['./who.page.scss']
 })
 export class WhoPage {
 

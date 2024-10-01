@@ -1,18 +1,11 @@
-import { MenuPage } from './../menu/menu'
 import { Component } from '@angular/core'
-import { IonicPage, MenuController, NavController, NavParams, ViewController } from 'ionic-angular'
+import { ActivatedRoute } from '@angular/router';
 
-/**
- * Generated class for the PopupPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
-@IonicPage()
 @Component({
-  selector: 'page-popup',
-  templateUrl: 'popup.html',
+  selector: 'app-popup',
+  templateUrl: './popup.page.html',
+  styleUrls: ['./popup.page.scss']
 })
 export class PopupPage {
   public lottieConfig: Object;
@@ -20,10 +13,7 @@ export class PopupPage {
   private animationSpeed: number = 1;
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    public viewCtrl: ViewController,
-    public menuCtrl: MenuController
+    public route: ActivatedRoute
   ) {
     this.lottieConfig = {
       path: 'assets/icon/checked_done_.json',
@@ -39,7 +29,7 @@ export class PopupPage {
   }
 
   dismiss() {
-    this.navCtrl.setRoot(MenuPage);
-    this.menuCtrl.enable(true);
+    //this.navCtrl.setRoot(MenuPage);
+    //this.menuCtrl.enable(true);
   }
 }

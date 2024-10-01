@@ -15,6 +15,10 @@ import { Component } from '@angular/core';
 
 export class PizzapagePage {
   tquantity: number = 0;
+  pizzaSize: string = '';
+  pepperoni: boolean = false;
+  sausage: boolean = false;
+  mushrooms: boolean = false;
 
   constructor() {}
 

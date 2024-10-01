@@ -1,24 +1,20 @@
 import { Component } from '@angular/core';
-import { AlertController, IonicPage, NavController } from 'ionic-angular';
-import { UserService } from '../../services/user.service';
-import { CodePage } from '../code/code';
-import { User } from '../../models/user.model';
-import { RegisterPage } from '../register/register';
-import { UserForm } from '../../models/userForm.model';
+import { UserService } from '../service/user.service';
+import { User } from '../models/user.model';
+import { UserForm } from '../models/userForm.model';
 import { Utils } from '../../utils/utils';
-import { MenuPage } from '../menu/menu';
+import { AlertController } from '@ionic/angular';
 
-@IonicPage()
 @Component({
-  selector: 'page-user',
-  templateUrl: 'user.html',
+  selector: 'app-user',
+  templateUrl: './user.page.html',
+  styleUrls: ['./user.page.scss']
 })
 export class UserPage {
-  myUser: User = this.userService.getUser();
-  userForm: UserForm;
+  myUser: User | any;
+  userForm: UserForm | any;
 
   constructor(
-    private navCtrl: NavController,
     private userService: UserService,
     private alertController: AlertController
   ) {}
@@ -27,11 +23,15 @@ export class UserPage {
 
   ionViewDidEnter() {
     if (!this.userService.isLogged()) {
-      this.navCtrl.setRoot(RegisterPage);
+      //this.navCtrl.setRoot(RegisterPage);
       return;
     } else if (this.userService.isWaitingForCode()) {
-      this.navCtrl.setRoot(CodePage);
+      //this.navCtrl.setRoot(CodePage);
     }
+
+    this.userService.getUser().then((user : any) => {
+      this.myUser = user;
+    });
 
     this.userForm = {
       id: this.myUser.id,
@@ -45,8 +45,8 @@ export class UserPage {
     };
   }
 
-  checkUserData() {
-    let msg = '';
+  async checkUserData() {
+    let msg: any = '';
 
     if (this.userForm.birthDate === '') {
       msg = 'La fecha de nacimiento no puede estar vacía';
@@ -69,13 +69,13 @@ export class UserPage {
     }
 
     if (msg !== '') {
-      this.alertController
-        .create({
-          title: 'Error',
+        const alert = await this.alertController.create({
+          header: 'Error',
           message: msg,
           buttons: ['OK'],
-        })
-        .present();
+        });
+
+        await alert.present();
       return;
     }
 
@@ -86,14 +86,14 @@ export class UserPage {
     if (!this.checkUserData()) return;
 
     this.userService.updateUser(this.userForm).subscribe(
-      (user: User) => {
-        this.alertController
-          .create({
-            title: 'Datos actualizados',
+      async (user: any) => {
+        const alert = await this.alertController.create({
+            header: 'Datos actualizados',
             message: 'Tus datos de usuario han sido actualizados',
             buttons: ['OK'],
-          })
-          .present();
+          });
+
+        await alert.present();
 
         this.myUser.name = this.userForm.name;
         this.myUser.login = this.userForm.login;
@@ -107,23 +107,22 @@ export class UserPage {
         this.userForm.password = '';
         this.userForm.repeated = '';
       },
-      (error) => {
-        this.alertController
-          .create({
-            title: 'Error',
-            message:
-              'Ha ocurrido un error al actualizar tus datos, inténtalo de nuevo más tarde',
+      async (error) => {
+        const alert = await this.alertController.create({
+            header: 'Error',
+            message: 'Ha ocurrido un error al actualizar tus datos, inténtalo de nuevo más tarde',
             buttons: ['OK'],
-          })
-          .present();
+          });
+
+        await alert.present();
       }
     );
   }
 
-  removeUser() {
-    this.alertController
+  async removeUser() {
+    const alert = await this.alertController
       .create({
-        title: 'ATENCIÓN',
+        header: 'ATENCIÓN',
         message:
           'Vas a solicitar eliminar tu cuenta de nuestro sistema, por lo que se eliminará todo el historial de pedidos y tus datos de usuario. ¿Estás seguro?',
         buttons: [
@@ -137,35 +136,35 @@ export class UserPage {
             text: 'Cancelar',
           },
         ],
-      })
-      .present();
+      });
+      await alert.present();
   }
 
   private doRemove() {
     this.userService.removeUser(this.myUser.id).subscribe(
-      (user: User) => {
-        this.alertController
+      async (user: any) => {
+        const alert = await this.alertController
           .create({
-            title: 'Solicitud enviada',
+            header: 'Solicitud enviada',
             message:
               'La solicitud para eliminar tu cuenta de nuestro sistema ha sido recibida correctamente. En breve será eliminada de nuestra base de datos.',
             buttons: ['OK'],
           })
-          .present();
+          await alert.present();
 
         this.userService.removeUserData();
 
-        this.navCtrl.setRoot(MenuPage);
+        //this.navCtrl.setRoot(MenuPage);
       },
-      (error) => {
-        this.alertController
+      async (error) => {
+        const alert = await this.alertController
           .create({
-            title: 'Error',
+            header: 'Error',
             message:
               'Ha ocurrido un error al eliminar tu cuenta, Inténtalo de nuevo más tarde',
             buttons: ['OK'],
           })
-          .present();
+          await alert.present();
       }
     );
   }

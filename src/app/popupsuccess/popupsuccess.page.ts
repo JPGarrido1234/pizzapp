@@ -1,29 +1,18 @@
-import { MenuPage } from './../menu/menu';
 import { Component } from '@angular/core';
-import {
-  IonicPage,
-  MenuController,
-  NavController,
-  NavParams,
-  ViewController,
-} from 'ionic-angular';
+import { ActivatedRoute } from '@angular/router';
 
-@IonicPage()
 @Component({
-  selector: 'page-popupsuccess',
-  templateUrl: 'popupsuccess.html',
+  selector: 'app-popupsuccess',
+  templateUrl: './popupsuccess.page.html',
+  styleUrls: ['./popupsuccess.page.scss']
 })
 export class PopupSuccessPage {
   public lottieConfig: Object;
   private anim: any;
   private animationSpeed: number = 1;
-  private pickupTime = '';
+  public pickupTime: any = '';
 
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    public viewCtrl: ViewController,
-    public menuCtrl: MenuController
+  constructor(private route: ActivatedRoute
   ) {
     this.lottieConfig = {
       path: 'assets/icon/checked_done_.json',
@@ -31,7 +20,7 @@ export class PopupSuccessPage {
       loop: false,
     };
 
-    this.pickupTime = this.navParams.get('pickupTime');
+    this.pickupTime = this.route.snapshot.paramMap.get('pickupTime');
   }
 
   ionViewDidLoad() {}
@@ -41,7 +30,7 @@ export class PopupSuccessPage {
   }
 
   dismiss() {
-    this.navCtrl.setRoot(MenuPage);
-    this.menuCtrl.enable(true);
+    //this.navCtrl.setRoot(MenuPage);
+    //this.menuCtrl.enable(true);
   }
 }

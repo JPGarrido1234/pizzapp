@@ -1,10 +1,9 @@
 import {Component} from '@angular/core';
-import {IonicPage} from 'ionic-angular';
 
-@IonicPage()
 @Component({
-    selector: 'page-legal',
-    templateUrl: 'legal.html',
+  selector: 'app-legal',
+  templateUrl: './legal.page.html',
+  styleUrls: ['./legal.page.scss']
 })
 export class LegalPage {
 

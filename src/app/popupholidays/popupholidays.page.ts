@@ -1,31 +1,21 @@
-import { MenuPage } from './../menu/menu';
 import { Component } from '@angular/core';
-import {
-  IonicPage,
-  MenuController,
-  NavController,
-  NavParams,
-  ViewController,
-} from 'ionic-angular';
-import moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
+//import moment from 'moment';
 
-@IonicPage()
 @Component({
-  selector: 'page-popupholidays',
-  templateUrl: 'popupholidays.html',
+  selector: 'app-popupholidays',
+  templateUrl: './popupholidays.page.html',
+  styleUrls: ['./popupholidays.scss']
 })
 export class PopupHolidaysPage {
   public lottieConfig: Object;
   private anim: any;
   private animationSpeed: number = 1;
-  private opening: string = '';
-  private description: string = '';
+  public opening: string = '';
+  public description: string = '';
 
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    public viewCtrl: ViewController,
-    public menuCtrl: MenuController
+    private route: ActivatedRoute
   ) {
     this.lottieConfig = {
       path: 'assets/icon/4961-close.json',
@@ -33,9 +23,9 @@ export class PopupHolidaysPage {
       loop: false,
     };
 
-    moment.locale('es');
-    this.opening = moment(this.navParams.get('opening')).format('L');
-    this.description = this.navParams.get('description');
+    //moment.locale('es');
+    //this.opening = moment(this.navParams.get('opening')).format('L');
+    //this.description = this.navParams.get('description');
   }
 
   ionViewDidLoad() {}
@@ -45,7 +35,7 @@ export class PopupHolidaysPage {
   }
 
   dismiss() {
-    this.navCtrl.setRoot(MenuPage);
-    this.menuCtrl.enable(true);
+    //this.navCtrl.setRoot(MenuPage);
+    //this.menuCtrl.enable(true);
   }
 }

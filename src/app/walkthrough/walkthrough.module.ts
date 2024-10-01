@@ -1,13 +1,31 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { WalkthroughPage } from './walkthrough';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+import { RouterModule, Routes } from '@angular/router';
+
+import { WalkthroughPageRoutingModule } from './walkthrough-routing.module';
+
+import { WalkthroughPage } from './walkthrough.page';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    component: WalkthroughPage
+  }
+];
+
 
 @NgModule({
-  declarations: [
-    WalkthroughPage,
-  ],
   imports: [
-    IonicPageModule.forChild(WalkthroughPage),
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    WalkthroughPageRoutingModule,
+    RouterModule.forChild(routes)
   ],
+  declarations: [WalkthroughPage]
 })
 export class WalkthroughPageModule {}

@@ -1,28 +1,24 @@
-import { CartPage } from './../cart/cart';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../models/product.model';
-import { Category } from '../../models/category.model';
-import { MenuPage } from '../../pages/menu/menu';
-import { OrderLine } from '../../models/orderline.model';
-import { Order } from '../../models/order.model';
+import { ProductService } from '../service/product.service';
+import { Product } from '../models/product.model';
+import { Category } from '../models/category.model';
+import { OrderLine } from '../models/orderline.model';
+import { Order } from '../models/order.model';
 import { environment } from '../../environments/environment';
-import {HalfPizzaPage} from '../halfpizza/halfpizza';
 
 
-@IonicPage()
 @Component({
-    selector: 'page-product',
-    templateUrl: 'product.html',
+  selector: 'app-product',
+  templateUrl: './product.page.html',
+  styleUrls: ['./product.page.scss']
 })
 export class ProductPage {
-    constructor(public navCtrl: NavController, public navParams: NavParams, public productService: ProductService) {
+    constructor(public productService: ProductService) {
     }
 
-    product: Product;
-    currentLine: OrderLine;
-    category: Category;
+    product: Product | undefined;
+    currentLine: OrderLine | undefined;
+    category: Category | undefined;
 
     ingredientsBaseVisible = false;
     ingredientsPizzaVisible = false;

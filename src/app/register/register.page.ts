@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { AlertController, IonicPage, NavController } from 'ionic-angular';
-import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
-import { CodePage } from '../code/code';
-import { LoginPage } from '../login/login';
+import { UserService } from '../service/user.service';
+import { User } from '../models/user.model';
 import { Utils } from '../../utils/utils';
+import { AlertController } from '@ionic/angular';
 
 type UserRegister = {
   name: string;
@@ -17,10 +15,10 @@ type UserRegister = {
   birthDate: string;
 };
 
-@IonicPage()
 @Component({
-  selector: 'page-register',
-  templateUrl: 'register.html',
+  selector: 'app-register',
+  templateUrl: './register.page.html',
+  styleUrls: ['./register.page.scss']
 })
 export class RegisterPage {
   registerForm: UserRegister = {
@@ -35,9 +33,8 @@ export class RegisterPage {
   };
 
   constructor(
-    private navCtrl: NavController,
     private userService: UserService,
-    private alertController: AlertController
+    private alertController: AlertController,
   ) {}
 
   ionViewDidLoad() {}
@@ -46,7 +43,7 @@ export class RegisterPage {
     if (this.userService.isLogged()) {
       this.userService.logOut();
     } else if (this.userService.isWaitingForCode()) {
-      this.navCtrl.setRoot(CodePage);
+      //this.navCtrl.setRoot(CodePage);
     }
   }
 
@@ -57,7 +54,7 @@ export class RegisterPage {
         this.registerForm.passwordRepeated
       );
     } catch (e) {
-      this.presentAlert(e);
+      //this.presentAlert(e);
       return;
     }
 
@@ -66,7 +63,7 @@ export class RegisterPage {
     try {
       user = User.populate(this.registerForm);
     } catch (e) {
-      this.presentAlert(e);
+      //this.presentAlert(e);
       return;
     }
     this.userService.register(user).subscribe(
@@ -74,7 +71,7 @@ export class RegisterPage {
         const user = User.populate(data);
         user.setLogged(true);
         this.userService.storeUserData(user);
-        this.navCtrl.setRoot(CodePage);
+        //this.navCtrl.setRoot(CodePage);
       },
       (e) => {
         let msg = e.error.toLowerCase();
@@ -107,6 +104,6 @@ export class RegisterPage {
   }
 
   public goToLogin() {
-    this.navCtrl.push(LoginPage);
+    //this.navCtrl.push(LoginPage);
   }
 }

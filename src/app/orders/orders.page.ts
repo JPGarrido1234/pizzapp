@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Order } from '../models/order.model';
-import * as moment from 'moment';
+//import moment from 'moment';
 import { ProductService } from '../service/product.service';
 import { Product } from '../models/product.model';
 import { OrderLine } from '../models/orderline.model';
@@ -27,12 +27,15 @@ export class OrdersPage {
   ionViewDidLoad() {}
 
   ionViewDidEnter() {
-    const myUser: User = this.userService.getUser();
+    let myUser: User | any;
+    this.userService.getUser().then((user: any) => {
+      myUser = user;
+    });
 
     this.userService.getOrders(myUser.id).subscribe(
       (orders: any) => {
         this.orders = orders.map((order: any) => {
-          order.date = moment(order.date).format('DD.MM.YYYY');
+          //order.date = moment(order.date).format('DD.MM.YYYY');
           return order;
         });
       },

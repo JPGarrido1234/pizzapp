@@ -1,24 +1,16 @@
 import { Component } from '@angular/core'
-import { IonicPage, NavController, NavParams } from 'ionic-angular'
-import { LoginPage } from '../login/login'
-import { MenuPage } from '../menu/menu'
+import { ActivatedRoute } from '@angular/router';
 
-/**
- * Generated class for the WalkthroughPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
-@IonicPage()
 @Component({
-  selector: 'page-walkthrough',
-  templateUrl: 'walkthrough.html',
+  selector: 'app-walkthrough',
+  templateUrl: './walkthrough.page.html',
+  styleUrls: ['./walkthrough.page.scss']
 })
 export class WalkthroughPage {
   animate: any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  constructor(public route: ActivatedRoute) {}
 
   ionViewDidLoad() {}
 
@@ -26,11 +18,11 @@ export class WalkthroughPage {
     this.animate = 'animated bounceOutRight';
 
     setTimeout(() => {
-      this.navCtrl.setRoot(LoginPage);
+      //this.navCtrl.setRoot(LoginPage);
     }, 1000);
   }
 
   goInto() {
-    this.navCtrl.setRoot(MenuPage);
+    //this.navCtrl.setRoot(MenuPage);
   }
 }

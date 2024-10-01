@@ -1,13 +1,31 @@
 import { NgModule } from '@angular/core';
-import { IonicPageModule } from 'ionic-angular';
-import { WhoPage } from './who';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
+import { IonicModule } from '@ionic/angular';
+import { RouterModule, Routes } from '@angular/router';
+
+import { WhoPageRoutingModule } from './who-routing.module';
+
+import { WhoPage } from './who.page';
+
+
+const routes: Routes = [
+  {
+    path: '',
+    component: WhoPage
+  }
+];
+
 
 @NgModule({
-  declarations: [
-    WhoPage,
-  ],
   imports: [
-    IonicPageModule.forChild(WhoPage),
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    WhoPageRoutingModule,
+    RouterModule.forChild(routes)
   ],
+  declarations: [WhoPage]
 })
-export class WhoPageModule {}
+export class RegisterPageModule {}
