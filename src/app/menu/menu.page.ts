@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { CategoryService } from '../service/category.service';
 import { Category } from '../models/category.model';
 import { IngredientService } from '../service/ingredient.service';
@@ -10,6 +10,8 @@ import { ProductService } from '../service/product.service';
 import { Size } from '../models/size.model';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
+import { Storage } from '@capacitor/storage';
+import { Order } from '../models/order.model';
 
 @Component({
   selector: 'app-menu',
@@ -26,7 +28,12 @@ export class MenuPage implements OnInit {
   categories: Category[] = [];
   holidays: any[] = [];
   //unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
-  user: User | any = null;;
+  user: User | any = null;
+
+  //STORAGE
+  categories_storage: Category[] = [];
+  ingredients_storage: Ingredient[] = [];
+  sizes_storage: Size[] = [];
 
   constructor(
     private router: Router,
@@ -46,7 +53,7 @@ export class MenuPage implements OnInit {
       //CartPage.order = new Order();
     //}
     this.getCategories();
-/*
+
     this.user = this.userService.getUser();
     if (this.user && !this.user.isLogged()) {
       this.alertController
@@ -62,13 +69,14 @@ export class MenuPage implements OnInit {
               text: 'Venga, llévame a cambiarla',
               handler: () => {
                 //this.navCtrl.push(UserPage);
+                this.router.navigate(['/user']);
               },
             },
           ],
         })
         .then(alert => alert.present());
     }
-*/
+
   }
 
   ionViewDidEnter() {
@@ -94,6 +102,7 @@ export class MenuPage implements OnInit {
           this.categories.push(category);
           //MenuPage.sCategories.push(category);
         });
+        this.saveCategories(this.categories); // Guarda las categorías en Storage
       },
       (error) => {
         console.error(error);
@@ -104,7 +113,7 @@ export class MenuPage implements OnInit {
   getIngredients() {
     this.ingredientService.findAll().subscribe(
       (data: any) => {
-        MenuPage.sIngredients = [];
+        //MenuPage.sIngredients = [];
         data.forEach((i: any) => {
           let ingredient: Ingredient = new Ingredient(
             i.id,
@@ -114,8 +123,10 @@ export class MenuPage implements OnInit {
             i.price,
             i.base
           );
-          MenuPage.sIngredients.push(ingredient);
+          //MenuPage.sIngredients.push(ingredient);
+          this.ingredients_storage.push(ingredient);
         });
+        this.saveIngredients(this.ingredients_storage); // Guarda los ingredientes en Storage
       },
       (error) => {
         console.error(error);
@@ -165,7 +176,7 @@ export class MenuPage implements OnInit {
     );
   }
 
-  showHoliDaysPopUp(dateTo: string, description: string) {
+  async showHoliDaysPopUp(dateTo: string, description: string) {
     /*
     let profileModal = this.modalCtrl.create(PopupHolidaysPage, {
       opening: dateTo,
@@ -173,18 +184,28 @@ export class MenuPage implements OnInit {
     });
     profileModal.present();
     */
+    const alert = await this.alertController.create({
+      header: 'Holiday Details',
+      subHeader: `Opening Date: ${dateTo}`,
+      message: description,
+      buttons: ['OK']
+    });
+
+    await alert.present();
   }
 
   getSizes() {
-    this.productService.getSizes().subscribe(
+    this.productService.getSizes().then(
       (data: any) => {
         //MenuPage.sSizes = [];
         data.forEach((s: any) => {
           let size: Size = new Size(s.code, s.name, s.multiplier);
-          MenuPage.sSizes.push(size);
+          //MenuPage.sSizes.push(size);
+          this.sizes_storage.push(size);
         });
+        this.saveSizes(this.sizes_storage); // Guarda los tamaños en Storage
       },
-      (error) => {
+      (error: any) => {
         console.error(error);
       }
     );
@@ -197,18 +218,39 @@ export class MenuPage implements OnInit {
       category: category,
     });
     */
-    this.router.navigate(['/category', categoryId], { queryParams: { name } });
-  }
-
-  goPizza() {
-    //this.navCtrl.push(PizzamenuPage);
+    this.router.navigate(['/category', categoryId, category]);
   }
 
   goCart() {
     //this.navCtrl.push(CartPage);
+    this.router.navigate(['/category']);
   }
 
   openMenu() {
     //this.menuCtrl.open();
+  }
+
+  async saveCategories(categories: Category[]) {
+    const categoriesString = JSON.stringify(categories);
+    await Storage.set({
+      key: 'categories',
+      value: categoriesString,
+    });
+  }
+
+  async saveIngredients(ingredients: Ingredient[]) {
+    const ingredientsString = JSON.stringify(ingredients);
+    await Storage.set({
+      key: 'ingredients',
+      value: ingredientsString,
+    });
+  }
+
+  async saveSizes(sizes: Size[]) {
+    const sizesString = JSON.stringify(sizes);
+    await Storage.set({
+      key: 'sizes',
+      value: sizesString,
+    });
   }
 }

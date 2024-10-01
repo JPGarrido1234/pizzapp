@@ -54,7 +54,7 @@ export class Product {
   }
 
   getImage() {
-    this.productService.getImageUrl(this.id).subscribe((image: any) => {
+    this.productService.getImageUrl(this.id).then((image: any) => {
       if (image != null && image.data != '' && image.type != null) {
         this.image = 'data:' + image.type + ';base64,' + image.data;
       } else {

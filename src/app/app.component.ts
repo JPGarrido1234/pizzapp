@@ -19,8 +19,8 @@ export class AppComponent {
     { title: 'Tu pedido actual', url: '/pedido/:id', icon: 'ios-cart-outline' },
     { title: 'Tus pedidos', url: '/pedidos', icon: 'ios-basket-outline' },
     { title: 'Tus datos personales', url: '/datos', icon: 'ios-person-outline' },
-    { title: 'Quienes somos', url: '/quien', icon: 'ios-pizza-outline' },
-    { title: 'Aviso legal', url: '/aviso', icon: 'ios-book-outline' },
+    { title: 'Quienes somos', url: '/who', icon: 'ios-pizza-outline' },
+    { title: 'Aviso legal', url: '/legal', icon: 'ios-book-outline' },
   ];
   constructor() {
     addIcons({ mailOutline, mailSharp, paperPlaneOutline, paperPlaneSharp, heartOutline, heartSharp, archiveOutline, archiveSharp, trashOutline, trashSharp, warningOutline, warningSharp, bookmarkOutline, bookmarkSharp });

@@ -4,6 +4,7 @@ import { User } from '../models/user.model';
 import { UserForm } from '../models/userForm.model';
 import { Utils } from '../../utils/utils';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -13,20 +14,22 @@ import { AlertController } from '@ionic/angular';
 export class UserPage {
   myUser: User | any;
   userForm: UserForm | any;
-
   constructor(
     private userService: UserService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private router: Router
   ) {}
 
-  ionViewDidLoad() {}
+
 
   ionViewDidEnter() {
     if (!this.userService.isLogged()) {
       //this.navCtrl.setRoot(RegisterPage);
+      this.router.navigate(['/register']);
       return;
     } else if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
+      this.router.navigate(['/code']);
     }
 
     this.userService.getUser().then((user : any) => {
@@ -155,6 +158,7 @@ export class UserPage {
         this.userService.removeUserData();
 
         //this.navCtrl.setRoot(MenuPage);
+        this.router.navigate(['/menu']);
       },
       async (error) => {
         const alert = await this.alertController

@@ -28,4 +28,4 @@ const routes: Routes = [
   ],
   declarations: [LegalPage]
 })
-export class RegisterPageModule {}
+export class LegalPageModule {}

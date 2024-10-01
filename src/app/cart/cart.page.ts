@@ -35,22 +35,25 @@ export class CartPage {
   constructor(
     private orderService: OrderService,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private userService: UserService
   ) {}
 
   ionViewDidLoad() {}
 
   ionViewDidEnter() {
     // check if logged
-    /*
+
     if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
+      this.router.navigate(['/code']);
       return;
     } else if (!this.userService.isLogged()) {
       //this.navCtrl.setRoot(RegisterPage);
+      this.router.navigate(['/register']);
       return;
     }
-*/
+
     //this.user = this.userService.getUser();
 
     this.getCurrentOrder();

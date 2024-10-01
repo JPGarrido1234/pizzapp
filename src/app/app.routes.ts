@@ -26,8 +26,24 @@ export const routes: Routes = [
     loadChildren: () => import('./pedido/pedido.module').then( m => m.PedidoPageModule)
   },
   {
-    path: 'category/:id',
+    path: 'pedidos',
+    loadChildren: () => import('./pedido/pedido.module').then( m => m.PedidoPageModule)
+  },
+  {
+    path: 'category/:categoryId/:category',
     loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+  },
+  {
+    path: 'user',
+    loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
+  },
+  {
+    path: 'who',
+    loadChildren: () => import('./static/who/who.module').then( m => m.WhoPageModule)
+  },
+  {
+    path: 'legal',
+    loadChildren: () => import('./static/legal/legal.module').then( m => m.LegalPageModule)
   }
 ];
 
