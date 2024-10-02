@@ -22,12 +22,12 @@ export const routes: Routes = [
     loadChildren: () => import('./menu/menu.module').then( m => m.MenuPageModule)
   },
   {
-    path: 'pedido/:id',
-    loadChildren: () => import('./pedido/pedido.module').then( m => m.PedidoPageModule)
+    path: 'order/:id',
+    loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
   },
   {
-    path: 'pedidos',
-    loadChildren: () => import('./pedido/pedido.module').then( m => m.PedidoPageModule)
+    path: 'orders',
+    loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
   },
   {
     path: 'category/:categoryId/:category',

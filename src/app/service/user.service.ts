@@ -16,37 +16,42 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
-  public register(user: User) {
+  async register(user: User): Promise<Observable<any>> {
     const url = environment.API_URL + '/register'
     return this.http.post(url, user, Utils.getHeaders())
   }
 
-  public checkCode(phone: string, code: string) {
+  async checkCode(phone: string, code: string): Promise<Observable<any>> {
     const url =
       environment.API_URL + '/checkcode?phone=' + phone + '&code=' + code
     return this.http.get(url, Utils.getHeaders())
   }
 
-  public resendCode(phone: string) {
+  async resendCode(phone: string): Promise<Observable<any>> {
     const url = environment.API_URL + '/resendcode?phone=' + phone
     return this.http.get(url, Utils.getHeaders())
   }
 
-  public storeUserData(user: User) {
+  async storeUserData(user: User) {
     localStorage.setItem(this.appStoreUserKey, JSON.stringify(user))
   }
 
-  public removeUserData() {
+  async removeUserData() {
     localStorage.removeItem(this.appStoreUserKey)
   }
 
   async getUser() {
+    let data: any;
     try {
-      //let data: any = JSON.parse(localStorage.getItem(this.appStoreUserKey))
-      let data: any;
-      return User.populate(data)
-    } catch (e) {
-      return null
+      const storedData = localStorage.getItem(this.appStoreUserKey);
+      if (storedData) {
+        data = JSON.parse(storedData);
+      } else {
+        data = null; // O cualquier valor predeterminado que desees usar
+      }
+    } catch (error) {
+      console.error('Error parsing JSON from localStorage', error);
+      data = null; // O cualquier valor predeterminado que desees usar
     }
   }
 
@@ -95,27 +100,27 @@ export class UserService {
     return false
   }
 
-  public login(login: string, password: string) {
+  async login(login: string, password: string): Promise<Observable<any>> {
     const url = environment.API_URL + '/login'
     return this.http.post(url, { login: login, password: password })
   }
 
-  public sendPassword(email: string) {
+  async sendPassword(email: string): Promise<Observable<any>> {
     const url = environment.API_URL + '/generatepassword?login=' + email
     return this.http.get(url)
   }
 
-  public updateUser(userForm: UserForm) {
+  async updateUser(userForm: UserForm): Promise<Observable<any>> {
     const url = environment.API_URL + '/userdata'
     return this.http.post(url, userForm, Utils.getHeaders())
   }
 
-  public getOrders(userId: string) {
+  async getOrders(userId: string): Promise<Observable<any>> {
     const url = environment.API_URL + '/userorders?userId=' + userId
     return this.http.get(url, Utils.getHeaders())
   }
 
-  removeUser(userId: string) {
+  async removeUser(userId: string): Promise<Observable<any>> {
     const url = environment.API_URL + '/unsuscribe?userId=' + userId
     return this.http.get(url, Utils.getHeaders())
   }

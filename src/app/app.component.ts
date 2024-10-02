@@ -16,8 +16,8 @@ export class AppComponent {
   public appPages = [
     { title: 'Inicio', url: '/inicio', icon: 'ios-home-outline' },
     { title: 'Menú', url: '/menu', icon: 'ios-home-outline' },
-    { title: 'Tu pedido actual', url: '/pedido/:id', icon: 'ios-cart-outline' },
-    { title: 'Tus pedidos', url: '/pedidos', icon: 'ios-basket-outline' },
+    { title: 'Tu pedido actual', url: '/order/:id', icon: 'ios-cart-outline' },
+    { title: 'Tus pedidos', url: '/orders', icon: 'ios-basket-outline' },
     { title: 'Tus datos personales', url: '/datos', icon: 'ios-person-outline' },
     { title: 'Quienes somos', url: '/who', icon: 'ios-pizza-outline' },
     { title: 'Aviso legal', url: '/legal', icon: 'ios-book-outline' },

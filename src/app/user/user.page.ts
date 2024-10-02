@@ -88,7 +88,7 @@ export class UserPage {
   public updateUser() {
     if (!this.checkUserData()) return;
 
-    this.userService.updateUser(this.userForm).subscribe(
+    this.userService.updateUser(this.userForm).then(
       async (user: any) => {
         const alert = await this.alertController.create({
             header: 'Datos actualizados',
@@ -110,7 +110,7 @@ export class UserPage {
         this.userForm.password = '';
         this.userForm.repeated = '';
       },
-      async (error) => {
+      async (error: any) => {
         const alert = await this.alertController.create({
             header: 'Error',
             message: 'Ha ocurrido un error al actualizar tus datos, inténtalo de nuevo más tarde',
@@ -144,7 +144,7 @@ export class UserPage {
   }
 
   private doRemove() {
-    this.userService.removeUser(this.myUser.id).subscribe(
+    this.userService.removeUser(this.myUser.id).then(
       async (user: any) => {
         const alert = await this.alertController
           .create({

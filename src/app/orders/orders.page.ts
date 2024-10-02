@@ -8,6 +8,7 @@ import { ProductService } from '../service/product.service';
 import { Product } from '../models/product.model';
 import { OrderLine } from '../models/orderline.model';
 import { Category } from '../models/category.model';
+import { Storage } from '@capacitor/storage';
 
 @Component({
   selector: 'app-orders',
@@ -17,6 +18,27 @@ import { Category } from '../models/category.model';
 
 export class OrdersPage {
   orders: Order[] = [];
+  //STORAGE
+  categories_storage: Category[] = [];
+  ingredients_storage: any[] = [];
+  sizes_storage: any[] = [];
+  myUser: User = {
+    id: '', name: '', login: '', address: '', zip: '', birthDate: '', password: '',
+    phone: '',
+    codeValidated: false,
+    logged: false,
+    active: false,
+    role: '',
+    setLogged: function (logged: boolean): void {
+      throw new Error('Function not implemented.');
+    },
+    isLogged: function (): boolean {
+      throw new Error('Function not implemented.');
+    },
+    isActive: function (): boolean {
+      throw new Error('Function not implemented.');
+    }
+  };
 
   constructor(
     private userService: UserService,
@@ -27,12 +49,11 @@ export class OrdersPage {
   ionViewDidLoad() {}
 
   ionViewDidEnter() {
-    let myUser: User | any;
     this.userService.getUser().then((user: any) => {
-      myUser = user;
+      this.myUser = user;
     });
 
-    this.userService.getOrders(myUser.id).subscribe(
+    this.userService.getOrders(this.myUser.id).then(
       (orders: any) => {
         this.orders = orders.map((order: any) => {
           //order.date = moment(order.date).format('DD.MM.YYYY');
@@ -53,29 +74,47 @@ export class OrdersPage {
 
   async cloneOrder(order: Order) {
     //CartPage.order = new Order();
-
+    this.loadCategories();
+    this.loadIngredients();
+    this.loadSizes();
+    order = new Order();
     const productsFromServer: Product[] = await Promise.all(
-      order.lines.map((line) => {
-        return this.productService
-          .findById(line.productId)
+      order.lines.map(async (line) => {
+        return (await this.productService
+          .findById(line.productId))
           .toPromise() as Promise<Product>;
       })
     );
 
     const products: Product[] = productsFromServer.map((pfs) => {
+      /*
       const product: Product = new Product(
         pfs,
         this.productService,
         MenuPage.sIngredients
       );
-
+      */
+      const product: Product = new Product(
+        pfs,
+        this.productService,
+        this.ingredients_storage
+      );
+      /*
       const category = MenuPage.sCategories.find(
         (category: Category) => category.id == pfs.category
       );
+      */
+      const category = this.categories_storage.find(
+        (category: Category) => category.id == pfs.category
+      );
 
-      if (category.isPizzaCategory()) {
-        let size = product.sizes.filter((s) => s.code == 'IND')[0];
-        product.price = size.price;
+      if(category !== undefined) {
+        if (category.isPizzaCategory()) {
+          let size = product.sizes.filter((s) => s.code == 'IND')[0];
+          if(size.price !== undefined) {
+            product.price = size.price;
+          }
+        }
       }
 
       return product;
@@ -83,10 +122,11 @@ export class OrdersPage {
 
     const error: string[] = [];
 
-    const lines: OrderLine[] = order.lines.map((line: OrderLine) => {
+    order.lines.map((line: OrderLine) => {
       const product = products.find((p) => p.id == line.productId);
 
       if (!product || !product.active || !product.available) {
+        if (product)
         error.push(`${product.name} no está disponible`);
         return null;
       }
@@ -105,16 +145,35 @@ export class OrdersPage {
         return true;
       });
 
+      /*
       const category = MenuPage.sCategories.find(
         (category: Category) => category.id == product.category
       );
+      */
+      const category = this.categories_storage.find(
+        (category: Category) => category.id == product.category
+      );
 
+      /*
       const orderLine: OrderLine = new OrderLine(
         CartPage.order,
         product,
         category,
         MenuPage.sIngredients,
         MenuPage.sSizes
+      );
+      */
+      if (!category) {
+        error.push(`Category not found for product ${product.name}`);
+        return null;
+      }
+
+      const orderLine: OrderLine = new OrderLine(
+        order,
+        product,
+        category,
+        this.ingredients_storage,
+        this.sizes_storage
       );
 
       if (category.isPizzaCategory()) {
@@ -148,6 +207,27 @@ export class OrdersPage {
       });
 
       await alert.present();
+    }
+  }
+
+  async loadCategories() {
+    const { value } = await Storage.get({ key: 'categories' });
+    if (value) {
+      this.categories_storage = JSON.parse(value);
+    }
+  }
+
+  async loadIngredients() {
+    const { value } = await Storage.get({ key: 'ingredients' });
+    if (value) {
+      this.ingredients_storage = JSON.parse(value);
+    }
+  }
+
+  async loadSizes() {
+    const { value } = await Storage.get({ key: 'sizes' });
+    if (value) {
+      this.sizes_storage = JSON.parse(value);
     }
   }
 }
