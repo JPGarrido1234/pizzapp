@@ -15,6 +15,17 @@
         </ion-buttons>
     </ion-navbar>
     -->
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title text-center *ngIf="category != undefined">{{category.name}}</ion-title>
+        <ion-buttons end>
+            <button large ion-button icon-only (click)="goCart()">
+                <ion-icon name="ios-cart-outline"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -40,17 +51,15 @@
                 </div>
 
 
-                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                <ion-row radio-group [(ngModel)]="currentLine.size" (ngModelChange)="setSize($event)" *ngIf="category.isPizzaCategory()">
                     <ion-col col-12>
                         <ion-list-header>
                             Selecciona tamaño
                         </ion-list-header>
                         <ion-item col-8 *ngFor="let size of sizesForCheckbox">
                             <ion-label>{{size.name}} - <strong>{{size.price | number:'1.2-2'}} €</strong></ion-label>
-                            <ion-radio color="lred" value="{{size.code}}" [checked]="currentLine.size == size.code"
-                                       (click)="setSize(size.code)"></ion-radio>
+                            <ion-radio color="lred" value="{{size.code}}"></ion-radio>
                         </ion-item>
-
                     </ion-col>
                 </ion-row>
 
@@ -72,7 +81,7 @@
 
                     </ion-item>
 
-                    <ion-item *ngIf="category.isPizzaCategory() && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf()" class="halfpizza">
+                    <ion-item *ngIf="category.isPizzaCategory() && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf(product.id, currentLine.size)" class="halfpizza">
                         <div style="display: flex; justify-content: center">
                             <div>
                                 <img src="assets/imgs/half-pizza.png">

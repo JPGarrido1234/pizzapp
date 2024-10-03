@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Utils } from '../../utils/utils';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,12 @@ export class ConfigService {
     private http: HttpClient
 ) { }
 
-public findAll() {
+async findAll(): Promise<Observable<any>> {
     const url = environment.API_URL + '/config';
     return this.http.get(url, Utils.getHeaders());
 }
 
-public isOpen(){
+async isOpen(): Promise<Observable<any>>{
     const url = environment.API_URL + '/isopen';
     return this.http.get(url, Utils.getHeaders());
 }

@@ -20,7 +20,9 @@ export class PopupSuccessPage {
       loop: false,
     };
 
-    this.pickupTime = this.route.snapshot.paramMap.get('pickupTime');
+    this.route.paramMap.subscribe(params => {
+      this.pickupTime = params.get('pickupTime');
+    });
   }
 
   ionViewDidLoad() {}

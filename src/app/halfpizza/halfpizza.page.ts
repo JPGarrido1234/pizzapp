@@ -28,10 +28,13 @@ export class HalfPizzaPage {
     ) {}
 
     ionViewDidLoad() {
-        this.halfPizzaId ? this.route.snapshot.paramMap.get('halfPizzaId') : '';
-        this.pizzaSize ? this.route.snapshot.paramMap.get('pizzaSize') : '';
+      this.route.paramMap.subscribe(params => {
+        this.halfPizzaId ? params.get('halfPizzaId') : '';
+        this.pizzaSize ? params.get('pizzaSize') : '';
+
         this.setCategoryPizzaId();
         this.getProducts();
+      });
     }
 
     setCategoryPizzaId() {
@@ -43,7 +46,7 @@ export class HalfPizzaPage {
 
     getProducts() {
         this.productService.findAll(this.categoryId)
-            .subscribe((data: any) => {
+            .then((data: any) => {
                     data.forEach((item: any) => {
                         if(item.type === "CUSTOMIZABLE_TOTAL") return;
                         //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);

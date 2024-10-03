@@ -5,6 +5,8 @@ import { Category } from '../models/category.model';
 import { OrderLine } from '../models/orderline.model';
 import { Order } from '../models/order.model';
 import { environment } from '../../environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Storage } from '@capacitor/storage';
 
 
 @Component({
@@ -13,12 +15,11 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./product.page.scss']
 })
 export class ProductPage {
-    constructor(public productService: ProductService) {
-    }
 
-    product: Product | undefined;
-    currentLine: OrderLine | undefined;
-    category: Category | undefined;
+    product: Product | any;
+    currentLine: OrderLine | any;
+    category: Category | any;
+
 
     ingredientsBaseVisible = false;
     ingredientsPizzaVisible = false;
@@ -31,12 +32,25 @@ export class ProductPage {
 
     backend_url = environment.BACKEND_URL;
     mode = 'add';
+    order: Order | any = new Order();
 
-    unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
+    //STORAGE
+    categories_storage: Category[] = [];
+    ingredients_storage: any[] = [];
+    sizes_storage: any[] = [];
+    config_storage: any = {};
+
+    constructor(
+      public productService: ProductService,
+      private route: ActivatedRoute,
+      private router: Router) {}
+
+    //unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
+    unds: number = this.order != undefined ? this.order.unds : 0;
 
     ionViewDidLoad() {
-        if(CartPage.order == undefined) {
-            CartPage.order = new Order();
+        if(this.order == undefined) {
+            this.order = new Order();
         }
 
         this.getProduct();
@@ -47,18 +61,22 @@ export class ProductPage {
     }
 
     refreshCartUnds() {
-        this.unds = CartPage.order.unds;
+        this.unds = this.order.unds;
     }
 
     getProduct() {
-        let productId = this.navParams.get('productId');
-
-        this.productService.findById(productId)
-            .subscribe((item: any) => {
-                this.product = new Product(item, this.productService, MenuPage.sIngredients);
+      this.loadCategories();
+      this.loadIngredients()
+      .then(() => {
+        this.route.paramMap.subscribe(params => {
+          let productId = params.get('productId');
+          if(productId){
+            this.productService.findById(productId)
+            .then((item: any) => {
+                this.product = new Product(item, this.productService, this.ingredients_storage);
 
                 try {
-                    this.category = MenuPage.sCategories.find(category => category.id == this.product.category);
+                    this.category = this.categories_storage.find(category => category.id == this.product.category);
                 } catch (e) {
                     console.error("Can not find product category ");
                 }
@@ -70,35 +88,41 @@ export class ProductPage {
             (error) => {
                 console.error(error);
             });
+          }
+        });
+      });
     }
 
     getCurrentLine() {
-        this.currentLine = this.navParams.get('currentLine');
+      this.route.paramMap.subscribe(params => {
+        this.currentLine = params.get('currentLine');
         if(this.currentLine == undefined) {
             this.mode = 'add';
             this.currentLine = new OrderLine(
-                null,
+                this.order,
                 this.product,
                 this.category,
-                MenuPage.sIngredients,
-                MenuPage.sSizes
+                this.ingredients_storage,
+                this.sizes_storage
             );
         } else {
             this.mode = 'edit';
         }
+      });
     }
 
     buildSizesCheckboxes() {
+      this.loadSizes();
         if(!this.category.isPizzaCategory()) return;
 
-        this.product.sizes.forEach(size => {
+        this.product.sizes.forEach((size: any) => {
             if(size.price <= 0){
                 return;
             }
 
             let sizeName = '-';
             try {
-                sizeName = MenuPage.sSizes.find(s => s.code == size.code).name;
+                sizeName = this.sizes_storage.find(s => s.code == size.code).name;
             } catch(e) {
                 console.error("Can not get size name of size " + size.code);
             }
@@ -115,9 +139,10 @@ export class ProductPage {
     }
 
     buildIngredientsCheckboxes() {
+      this.loadIngredients();
         if(!this.category.isPizzaCategory()) return;
 
-        this.product.ingredients.forEach(ingredient => {
+        this.product.ingredients.forEach((ingredient: any) => {
             try {
                 let checked: boolean = false;
 
@@ -125,7 +150,7 @@ export class ProductPage {
                     checked = true;
                 }
 
-                let ingredientComplete = MenuPage.sIngredients.find(i => i.id == ingredient);
+                let ingredientComplete = this.ingredients_storage.find(i => i.id == ingredient);
                 if(!ingredientComplete.available) {
                     checked = false;
                 }
@@ -142,7 +167,7 @@ export class ProductPage {
             }
         });
 
-        MenuPage.sIngredients.forEach(ingredient => {
+        this.ingredients_storage.forEach(ingredient => {
             if (!ingredient.active) return;
 
             let checked: boolean = false;
@@ -182,7 +207,7 @@ export class ProductPage {
     checkIfCanRemoveIngredient() {
         if(this.product.type == "CUSTOMIZABLE_TOTAL") return true;
 
-        let max: number = MenuPage.sConfig["ingredients-max-remove"];
+        let max: number = this.config_storage["ingredients-max-remove"];
         let counter: number = 0;
 
         this.ingredientsBaseForCheckbox.forEach(ingredientObj => {
@@ -214,7 +239,7 @@ export class ProductPage {
     checkIfCanAddIngredient() {
         if(this.product.type == "CUSTOMIZABLE_TOTAL") return true;
 
-        let max: number = MenuPage.sConfig["ingredients-max-add"];
+        let max: number = this.config_storage["ingredients-max-add"];
         let counter: number = 0;
 
         this.ingredientsExtraForCheckbox.forEach(ingredientObj => {
@@ -238,16 +263,19 @@ export class ProductPage {
         this.currentLine.removeUnd();
     }
 
-    setHalf() {
-        this.navCtrl.push(HalfPizzaPage, {
-            halfPizzaId: this.product.id,
-            pizzaSize: this.currentLine.size
-        });
+    setHalf(halfPizzaId: string, pizzaSize: string) {
+      /*
+      this.navCtrl.push(HalfPizzaPage, {
+          halfPizzaId: this.product.id,
+          pizzaSize: this.currentLine.size
+      });
+      */
+      this.router.navigate(['/halfpizza', halfPizzaId, pizzaSize]);
     }
 
     addLineToOrder() {
-        this.currentLine.setOrder(CartPage.order);
-        CartPage.order.addLine(this.currentLine);
+        this.currentLine.setOrder(this.order);
+        this.order.addLine(this.currentLine);
         this.goCart();
     }
 
@@ -256,6 +284,35 @@ export class ProductPage {
     }
 
     goCart() {
-        this.navCtrl.push(CartPage);
+        //this.navCtrl.push(CartPage);
+        this.router.navigate(['/cart']);
+    }
+
+    async loadCategories() {
+      const { value } = await Storage.get({ key: 'categories' });
+      if (value) {
+        this.categories_storage = JSON.parse(value);
+      }
+    }
+
+    async loadIngredients() {
+      const { value } = await Storage.get({ key: 'ingredients' });
+      if (value) {
+        this.ingredients_storage = JSON.parse(value);
+      }
+    }
+
+    async loadSizes() {
+      const { value } = await Storage.get({ key: 'sizes' });
+      if (value) {
+        this.sizes_storage = JSON.parse(value);
+      }
+    }
+
+    async loadConfig() {
+      const { value } = await Storage.get({ key: 'config' });
+      if (value) {
+        this.config_storage = JSON.parse(value);
+      }
     }
 }

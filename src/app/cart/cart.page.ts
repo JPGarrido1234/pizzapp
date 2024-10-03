@@ -268,7 +268,8 @@ export class CartPage {
       currentLine: line,
     });
     */
-   this.router.navigate(['/product', {productId: line.productId, currentLine: line}]);
+    this.router.navigate(['/product', line.productId, line]);
+   //this.router.navigate(['/product', {productId: line.productId, currentLine: line}]);
   }
 
   async presentAlert(message: string) {

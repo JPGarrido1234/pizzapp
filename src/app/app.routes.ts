@@ -34,6 +34,10 @@ export const routes: Routes = [
     loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
   },
   {
+    path: 'product/:productId',
+    loadChildren: () => import('./product/product.module').then( m => m.ProductPageModule)
+  },
+  {
     path: 'user',
     loadChildren: () => import('./user/user.module').then( m => m.UserPageModule)
   },
@@ -44,6 +48,14 @@ export const routes: Routes = [
   {
     path: 'legal',
     loadChildren: () => import('./static/legal/legal.module').then( m => m.LegalPageModule)
+  },
+  {
+    path: 'register',
+    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
+  },
+  {
+    path: 'cart',
+    loadChildren: () => import('./cart/cart.module').then( m => m.CartPageModule)
   }
 ];
 

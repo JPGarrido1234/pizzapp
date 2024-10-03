@@ -1,6 +1,7 @@
 import { ProductSize } from './productsize.model';
 import { ProductService } from '../service/product.service';
 import { Ingredient } from './ingredient.model';
+import { Category } from './category.model';
 
 export class Product {
   id: string;
@@ -12,9 +13,9 @@ export class Product {
   active: boolean;
   available: boolean;
   order: number;
-  allergens: string[];
-  sizes: ProductSize[];
-  ingredients: string[];
+  allergens: string[] = [];
+  sizes: ProductSize[] = [];
+  ingredients: Ingredient[] = [];
   ingredientsNotAvailable: string[];
   image: string;
   type: string;
@@ -23,7 +24,7 @@ export class Product {
   allIngredients: Ingredient[];
 
   constructor(
-    data: any,
+    data: Product,
     productService: ProductService,
     allIngredients: Ingredient[]
   ) {
@@ -64,10 +65,13 @@ export class Product {
   }
 
   setIngredientsNotAvailable() {
+    if (!this.ingredients) {
+      return;
+    }
     this.ingredients.forEach((ingredientId) => {
       try {
         const found = this.allIngredients.filter(
-          (ingredient) => ingredient.id === ingredientId
+          (ingredient) => ingredient.id === ingredientId.id
         )[0];
         if (!found.available) {
           this.ingredientsNotAvailable.push(found.name);

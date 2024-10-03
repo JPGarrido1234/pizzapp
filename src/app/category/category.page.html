@@ -12,9 +12,7 @@
     <ion-card *ngFor="let product of products" class="pizzacard animated bounceInDown" [ngClass]="!product.available ? 'notavailable' : ''">
         <ion-row>
             <ion-col col-4>
-                <ion-thumbnail item-start padding (click)="goProductPage(product)">
-                    <img src="{{product.image}}" alt="{{product.name}}">
-                </ion-thumbnail>
+                <img item-start padding (click)="goProductPage(product)" [src]="product.image" [alt]="product.name">
             </ion-col>
             <ion-col col-8>
                 <div class="details" (click)="goProductPage(product)">

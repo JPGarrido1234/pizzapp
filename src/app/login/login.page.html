@@ -8,5 +8,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div class='icontent' padding-vertical>
+    <h3 class='title'>ENTRADA A LA APP</h3>
+    <div class='detailsholder' padding text-center>
+      <ion-item>
+        <ion-input [(ngModel)]='loginData' placeholder='Email' type='text'></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]='password' placeholder='Contraseña' type='password'></ion-input>
+      </ion-item>
+    </div>
 
+    <div class='butnsholder' padding>
+      <button (click)='login()' block class='registerbtn' color='light' ion-button>ENTRAR</button>
+
+      <button (click)='goToRegister()' block class='registerbtn registerbtn-dark' color='light' ion-button>CREAR
+        CUENTA
+      </button>
+    </div>
+
+    <div class='text'>
+      ¿No recuerdas tu contraseña?
+      <span (click)='sendPasswordSMS()' class='link'>Pulsa aquí</span>
+      y te enviaremos un email con una contraseña temporal.
+      Después de
+      loguearte es conveniente entrar a tus datos de usuario para modificarla
+    </div>
+
+  </div>
 </ion-content>

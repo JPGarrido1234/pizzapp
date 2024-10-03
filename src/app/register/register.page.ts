@@ -3,6 +3,7 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Utils } from '../../utils/utils';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 type UserRegister = {
   name: string;
@@ -35,6 +36,7 @@ export class RegisterPage {
   constructor(
     private userService: UserService,
     private alertController: AlertController,
+    private router: Router
   ) {}
 
   ionViewDidLoad() {}
@@ -44,6 +46,7 @@ export class RegisterPage {
       this.userService.logOut();
     } else if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
+      this.router.navigate(['/code']);
     }
   }
 
@@ -53,8 +56,9 @@ export class RegisterPage {
         this.registerForm.password,
         this.registerForm.passwordRepeated
       );
-    } catch (e) {
+    } catch (e: any) {
       //this.presentAlert(e);
+      this.presentAlert(e);
       return;
     }
 
@@ -62,16 +66,18 @@ export class RegisterPage {
 
     try {
       user = User.populate(this.registerForm);
-    } catch (e) {
+    } catch (e: any) {
       //this.presentAlert(e);
+      this.presentAlert(e);
       return;
     }
-    this.userService.register(user).subscribe(
+    this.userService.register(user).then(
       (data: any) => {
         const user = User.populate(data);
         user.setLogged(true);
         this.userService.storeUserData(user);
         //this.navCtrl.setRoot(CodePage);
+        this.router.navigate(['/code']);
       },
       (e) => {
         let msg = e.error.toLowerCase();
@@ -105,5 +111,6 @@ export class RegisterPage {
 
   public goToLogin() {
     //this.navCtrl.push(LoginPage);
+    this.router.navigate(['/login']);
   }
 }

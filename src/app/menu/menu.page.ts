@@ -135,9 +135,10 @@ export class MenuPage implements OnInit {
   }
 
   getConfig() {
-    this.configService.findAll().subscribe(
+    this.configService.findAll().then(
       (data: any) => {
         MenuPage.sConfig = data;
+        this.saveConfig(data); // Guarda la configuración en Storage
       },
       (error) => {
         console.error(error);
@@ -146,7 +147,7 @@ export class MenuPage implements OnInit {
   }
 
   checkIfIsOpen() {
-    this.configService.isOpen().subscribe(
+    this.configService.isOpen().then(
       (data: any) => {
         this.holidays = data;
 
@@ -170,7 +171,7 @@ export class MenuPage implements OnInit {
           localStorage.removeItem('holidaysPopUp');
         }
       },
-      (error) => {
+      (error: any) => {
         console.error(error);
       }
     );
@@ -251,6 +252,14 @@ export class MenuPage implements OnInit {
     await Storage.set({
       key: 'sizes',
       value: sizesString,
+    });
+  }
+
+  async saveConfig(config: any) {
+    const configString = JSON.stringify(config);
+    await Storage.set({
+      key: 'config',
+      value: configString,
     });
   }
 }

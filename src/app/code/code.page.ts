@@ -15,6 +15,7 @@ export class CodePage {
   code: string | any;
 
   constructor(
+    private router: Router,
     private userService: UserService,
     private alertController: AlertController
   ) {}
@@ -24,8 +25,10 @@ export class CodePage {
   ionViewDidEnter() {
     if (this.userService.isLogged()) {
       //this.navCtrl.setRoot(MenuPage);
+      this.router.navigate(['/menu']);
     } else if (!this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(LoginPage);
+      this.router.navigate(['/login']);
     }
   }
 
@@ -37,12 +40,13 @@ export class CodePage {
       phone = userPhone;
     });
 
-    this.userService.checkCode(phone, this.code).subscribe(
+    this.userService.checkCode(phone, this.code).then(
       () => {
         this.userService.getUser().then((user : any) => {
           user.codeValidated = true;
           this.userService.storeUserData(user);
           //this.navCtrl.setRoot(MenuPage);
+          this.router.navigate(['/menu']);
         });
       },
       (e) => {
@@ -59,7 +63,7 @@ export class CodePage {
       phone = user.phone;
     });
 
-    this.userService.resendCode(phone).subscribe(
+    this.userService.resendCode(phone).then(
       () => {
         this.presentAlert(
           'Te hemos enviado un nuevo código, intenta introducirlo ahora'

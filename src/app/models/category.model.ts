@@ -16,7 +16,7 @@ export class Category {
       this.order = order;
   }
 
-  isPizzaCategory() {
-      return this.name.toLowerCase() == 'pizzas';
+  public isPizzaCategory(): boolean {
+      return this.name.toLowerCase().includes('pizzas');
   }
 }

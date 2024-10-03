@@ -28,4 +28,4 @@ const routes: Routes = [
   ],
   declarations: [CartPage]
 })
-export class CategoryPageModule {}
+export class CartPageModule {}

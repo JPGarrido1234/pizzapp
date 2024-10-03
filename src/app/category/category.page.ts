@@ -7,6 +7,7 @@ import { OrderLine } from '../models/orderline.model';
 import { Category } from '../models/category.model';
 import { Storage } from '@capacitor/storage';
 import { Order } from '../models/order.model';
+import { Ingredient } from '../models/ingredient.model';
 
 @Component({
   selector: 'app-pedido',
@@ -20,11 +21,10 @@ export class CategoryPage implements OnInit {
 
   constructor(private route: ActivatedRoute, private router: Router, public productService: ProductService) {}
 
-  ngOnInit() {}
     order = new Order();
     products: Product[] = [];
-    categoryId: string = '';
-    categoryName: string = '';
+    categoryId: string | null = null;
+    categoryName: string | null = null;
     category: Category | any = null;
     isPizzaCategory: boolean = false;
     //unds: number | undefined = CartPage.order != undefined ? CartPage.order.unds : 0;
@@ -32,17 +32,28 @@ export class CategoryPage implements OnInit {
 
     //STORAGE
     categories_storage: Category[] = [];
-    ingredients_storage: any[] = [];
+    ingredients_storage: Ingredient[] = [];
     sizes_storage: any[] = [];
 
+    ngOnInit() {
+      this.getProducts();
+      this.route.paramMap.subscribe(params => {
+        this.categoryId = params.get('categoryId');
+        this.categoryName = params.get('category');
+        this.loadCategories()
+        .then(() => {
+          //this.category = MenuPage.sCategories.find(category => category.id == this.categoryId);
+          this.category = this.categories_storage.find((category: Category) => category.id == this.categoryId);
+
+          if(this.category) {
+              this.isPizzaCategory = this.category.name.toLowerCase().includes('pizzas');
+            }
+        });
+      });
+
+    }
+
     ionViewDidLoad() {
-        this.loadCategories();
-        this.categoryId = this.route.snapshot.paramMap.get('categoryId')!;
-        this.categoryName =this.route.snapshot.paramMap.get('category')!;
-        //this.category = MenuPage.sCategories.find(category => category.id == this.categoryId);
-        this.category = this.categories_storage.find((category: any) => category.id == this.categoryId);
-        this.isPizzaCategory = this.category.isPizzaCategory();
-        this.getProducts();
     }
 
     ionViewDidEnter() {
@@ -55,34 +66,53 @@ export class CategoryPage implements OnInit {
     }
 
     getProducts() {
-        this.loadIngredients();
-        this.productService.findAll(this.categoryId)
-        .then((data: any) => {
-            data.forEach((item: any) => {
-                //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);
-                let product: Product = new Product(item, this.productService, this.ingredients_storage);
-                if (this.category.isPizzaCategory()) {
-                    let size = product.sizes.filter((s: any) => s.code == 'IND')[0];
-                    //product.price = size.price;
-                    if (size.price !== undefined) {
-                      product.price = size.price;
-                    } else {
-                      product.price = 0; // Proporciona un valor predeterminado
+        this.loadIngredients()
+        .then(() => {
+          if (this.categoryId) {
+            this.productService.findAll(this.categoryId)
+            .then((data: Product[]) => {
+                console.log(data);
+                data.forEach((item: any) => {
+                    //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);
+                    let product: Product = new Product(item, this.productService, item.ingredients);
+                    if(product.sizes !== undefined) {
+                      console.log('PRODUCT: ');
+                      console.log(product);
+                      if (this.category.name.toLowerCase().includes('pizzas')) {
+                        let size = product.sizes.filter((s: any) => s.code == 'IND')[0];
+                        //product.price = size.price;
+                        if (size !== undefined && size.price !== undefined) {
+                          product.price = size.price;
+                        } else {
+                          product.price = 0; // Proporciona un valor predeterminado
+                        }
                     }
-                }
-                this.products.push(product);
-                console.log(this.products);
+                    this.products.push(product);
+                    console.log('PRODUCTS: ');
+                    console.log(this.products);
+                    }
+                });
+            },
+            (error: any) => {
+                console.error(error);
             });
-        },
-        (error: any) => {
-            console.error(error);
+          } else {
+            console.error('Category ID is null');
+          }
         });
+    }
+
+    getProductos() {
+      // Lógica para obtener los productos
+      this.productService.getProductsByCategory(this.categoryId).subscribe((products: Product[]) => {
+        this.products = products;
+      });
     }
 
     goProductPage(product: Product) {
         if(!product.available) return;
         //this.navCtrl.push(ProductPage, {productId: product.id});
-        this.router.navigate(['/product', { productId: product.id }]);
+        this.router.navigate(['/product', product.id ]);
 
     }
 
