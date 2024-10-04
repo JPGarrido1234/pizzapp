@@ -35,10 +35,23 @@ export class CategoryPage implements OnInit {
     ingredients_storage: Ingredient[] = [];
     sizes_storage: any[] = [];
 
+    isLoading: boolean = true;
+
     ngOnInit() {
-      this.getProducts();
+      this.loadSizes()
+      .then(() => {
+        console.log('Sizes loaded');
+        console.log(this.sizes_storage);
+      });
+
+      setTimeout(() => {
+        this.getProducts();
+        this.isLoading = false;
+      }, 2000);
+
       this.route.paramMap.subscribe(params => {
         this.categoryId = params.get('categoryId');
+        console.log('Category ID: ' + this.categoryId);
         this.categoryName = params.get('category');
         this.loadCategories()
         .then(() => {
@@ -68,16 +81,17 @@ export class CategoryPage implements OnInit {
     getProducts() {
         this.loadIngredients()
         .then(() => {
+          console.log('Ingredients loaded');
+          console.log(this.ingredients_storage);
           if (this.categoryId) {
             this.productService.findAll(this.categoryId)
             .then((data: Product[]) => {
                 console.log(data);
                 data.forEach((item: any) => {
                     //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);
-                    let product: Product = new Product(item, this.productService, item.ingredients);
+                    //let product: Product = new Product(item, this.productService, item.ingredients);
+                    let product: Product = new Product(item, this.productService, this.ingredients_storage);
                     if(product.sizes !== undefined) {
-                      console.log('PRODUCT: ');
-                      console.log(product);
                       if (this.category.name.toLowerCase().includes('pizzas')) {
                         let size = product.sizes.filter((s: any) => s.code == 'IND')[0];
                         //product.price = size.price;
@@ -88,8 +102,6 @@ export class CategoryPage implements OnInit {
                         }
                     }
                     this.products.push(product);
-                    console.log('PRODUCTS: ');
-                    console.log(this.products);
                     }
                 });
             },
@@ -117,7 +129,7 @@ export class CategoryPage implements OnInit {
     }
 
     addLineToOrder(product: Product) {
-      this.loadSizes();
+
         if(!product.available) return;
         /*
         let currentLine = new OrderLine(
@@ -137,7 +149,7 @@ export class CategoryPage implements OnInit {
       );
 
 
-        if (this.category.isPizzaCategory()) {
+        if (this.category.name.toLowerCase().includes('pizzas')) {
             let code = 'IND'; // por defecto añadimos la pizza en tamaño individual
             currentLine.setSize(code);
         }

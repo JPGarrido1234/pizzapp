@@ -27,8 +27,10 @@ export class MenuPage implements OnInit {
   static isOpen: boolean = true;
   categories: Category[] = [];
   holidays: any[] = [];
-  //unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
+  order: Order | any = null;
+  unds: number = this.order != undefined ? this.order.unds : 0;
   user: User | any = null;
+
 
   //STORAGE
   categories_storage: Category[] = [];
@@ -49,9 +51,9 @@ export class MenuPage implements OnInit {
   }
 
   ionViewDidLoad() {
-    //if (CartPage.order == undefined) {
-      //CartPage.order = new Order();
-    //}
+    if (this.order == undefined) {
+      this.order = new Order();
+    }
     this.getCategories();
 
     this.user = this.userService.getUser();
@@ -89,7 +91,9 @@ export class MenuPage implements OnInit {
   }
 
   refreshCartUnds() {
-    //this.unds = CartPage.order.unds;
+    if(this.order != undefined && this.order.unds != null) {
+      this.unds = this.order.unds ? this.order.unds : 0;
+    }
   }
 
   async getCategories() {
@@ -224,7 +228,7 @@ export class MenuPage implements OnInit {
 
   goCart() {
     //this.navCtrl.push(CartPage);
-    this.router.navigate(['/category']);
+    this.router.navigate(['/cart']);
   }
 
   openMenu() {

@@ -2,6 +2,19 @@ ion-menu ion-content {
   --background: #E30025;
 }
 
+ion-item{
+  --background: #E30025 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0;
+  --ion-item-border-color: #d7d8da;
+}
+
+ion-item.selected {
+  --color: #FFF;
+  font-size: 22px;
+  font-weight: 600;
+}
+
 ion-menu.md ion-content {
   --padding-start: 8px;
   --padding-end: 8px;
@@ -11,15 +24,6 @@ ion-menu.md ion-content {
 
 ion-menu.md ion-list {
   padding: 20px 0;
-}
-
-ion-menu.md ion-note {
-  margin-bottom: 30px;
-}
-
-ion-menu.md ion-list-header,
-ion-menu.md ion-note {
-  padding-left: 10px;
 }
 
 ion-menu.md ion-list#inbox-list {
@@ -58,12 +62,8 @@ ion-menu.md ion-item.selected {
   --background: rgba(var(--ion-color-primary-rgb), 0.14);
 }
 
-ion-menu.md ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
-}
-
-ion-menu.md ion-item ion-icon {
-  color: #616e7e;
+ion-menu.md ion-item.selected {
+  color: white;
 }
 
 ion-menu.md ion-item ion-label {
@@ -89,47 +89,42 @@ ion-menu.ios ion-item {
   --min-height: 50px;
 }
 
-ion-menu.ios ion-item.selected ion-icon {
-  color: var(--ion-color-primary);
-}
+ion-icon {
+  font-size: 20px;
 
-ion-menu.ios ion-item ion-icon {
-  font-size: 24px;
-  color: #73849a;
 }
 
 ion-menu.ios ion-list#labels-list ion-list-header {
   margin-bottom: 8px;
 }
 
-ion-menu.ios ion-list-header,
-ion-menu.ios ion-note {
+ion-menu.ios ion-list-header{
   padding-left: 16px;
   padding-right: 16px;
-}
-
-ion-menu.ios ion-note {
-  margin-bottom: 8px;
-}
-
-ion-note {
-  display: inline-block;
-  font-size: 16px;
-
-  color: var(--ion-color-medium-shade);
-}
-
-ion-item.selected {
-  //--color: var(--ion-color-primary);
-  --color: #FFF;
-  font-size: 20px;
-  font-weight: 600;
 }
 
 ion-list{
   padding: 0;
 }
 
-ion-item{
-  --background: #E30025 !important;
+modal-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+@media not all and (min-height: 600px) and (min-width: 768px) {
+  ion-modal ion-backdrop {
+    visibility: hidden;
+  }
+}
+
+@media only screen and (min-height: 0px) and (min-width: 0px) {
+  .modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -59,9 +59,12 @@ export class OrderLine {
     this.ingredientsToAddText = '';
     this.ingredientsToRemoveText = '';
 
-    if (this.category.isPizzaCategory()) {
+    //if (this.category.isPizzaCategory()) {
+    if(this.category.name.toLowerCase().includes('pizzas')) {
       // this.ingredientsToRemove = this.product.ingredients;
-      this.size = sizes[0].code;
+      if (this.sizes && this.sizes.length > 0) {
+        this.size = this.sizes[0].code;
+      }
       this.pizza = true;
     }
 
@@ -102,7 +105,7 @@ export class OrderLine {
   }
 
   calculateTotal() {
-    if (!this.category.isPizzaCategory()) {
+    if (!this.category.name.toLowerCase().includes('pizzas')) {
       this.priceTotal = this.und * this.priceUnd;
 
       if (this.order != null) {
@@ -119,7 +122,10 @@ export class OrderLine {
     }
 
     let size: Size = this.sizes.find((s) => s.code == this.size) as Size;
-    let multiplier: number = size.multiplier;
+    let multiplier: number = 1;
+    if(size != undefined) {
+      multiplier = size.multiplier;
+    }
 
     let numIngredientsToRemove = 0;
     let numIngredientsToAdd = this.ingredientsToAdd.length;
@@ -172,7 +178,7 @@ export class OrderLine {
   }
 
   getMultiplier() {
-    if (!this.category.isPizzaCategory()) return 1;
+    if (!this.category.name.toLowerCase().includes('pizzas')) return 1;
     const size = this.sizes.find((s) => s.code == this.size);
     return size ? size.multiplier : 1;
   }
@@ -234,7 +240,7 @@ export class OrderLine {
   }
 
   setSize(sizeCode: string) {
-    if (sizeCode == undefined || !this.category.isPizzaCategory()) return;
+    if (sizeCode == undefined || !this.category.name.toLowerCase().includes('pizzas')) return;
     this.setSizeText(sizeCode);
     const size = this.product.sizes.find((s) => s.code == sizeCode);
     if (size) {

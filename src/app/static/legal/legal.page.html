@@ -1,20 +1,12 @@
-<ion-header>
-  <!--
-    <ion-navbar color="lred">
-        <button ion-button menuToggle>
-            <ion-icon name="menu"></ion-icon>
-        </button>
-        <ion-title text-center>Aviso legal</ion-title>
-    </ion-navbar>
-  -->
-  <ion-toolbar>
+<ion-header [translucent]="true">
+  <ion-toolbar class="red-toolbar">
     <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Aviso legal</ion-title>
+    <ion-title class="ion-text-center" style="font-size: 22px;">Aviso legal</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
     <div class="icontent">
         <ion-card>

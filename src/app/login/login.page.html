@@ -1,31 +1,32 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>INICIO</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
   <div class='icontent' padding-vertical>
     <h3 class='title'>ENTRADA A LA APP</h3>
-    <div class='detailsholder' padding text-center>
-      <ion-item>
-        <ion-input [(ngModel)]='loginData' placeholder='Email' type='text'></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]='password' placeholder='Contraseña' type='password'></ion-input>
-      </ion-item>
-    </div>
-
-    <div class='butnsholder' padding>
-      <button (click)='login()' block class='registerbtn' color='light' ion-button>ENTRAR</button>
-
-      <button (click)='goToRegister()' block class='registerbtn registerbtn-dark' color='light' ion-button>CREAR
-        CUENTA
-      </button>
-    </div>
+    <ion-row>
+      <ion-col size="12">
+        <ion-item class="ion-text-center padding">
+          <ion-input [(ngModel)]='loginData' color="light" class="custom" placeholder='Email' type='text'></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item class="ion-text-center padding">
+          <ion-input [(ngModel)]='password' color="light" class="custom" placeholder='Contraseña' type='password'></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)='goToRegister()' color="light" size="large" expand="block" shape="round">
+          <span style="color: #E30025; font-weight: bold; font-size: 22px;">ENTRAR</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)='goToRegister()' color="medium" size="large" expand="block" shape="round">
+          <span style="color: #E30025; font-weight: bold; font-size: 22px;">CREAR CUENTA</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
 
     <div class='text'>
       ¿No recuerdas tu contraseña?

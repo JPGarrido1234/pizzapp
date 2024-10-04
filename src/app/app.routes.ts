@@ -5,7 +5,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'inicio',
+    redirectTo: 'menu',
     pathMatch: 'full',
   },
   {
@@ -30,6 +30,10 @@ export const routes: Routes = [
     loadChildren: () => import('./orders/orders.module').then( m => m.OrdersPageModule)
   },
   {
+    path: 'category',
+    loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+  },
+  {
     path: 'category/:categoryId/:category',
     loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
   },
@@ -48,6 +52,10 @@ export const routes: Routes = [
   {
     path: 'legal',
     loadChildren: () => import('./static/legal/legal.module').then( m => m.LegalPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
   {
     path: 'register',

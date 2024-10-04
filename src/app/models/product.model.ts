@@ -24,9 +24,26 @@ export class Product {
   allIngredients: Ingredient[];
 
   constructor(
-    data: Product,
+    data: {
+      id: string;
+      name: string;
+      description: string;
+      category: string;
+      price: number;
+      pizza: boolean;
+      active: boolean;
+      available: boolean;
+      order: number;
+      allergens: string[];
+      sizes: ProductSize[];
+      ingredients: Ingredient[];
+      ingredientsNotAvailable: string[];
+      image: string;
+      type: string;
+    },
     productService: ProductService,
-    allIngredients: Ingredient[]
+    allIngredients: Ingredient[],
+
   ) {
     this.id = data.id;
     this.name = data.name;
@@ -52,10 +69,11 @@ export class Product {
     }
 
     this.setIngredientsNotAvailable();
+
   }
 
   getImage() {
-    this.productService.getImageUrl(this.id).then((image: any) => {
+    this.productService.getImageUrl(this.id).subscribe((image: any) => {
       if (image != null && image.data != '' && image.type != null) {
         this.image = 'data:' + image.type + ';base64,' + image.data;
       } else {

@@ -5,11 +5,11 @@ import { Order } from '../models/order.model';
 import { OrderLine } from '../models/orderline.model';
 import { OrderService } from '../service/order.service';
 //import * as moment from 'moment';
-//import { PopupSuccessPage } from '../popupsuccess/popupsuccess';
 import { Gap } from '../models/gap.model';
 import { Utils } from '../../utils/utils';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
+import { Storage } from '@capacitor/storage';
 
 
 @Component({
@@ -19,9 +19,9 @@ import { User } from '../models/user.model';
 })
 
 export class CartPage {
-  static order: Order;
+  order: Order | any = null;;
   //@ViewChild('navbar') navBar: Navbar;
-  currentOrder: Order | undefined;
+  currentOrder: Order | any = null;
   intervalId: any;
   numProductsOverload: boolean = false;
 
@@ -30,7 +30,10 @@ export class CartPage {
   isOpen: boolean = true;
   orderInProccess: boolean = false;
   isManager: boolean = false;
-  user: User | null = null;
+  user: User | any = null;
+
+  //STORAGE
+  config_storage: any = {};
 
   constructor(
     private orderService: OrderService,
@@ -43,7 +46,6 @@ export class CartPage {
 
   ionViewDidEnter() {
     // check if logged
-
     if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
       this.router.navigate(['/code']);
@@ -54,13 +56,11 @@ export class CartPage {
       return;
     }
 
-    //this.user = this.userService.getUser();
-
+    this.user = this.userService.getUser();
     this.getCurrentOrder();
+    this.isManager = this.userService.isManager();
 
-    //this.isManager = this.userService.isManager();
 
-    /*
     this.currentOrder.email = this.user.login;
     if (!this.isManager) {
       this.currentOrder.name = this.user.name;
@@ -70,6 +70,7 @@ export class CartPage {
       this.currentOrder.phone = '';
     }
 
+    /*
     this.isOpen = MenuPage.isOpen;
 
     this.navBar.backButtonClick = () => {
@@ -88,25 +89,26 @@ export class CartPage {
   }
 
   getCurrentOrder() {
-    if (CartPage.order == undefined) {
-      CartPage.order = new Order();
+    if (this.order == undefined) {
+      this.order = new Order();
     }
     //CartPage.order.userId = this.user.id;
-    this.currentOrder = CartPage.order;
+    this.currentOrder = this.order;
   }
 
   getGaps() {
+    this.loadConfig();
     this.numProductsOverload = false;
-    /*
+
     if (
-      this.currentOrder.getPizzasUnd() > MenuPage.sConfig['products-per-gap']
+      this.currentOrder.getPizzasUnd() > this.config_storage['products-per-gap']
     ) {
       this.numProductsOverload = true;
       return;
     }
-      */
 
-    /*
+
+
     this.orderService.gaps(this.currentOrder.getPizzasUnd()).subscribe(
       (data: any) => {
         this.gaps = data;
@@ -116,7 +118,6 @@ export class CartPage {
         alert('[ERROR] ' + error.message);
       }
     );
-    */
   }
 
   removeUnd(line: OrderLine) {
@@ -132,7 +133,7 @@ export class CartPage {
 
   removeLine(line: OrderLine) {
     this.pickupTime = '';
-    //this.currentOrder.removeLine(line);
+    this.currentOrder.removeLine(line);
     this.getGaps();
   }
 
@@ -151,14 +152,13 @@ export class CartPage {
     //this.currentOrder.pickupTime = this.pickupTime;
 
     try {
-      //this.currentOrder.isOk();
+      this.currentOrder.isOk();
     } catch (e) {
-      //this.presentAlert(e);
+      this.presentAlert(String(e));
       return;
     }
 
-    //let order = this.currentOrder.prepareToPost();
-    let order: any = null;
+    let order = this.currentOrder.prepareToPost();
 
     this.orderInProccess = true;
 
@@ -166,8 +166,8 @@ export class CartPage {
       () => {
         this.addOrderPerDay();
 
-        CartPage.order.clear();
-        //this.currentOrder.clear();
+        this.order.clear();
+        this.currentOrder.clear();
 
         this.showPopup();
       },
@@ -183,10 +183,12 @@ export class CartPage {
     let profileModal = this.modalCtrl.create(PopupSuccessPage, {
       pickupTime: moment(parseInt(this.pickupTime) * 1000).format('HH:mm'),
     });
+
     profileModal.present().then((r) => {
       setTimeout(() => {
-        profileModal.dismiss().then((r) => {
-          this.navCtrl.setRoot(MenuPage);
+        profileModal.dismiss().then((r: any) => {
+          //this.navCtrl.setRoot(MenuPage);
+          this.router.navigate(['/menu']);
         });
       }, 60 * 1000);
     });
@@ -239,7 +241,6 @@ export class CartPage {
   }
 
   orderReady() {
-    /*
     if (this.isManager) {
       return (
         this.currentOrder.name != '' &&
@@ -255,7 +256,7 @@ export class CartPage {
       Utils.validateEmail(this.currentOrder.email) &&
       this.pickupTime != ''
     );
-    */
+
   }
 
   editLine(line: OrderLine) {
@@ -279,5 +280,12 @@ export class CartPage {
     });
 
     await alert.present();
+  }
+
+  async loadConfig() {
+    const { value } = await Storage.get({ key: 'config' });
+    if (value) {
+      this.config_storage = JSON.parse(value);
+    }
   }
 }

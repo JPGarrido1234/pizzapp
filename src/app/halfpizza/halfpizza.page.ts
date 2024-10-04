@@ -1,9 +1,12 @@
-import {Component} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {ProductService} from '../service/product.service';
 import {Product} from '../models/product.model';
 import {OrderLine} from '../models/orderline.model';
 import {Category} from '../models/category.model';
+import { Storage } from '@capacitor/storage';
+import { Ingredient } from '../models/ingredient.model';
+import { Order } from '../models/order.model';
 
 
 @Component({
@@ -12,7 +15,7 @@ import {Category} from '../models/category.model';
   styleUrls: ['./halfpizza.page.scss']
 })
 
-export class HalfPizzaPage {
+export class HalfPizzaPage implements OnInit{
 
     products: Product[] = [];
     categoryId: string = '';
@@ -21,11 +24,36 @@ export class HalfPizzaPage {
     category: Category | any;
     isPizzaCategory: boolean = true;
     unds: any = null;
+    order: Order | any = null;
+
+    //STORAGE
+    categories_storage: Category[] = [];
+    ingredients_storage: Ingredient[] = [];
+    sizes_storage: any[] = [];
 
     constructor(
         public productService: ProductService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private router: Router
     ) {}
+
+    ngOnInit(): void {
+        this.loadCategories()
+        .then(() => {
+          console.log('Categories loaded');
+          console.log(this.categories_storage);
+        });
+        this.loadIngredients()
+        .then(() => {
+          console.log('Ingredients loaded');
+          console.log(this.ingredients_storage);
+        });
+        this.loadSizes()
+        .then(() => {
+          console.log('Sizes loaded');
+          console.log(this.sizes_storage);
+      });
+    }
 
     ionViewDidLoad() {
       this.route.paramMap.subscribe(params => {
@@ -80,7 +108,7 @@ export class HalfPizzaPage {
 
 
             const name = "1/2 " + product1.name + " + 1/2 " + product2.name;
-
+            /*
             const product: Product = new Product(
                 {
                     id: 'half',
@@ -98,20 +126,42 @@ export class HalfPizzaPage {
                 null,
                 MenuPage.sIngredients
             );
+            */
+           const product: Product = new Product(
+            {
+              id: 'half',
+              name: name,
+              description: name,
+              category: this.category.id,
+              price: price,
+              pizza: true,
+              available: true,
+              order: 1,
+              allergens: [],
+              sizes: [],
+              ingredients: [],
+              active: true,
+              ingredientsNotAvailable: [],
+              image: '',
+              type: ''
+            },
+            this.productService,
+            this.ingredients_storage
+           );
 
             let currentLine = new OrderLine(
-                CartPage.order,
+                this.order,
                 product,
                 this.category,
-                MenuPage.sIngredients,
-                MenuPage.sSizes
+                this.ingredients_storage,
+                this.sizes_storage
             );
 
             currentLine.setHalfAndHalf(true);
             currentLine.setImage('assets/imgs/half-pizza.png');
             currentLine.setSizeText(this.pizzaSize);
 
-            CartPage.order.addLine(currentLine);
+            this.order.addLine(currentLine);
             this.goCart();
         } catch(e) {
             console.error(e);
@@ -120,7 +170,29 @@ export class HalfPizzaPage {
     }
 
     goCart() {
-        this.navCtrl.push(CartPage)
-            .then();
+        //this.navCtrl.push(CartPage)
+        //.then();
+        this.router.navigate(['/cart']);
+    }
+
+    async loadCategories() {
+      const { value } = await Storage.get({ key: 'categories' });
+      if (value) {
+        this.categories_storage = JSON.parse(value);
+      }
+    }
+
+    async loadIngredients() {
+      const { value } = await Storage.get({ key: 'ingredients' });
+      if (value) {
+        this.ingredients_storage = JSON.parse(value);
+      }
+    }
+
+    async loadSizes() {
+      const { value } = await Storage.get({ key: 'sizes' });
+      if (value) {
+        this.sizes_storage = JSON.parse(value);
+      }
     }
 }

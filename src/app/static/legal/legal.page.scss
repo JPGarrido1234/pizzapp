@@ -2,12 +2,16 @@
         display: block !important;
     }
 
-    ion-card {
-        padding: 20px;
-
-        p {
-            margin-bottom: 20px !important;
-            color: gray !important;
-        }
+    .icontent {
+      padding: 5px;
     }
 
+    ion-card {
+      margin: 10px;
+      padding: 10px;
+    }
+
+    p {
+        margin-bottom: 20px !important;
+        color: gray !important;
+    }

@@ -24,7 +24,7 @@ export class ProductService {
         return this.http.get<Product>(url, Utils.getHeaders());
     }
 
-    async getImageUrl(productId: string): Promise<Observable<any>> {
+    getImageUrl(productId: string): Observable<any> {
         const url = environment.API_URL + '/products/' + productId + '/image';
         return this.http.get(url, Utils.getHeaders());
     }

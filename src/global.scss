@@ -24,14 +24,40 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
-
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
  * For more info, please see:
  * https://ionicframework.com/docs/theming/dark-mode
  */
+/*
+@import "@ionic/angular/css/palettes/dark.always.css";
+@import "@ionic/angular/css/palettes/dark.class.css";
+@import '@ionic/angular/css/palettes/dark.system.css';
+*/
+.icon-custom {
+  fill: white;
+  color: white; /* Color de relleno */
+  border-radius: 50%; /* Hacer el fondo circular */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-//@import '@ionic/angular/css/palettes/dark.system.css';
+ion-title{
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+ion-menu-button, ion-back-button{
+  color: white;
+}
+
+.red-toolbar {
+  --background: #E30025 !important; /* Fondo rojo */
+}
+
+*{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
