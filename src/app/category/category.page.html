@@ -15,13 +15,13 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-row size="12">
+    <ion-row>
         <ion-col size="12" class="ion-text-center">
           <ion-spinner style="width: 100px; height: 100px;" *ngIf="isLoading" color="danger" name="dots"></ion-spinner>
         </ion-col>
     </ion-row>
     <ion-card *ngFor="let product of products" class="pizzacard animated bounceInDown" [ngClass]="!product.available ? 'notavailable' : ''">
-        <ion-row size="12">
+        <ion-row>
             <ion-col size="4">
                 <img class="custom-img" (click)="goProductPage(product)" [src]="product.image" [alt]="product.name">
             </ion-col>

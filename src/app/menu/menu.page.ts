@@ -10,7 +10,7 @@ import { ProductService } from '../service/product.service';
 import { Size } from '../models/size.model';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import { Order } from '../models/order.model';
 
 @Component({
@@ -237,7 +237,7 @@ export class MenuPage implements OnInit {
 
   async saveCategories(categories: Category[]) {
     const categoriesString = JSON.stringify(categories);
-    await Storage.set({
+    await Preferences.set({
       key: 'categories',
       value: categoriesString,
     });
@@ -245,7 +245,7 @@ export class MenuPage implements OnInit {
 
   async saveIngredients(ingredients: Ingredient[]) {
     const ingredientsString = JSON.stringify(ingredients);
-    await Storage.set({
+    await Preferences.set({
       key: 'ingredients',
       value: ingredientsString,
     });
@@ -253,7 +253,7 @@ export class MenuPage implements OnInit {
 
   async saveSizes(sizes: Size[]) {
     const sizesString = JSON.stringify(sizes);
-    await Storage.set({
+    await Preferences.set({
       key: 'sizes',
       value: sizesString,
     });
@@ -261,7 +261,7 @@ export class MenuPage implements OnInit {
 
   async saveConfig(config: any) {
     const configString = JSON.stringify(config);
-    await Storage.set({
+    await Preferences.set({
       key: 'config',
       value: configString,
     });

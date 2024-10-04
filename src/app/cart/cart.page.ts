@@ -9,7 +9,7 @@ import { Gap } from '../models/gap.model';
 import { Utils } from '../../utils/utils';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 
 
 @Component({
@@ -283,7 +283,7 @@ export class CartPage {
   }
 
   async loadConfig() {
-    const { value } = await Storage.get({ key: 'config' });
+    const { value } = await Preferences.get({ key: 'config' });
     if (value) {
       this.config_storage = JSON.parse(value);
     }

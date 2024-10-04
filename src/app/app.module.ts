@@ -8,7 +8,9 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routes';
 
 @NgModule({
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AppComponent, HttpClientModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }]
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  declarations: [AppComponent],
+  bootstrap: [AppComponent] 
 })
 export class AppModule {}

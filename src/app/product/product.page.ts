@@ -6,7 +6,7 @@ import { OrderLine } from '../models/orderline.model';
 import { Order } from '../models/order.model';
 import { environment } from '../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 
 
 @Component({
@@ -289,28 +289,28 @@ export class ProductPage {
     }
 
     async loadCategories() {
-      const { value } = await Storage.get({ key: 'categories' });
+      const { value } = await Preferences.get({ key: 'categories' });
       if (value) {
         this.categories_storage = JSON.parse(value);
       }
     }
 
     async loadIngredients() {
-      const { value } = await Storage.get({ key: 'ingredients' });
+      const { value } = await Preferences.get({ key: 'ingredients' });
       if (value) {
         this.ingredients_storage = JSON.parse(value);
       }
     }
 
     async loadSizes() {
-      const { value } = await Storage.get({ key: 'sizes' });
+      const { value } = await Preferences.get({ key: 'sizes' });
       if (value) {
         this.sizes_storage = JSON.parse(value);
       }
     }
 
     async loadConfig() {
-      const { value } = await Storage.get({ key: 'config' });
+      const { value } = await Preferences.get({ key: 'config' });
       if (value) {
         this.config_storage = JSON.parse(value);
       }
