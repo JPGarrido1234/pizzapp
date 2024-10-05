@@ -141,7 +141,7 @@ export class MenuPage implements OnInit {
   getConfig() {
     this.configService.findAll().then(
       (data: any) => {
-        MenuPage.sConfig = data;
+        //MenuPage.sConfig = data;
         this.saveConfig(data); // Guarda la configuración en Storage
       },
       (error) => {
@@ -156,7 +156,7 @@ export class MenuPage implements OnInit {
         this.holidays = data;
 
         if (this.holidays.length > 0) {
-          MenuPage.isOpen = false;
+          //MenuPage.isOpen = false;
 
           let holidaysPopUp = localStorage.getItem('holidaysPopUp');
 
@@ -171,7 +171,7 @@ export class MenuPage implements OnInit {
             localStorage.setItem('holidaysPopUp', Date.now().toString());
           }
         } else {
-          MenuPage.isOpen = true;
+          //MenuPage.isOpen = true;
           localStorage.removeItem('holidaysPopUp');
         }
       },
@@ -200,7 +200,7 @@ export class MenuPage implements OnInit {
   }
 
   getSizes() {
-    this.productService.getSizes().then(
+    this.productService.getSizes().subscribe(
       (data: any) => {
         //MenuPage.sSizes = [];
         data.forEach((s: any) => {

@@ -252,7 +252,9 @@ export class OrderLine {
   }
 
   setSizeText(code: string) {
-    let size : any = this.sizes.find((s) => s.code == code);
+    const sizeValues = this.sizes.map(size => size);
+    console.log(sizeValues);
+    let size : any = sizeValues.find((s) => s.code == code);
     this.size = size.code;
     this.sizeText = size.name;
   }

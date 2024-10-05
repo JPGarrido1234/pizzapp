@@ -8,18 +8,28 @@ import { Order } from '../models/order.model';
   providedIn: 'root'
 })
 export class OrderService {
+  private order: Order | any = null;
 
   constructor(
     private http: HttpClient
-) { }
+  ) { }
 
-public post(order: Order) {
-    const url = environment.API_URL + '/orders';
-    return this.http.post(url, order, Utils.getHeaders());
-}
+  public post(order: Order) {
+      const url = environment.API_URL + '/orders';
+      return this.http.post(url, order, Utils.getHeaders());
+  }
 
-public gaps(unds: number) {
-    const url = environment.API_URL + '/gaps/' + unds + '?ngsw-bypass=true';
-    return this.http.get(url, Utils.getHeaders());
-}
+  public gaps(unds: number) {
+      const url = environment.API_URL + '/gaps/' + unds + '?ngsw-bypass=true';
+      return this.http.get(url, Utils.getHeaders());
+  }
+
+  //ORDER
+  setOrder(order: Order): void {
+    this.order = order;
+  }
+
+  getOrder(): Order {
+    return this.order;
+  }
 }

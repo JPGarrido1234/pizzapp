@@ -41,8 +41,8 @@ export class RegisterPage {
 
   ionViewDidLoad() {}
 
-  ionViewDidEnter() {
-    if (this.userService.isLogged()) {
+  async ionViewDidEnter() {
+    if (await this.userService.isLogged()) {
       this.userService.logOut();
     } else if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);

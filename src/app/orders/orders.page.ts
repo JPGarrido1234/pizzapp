@@ -9,6 +9,9 @@ import { Product } from '../models/product.model';
 import { OrderLine } from '../models/orderline.model';
 import { Category } from '../models/category.model';
 import { Preferences } from '@capacitor/preferences';
+import * as moment from 'moment';
+import { Ingredient } from '../models/ingredient.model';
+import { Size } from '../models/size.model';
 
 @Component({
   selector: 'app-orders',
@@ -20,8 +23,8 @@ export class OrdersPage {
   orders: Order[] = [];
   //STORAGE
   categories_storage: Category[] = [];
-  ingredients_storage: any[] = [];
-  sizes_storage: any[] = [];
+  ingredients_storage: Ingredient[] = [];
+  sizes_storage: Size[] = [];
   myUser: User = {
     id: '', name: '', login: '', address: '', zip: '', birthDate: '', password: '',
     phone: '',
@@ -56,7 +59,7 @@ export class OrdersPage {
     this.userService.getOrders(this.myUser.id).then(
       (orders: any) => {
         this.orders = orders.map((order: any) => {
-          //order.date = moment(order.date).format('DD.MM.YYYY');
+          order.date = moment(order.date).format('DD.MM.YYYY');
           return order;
         });
       },

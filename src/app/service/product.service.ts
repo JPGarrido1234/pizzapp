@@ -29,7 +29,7 @@ export class ProductService {
         return this.http.get(url, Utils.getHeaders());
     }
 
-    async getSizes(): Promise<Observable<any>> {
+    getSizes() {
         const url = environment.API_URL + '/sizes';
         return this.http.get(url, Utils.getHeaders());
     }

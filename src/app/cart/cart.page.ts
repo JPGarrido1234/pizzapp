@@ -1,10 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Order } from '../models/order.model';
 import { OrderLine } from '../models/orderline.model';
 import { OrderService } from '../service/order.service';
-//import * as moment from 'moment';
+import * as moment from 'moment';
 import { Gap } from '../models/gap.model';
 import { Utils } from '../../utils/utils';
 import { UserService } from '../service/user.service';
@@ -18,11 +18,10 @@ import { Preferences } from '@capacitor/preferences';
   styleUrls: ['./cart.page.scss'],
 })
 
-export class CartPage {
-  order: Order | any = null;;
+export class CartPage implements OnInit {
+  order: Order | any = null;
   //@ViewChild('navbar') navBar: Navbar;
   currentOrder: Order | any = null;
-  intervalId: any;
   numProductsOverload: boolean = false;
 
   pickupTime: string = '';
@@ -31,6 +30,8 @@ export class CartPage {
   orderInProccess: boolean = false;
   isManager: boolean = false;
   user: User | any = null;
+  intervalId: any;
+  previousUrl: string | null = null;
 
   //STORAGE
   config_storage: any = {};
@@ -42,9 +43,15 @@ export class CartPage {
     private userService: UserService
   ) {}
 
-  ionViewDidLoad() {}
 
-  ionViewDidEnter() {
+  async ngOnInit(): Promise<void> {
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.previousUrl = event.url;
+      }
+    });
+
     // check if logged
     if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
@@ -56,27 +63,61 @@ export class CartPage {
       return;
     }
 
-    this.user = this.userService.getUser();
+    this.userService.getUser().then((user: any) => {
+      this.user = user;
+    });
+
     this.getCurrentOrder();
-    this.isManager = this.userService.isManager();
+    this.isManager = await this.userService.isManager();
+
+    console.log('USER: ', this.user);
+    if (this.currentOrder) {
+      this.currentOrder.email = this.user?.login;
+      if (!this.isManager) {
+        this.currentOrder.name = this.user?.name;
+        this.currentOrder.phone = this.user?.phone;
+      } else {
+        this.currentOrder.name = '';
+        this.currentOrder.phone = '';
+      }
+    }
+
+    this.getGaps();
+    this.intervalId = setInterval(() => {
+      this.getGaps();
+    }, 2000);
+  }
+
+  ionViewDidLoad() {
+    console.log('Order: ', this.order);
+  }
+
+  async ionViewDidEnter() {
+    // check if logged
+    if (this.userService.isWaitingForCode()) {
+      this.router.navigate(['/code']);
+      return;
+    } else if (!this.userService.isLogged()) {
+      this.router.navigate(['/register']);
+      return;
+    }
+
+    this.userService.getUser().then((user: any) => {
+      this.user = user;
+    });
+
+    this.getCurrentOrder();
+    this.isManager = await this.userService.isManager();
 
 
-    this.currentOrder.email = this.user.login;
+    this.currentOrder.email = this.user?.login;
     if (!this.isManager) {
-      this.currentOrder.name = this.user.name;
-      this.currentOrder.phone = this.user.phone;
+      this.currentOrder.name = this.user?.name;
+      this.currentOrder.phone = this.user?.phone;
     } else {
       this.currentOrder.name = '';
       this.currentOrder.phone = '';
     }
-
-    /*
-    this.isOpen = MenuPage.isOpen;
-
-    this.navBar.backButtonClick = () => {
-      this.navCtrl.setRoot(MenuPage);
-    };
-    */
 
     this.getGaps();
     this.intervalId = setInterval(() => {
@@ -89,35 +130,41 @@ export class CartPage {
   }
 
   getCurrentOrder() {
+    this.order = this.orderService.getOrder();
     if (this.order == undefined) {
       this.order = new Order();
     }
-    //CartPage.order.userId = this.user.id;
+    if(this.user != undefined) {
+      this.order.userId = this.user.id;
+    }
     this.currentOrder = this.order;
+    console.log('CURRENT ORDER: ', this.currentOrder);
+
   }
 
   getGaps() {
-    this.loadConfig();
     this.numProductsOverload = false;
+    this.loadConfig().then(() => {
+      if(this.currentOrder != undefined) {
+        if (this.currentOrder.getPizzasUnd() > this.config_storage['products-per-gap']) {
+          this.numProductsOverload = true;
+          return;
+        }
 
-    if (
-      this.currentOrder.getPizzasUnd() > this.config_storage['products-per-gap']
-    ) {
-      this.numProductsOverload = true;
-      return;
-    }
-
-
-
-    this.orderService.gaps(this.currentOrder.getPizzasUnd()).subscribe(
-      (data: any) => {
-        this.gaps = data;
-      },
-      (error) => {
-        console.error(error);
-        alert('[ERROR] ' + error.message);
+        this.orderService.gaps(this.currentOrder.getPizzasUnd()).subscribe(
+          (data: any) => {
+            this.gaps = data;
+          },
+          (error) => {
+            console.error(error);
+            alert('[ERROR] ' + error.message);
+          }
+        );
       }
-    );
+    });
+
+
+
   }
 
   removeUnd(line: OrderLine) {
@@ -143,13 +190,12 @@ export class CartPage {
       return;
     }
 
-    /*
+
     if (!this.orderReady()) {
       return;
     }
-    */
 
-    //this.currentOrder.pickupTime = this.pickupTime;
+    this.currentOrder.pickupTime = this.pickupTime;
 
     try {
       this.currentOrder.isOk();
@@ -193,6 +239,7 @@ export class CartPage {
       }, 60 * 1000);
     });
     */
+    this.presentSuccessAlert();
   }
 
   canDoOrder() {
@@ -257,6 +304,23 @@ export class CartPage {
       this.pickupTime != ''
     );
 
+  }
+
+  async presentSuccessAlert() {
+    const alert = await this.alertController.create({
+      header: 'Success',
+      message: `Pickup time: ${moment(parseInt(this.pickupTime) * 1000).format('HH:mm')}`,
+      buttons: [{
+        text: 'OK',
+        handler: () => {
+          setTimeout(() => {
+            this.router.navigate(['/menu']);
+          }, 60 * 1000);
+        }
+      }]
+    });
+
+    await alert.present();
   }
 
   editLine(line: OrderLine) {

@@ -3,11 +3,13 @@ import { NgForm  } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../service/product.service';
 import { Product } from '../models/product.model';
+import { OrderService } from '../service/order.service';
 import { OrderLine } from '../models/orderline.model';
 import { Category } from '../models/category.model';
 import { Order } from '../models/order.model';
 import { Ingredient } from '../models/ingredient.model';
 import { Preferences } from '@capacitor/preferences';
+import { Size } from '../models/size.model';
 
 @Component({
   selector: 'app-pedido',
@@ -18,8 +20,7 @@ export class CategoryPage implements OnInit {
 
   error_msg: string = '';
   disable: boolean = false;
-
-  constructor(private route: ActivatedRoute, private router: Router, public productService: ProductService) {}
+  constructor(private route: ActivatedRoute, private router: Router, public productService: ProductService, private orderService: OrderService) {}
 
     order = new Order();
     products: Product[] = [];
@@ -28,22 +29,16 @@ export class CategoryPage implements OnInit {
     category: Category | any = null;
     isPizzaCategory: boolean = false;
     //unds: number | undefined = CartPage.order != undefined ? CartPage.order.unds : 0;
-    unds: number | undefined = this.order != undefined ? this.order.unds : 0;
+    unds: number = this.order != undefined ? this.order.unds : 0;
 
     //STORAGE
     categories_storage: Category[] = [];
     ingredients_storage: Ingredient[] = [];
-    sizes_storage: any[] = [];
+    sizes_storage: Size[] = [];
 
     isLoading: boolean = true;
 
     ngOnInit() {
-      this.loadSizes()
-      .then(() => {
-        console.log('Sizes loaded');
-        console.log(this.sizes_storage);
-      });
-
       setTimeout(() => {
         this.getProducts();
         this.isLoading = false;
@@ -63,10 +58,30 @@ export class CategoryPage implements OnInit {
             }
         });
       });
-
+      this.refreshCartUnds();
     }
 
     ionViewDidLoad() {
+      setTimeout(() => {
+        this.getProducts();
+        this.isLoading = false;
+      }, 2000);
+
+      this.route.paramMap.subscribe(params => {
+        this.categoryId = params.get('categoryId');
+        console.log('Category ID: ' + this.categoryId);
+        this.categoryName = params.get('category');
+        this.loadCategories()
+        .then(() => {
+          //this.category = MenuPage.sCategories.find(category => category.id == this.categoryId);
+          this.category = this.categories_storage.find((category: Category) => category.id == this.categoryId);
+
+          if(this.category) {
+              this.isPizzaCategory = this.category.name.toLowerCase().includes('pizzas');
+            }
+        });
+      });
+      this.refreshCartUnds();
     }
 
     ionViewDidEnter() {
@@ -76,6 +91,7 @@ export class CategoryPage implements OnInit {
     refreshCartUnds() {
         //this.unds = CartPage.order.unds;
         this.unds = this.order.unds;
+        this.orderService.setOrder(this.order);
     }
 
     getProducts() {
@@ -89,7 +105,6 @@ export class CategoryPage implements OnInit {
                 console.log(data);
                 data.forEach((item: any) => {
                     //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);
-                    //let product: Product = new Product(item, this.productService, item.ingredients);
                     let product: Product = new Product(item, this.productService, this.ingredients_storage);
                     if(product.sizes !== undefined) {
                       if (this.category.name.toLowerCase().includes('pizzas')) {
@@ -129,35 +144,31 @@ export class CategoryPage implements OnInit {
     }
 
     addLineToOrder(product: Product) {
+      if(!product.available) return;
+        this.loadSizes().then(() => {
+          console.log('Sizes loaded');
+          console.log(this.sizes_storage);
 
-        if(!product.available) return;
-        /*
-        let currentLine = new OrderLine(
-            CartPage.order,
+          let currentLine = new OrderLine(
+            this.order,
             product,
             this.category,
-            MenuPage.sIngredients,
-            MenuPage.sSizes
-        );
-        */
-        let currentLine = new OrderLine(
-          this.order,
-          product,
-          this.category,
-          this.ingredients_storage,
-          this.sizes_storage
-      );
+            this.ingredients_storage,
+            this.sizes_storage
+          );
+          console.log('Current Line');
+          console.log(currentLine);
+          if (this.category.name.toLowerCase().includes('pizzas')) {
+              let code = 'IND'; // por defecto añadimos la pizza en tamaño individual
+              currentLine.setSize(code);
+          }
 
-
-        if (this.category.name.toLowerCase().includes('pizzas')) {
-            let code = 'IND'; // por defecto añadimos la pizza en tamaño individual
-            currentLine.setSize(code);
-        }
-
-        //CartPage.order.addLine(currentLine);
-        this.order.addLine(currentLine);
-        this.refreshCartUnds();
-    }
+          this.order.addLine(currentLine);
+          console.log('Order');
+          console.log(this.order);
+          this.refreshCartUnds();
+        });
+      }
 
     goCart() {
         //this.navCtrl.push(CartPage);

@@ -4,20 +4,19 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <img alt='' src='assets/imgs/ricco-ricco-logo.png'>
-        <!--
-        <ion-item style="margin-top: 50px;display:block;line-height: 1.8;">
-          <h4 *ngIf="user == null || user == ''" style="margin:0;">Hola, invitado/a</h4>
-          <div *ngIf="user != null && user != ''" style="display:block;padding-bottom:5px">
-            <h4 style="width:100%;margin:0;">Hola, {{ user.name }}</h4>
-            <small style="width:100%;font-size:14px;color:#5b5b5b">Ref: {{ user.id }}</small>
-          </div>
-        </ion-item>
-        -->
         <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-          <ion-item routerDirection="root" [routerLink]="[p.url]" lines="full" detail="false" routerLinkActive="selected">
-            <ion-icon aria-hidden="true" slot="start" name="{{ p.icon }}" class="icon-custom"></ion-icon>
-            <ion-label>{{ p.title }}</ion-label>
-          </ion-item>
+          <div *ngIf="p.url != '/logout'">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="full" detail="false" routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" name="{{ p.icon }}" class="icon-custom"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </div>
+          <div *ngIf="user != null && p.url == '/logout'">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="full" detail="false" routerLinkActive="selected">
+              <ion-icon aria-hidden="true" slot="start" name="{{ p.icon }}" class="icon-custom"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </div>
         </ion-menu-toggle>
       </ion-content>
     </ion-menu>

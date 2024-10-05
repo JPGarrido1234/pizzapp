@@ -1,12 +1,11 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="red-toolbar">
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-back-button defaultHref="{{ previousUrl }}"></ion-back-button>
     </ion-buttons>
-    <ion-title>Mi pedido</ion-title>
+    <ion-title class="ion-text-center" style="font-size: 22px;">Mi pedido</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
     <div class="icontent" *ngIf="currentOrder != undefined">
         <ion-list *ngIf="currentOrder.lines.length > 0">
@@ -97,10 +96,7 @@
         <div style="height: 80px;"></div>
         &nbsp;
     </div>
-
 </ion-content>
-
-
 <ion-footer>
     <div *ngIf="currentOrder != undefined && currentOrder.total > 0">
         Total: {{currentOrder.total | number: '1.2-2'}} €

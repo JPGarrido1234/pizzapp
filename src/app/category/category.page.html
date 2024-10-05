@@ -5,6 +5,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-buttons slot="end">
+      <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
+          <div>{{unds}}</div>
+      </div>
       <ion-button (click)="goCart()">
         <ion-icon slot="icon-only" name="cart-outline" class="icon-custom"></ion-icon>
       </ion-button>

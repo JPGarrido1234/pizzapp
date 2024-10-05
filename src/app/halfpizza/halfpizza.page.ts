@@ -4,9 +4,10 @@ import {ProductService} from '../service/product.service';
 import {Product} from '../models/product.model';
 import {OrderLine} from '../models/orderline.model';
 import {Category} from '../models/category.model';
-import { Storage } from '@capacitor/storage';
 import { Ingredient } from '../models/ingredient.model';
 import { Order } from '../models/order.model';
+import { Preferences } from '@capacitor/preferences';
+import { Size } from '../models/size.model';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class HalfPizzaPage implements OnInit{
     //STORAGE
     categories_storage: Category[] = [];
     ingredients_storage: Ingredient[] = [];
-    sizes_storage: any[] = [];
+    sizes_storage: Size[] = [];
 
     constructor(
         public productService: ProductService,
@@ -176,21 +177,21 @@ export class HalfPizzaPage implements OnInit{
     }
 
     async loadCategories() {
-      const { value } = await Storage.get({ key: 'categories' });
+      const { value } = await Preferences.get({ key: 'categories' });
       if (value) {
         this.categories_storage = JSON.parse(value);
       }
     }
 
     async loadIngredients() {
-      const { value } = await Storage.get({ key: 'ingredients' });
+      const { value } = await Preferences.get({ key: 'ingredients' });
       if (value) {
         this.ingredients_storage = JSON.parse(value);
       }
     }
 
     async loadSizes() {
-      const { value } = await Storage.get({ key: 'sizes' });
+      const { value } = await Preferences.get({ key: 'sizes' });
       if (value) {
         this.sizes_storage = JSON.parse(value);
       }

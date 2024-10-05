@@ -3,7 +3,7 @@ import { AlertController } from '@ionic/angular';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 type loginData = {
   login: string;
@@ -19,35 +19,24 @@ export class LoginPage implements OnInit {
 
   error_msg: string = '';
   disable: boolean = false;
-  loginForm: FormGroup;
+  loginForm: loginData = { login: '', password: '' };
   loginData: string = '';
   password: string = '';
 
   constructor(
     private router: Router,
     private alertController: AlertController,
-    private userService: UserService,
-    private formBuilder: FormBuilder
+    private userService: UserService
   ) {
-    this.loginForm = this.formBuilder.group({
-      login: new FormControl(''),
-      password: new FormControl(''),
-    });
+
   }
 
   ngOnInit() {
-    this.loginForm = this.formBuilder.group({
-      login: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
 
-    });
-
-    this.loginData = this.loginForm.get('login')?.value;
-    this.password = this.loginForm.get('password')?.value;
   }
 
-  ionViewDidEnter() {
-    if (this.userService.isLogged()) {
+  async ionViewDidEnter() {
+    if (await this.userService.isLogged()) {
       this.userService.logOut()
     } else if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage)
@@ -55,15 +44,16 @@ export class LoginPage implements OnInit {
     }
   }
 
-  public login() {
-    this.userService
-      .login(this.loginData, this.password)
-      .then(
+  async login() {
+      console.log(this.loginForm.login, this.loginForm.password);
+      this.userService.login(this.loginForm.login, this.loginForm.password)
+      .subscribe(
         async (data: any) => {
           let user: User
-
+          console.log('USER: '+this.loginForm.login, this.loginForm.password, data);
           try {
-            user = User.populate(data)
+            user = User.populate(data);
+            console.log('USER2: '+user);
           } catch (e: any) {
             const alert = await this.alertController.create({
               message: e,
@@ -86,7 +76,9 @@ export class LoginPage implements OnInit {
 
           user.setLogged(true)
 
-          this.userService.storeUserData(user)
+          //this.userService.storeUserData(user);
+          this.userService.saveUserKeyStore();
+          this.userService.saveUserStore(user);
 
           if (!user.codeValidated) {
             //this.navCtrl.setRoot(CodePage)
