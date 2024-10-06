@@ -25,11 +25,20 @@ export class OrderService {
   }
 
   //ORDER
+
   setOrder(order: Order): void {
     this.order = order;
   }
 
-  getOrder(): Order {
-    return this.order;
+  getOrder(): Promise<Order> {
+    return new Promise((resolve, reject) => {
+      if (this.order !== null) {
+        resolve(this.order);
+      } else {
+        this.order = new Order();
+        resolve(this.order);
+      }
+    });
   }
+
 }

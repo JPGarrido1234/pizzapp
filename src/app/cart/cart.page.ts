@@ -52,6 +52,7 @@ export class CartPage implements OnInit {
       }
     });
 
+    /*
     // check if logged
     if (this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
@@ -62,30 +63,40 @@ export class CartPage implements OnInit {
       this.router.navigate(['/register']);
       return;
     }
+    */
 
-    this.userService.getUser().then((user: any) => {
+    this.userService.getUser().then(async (user: any) => {
       this.user = user;
+
+      if(user == null){
+        this.router.navigate(['/register']);
+      }
+
+      if(user.codeValidated == false){
+        this.router.navigate(['/code']);
+      }
+
+      this.getCurrentOrder();
+      this.isManager = await this.userService.isManager();
+
+
+      if (this.currentOrder) {
+        this.currentOrder.email = this.user?.login;
+        if (!this.isManager) {
+          this.currentOrder.name = this.user?.name;
+          this.currentOrder.phone = this.user?.phone;
+        } else {
+          this.currentOrder.name = '';
+          this.currentOrder.phone = '';
+        }
+      }
+
+      this.getGaps();
+      this.intervalId = setInterval(() => {
+        this.getGaps();
+      }, 2000);
     });
 
-    this.getCurrentOrder();
-    this.isManager = await this.userService.isManager();
-
-    console.log('USER: ', this.user);
-    if (this.currentOrder) {
-      this.currentOrder.email = this.user?.login;
-      if (!this.isManager) {
-        this.currentOrder.name = this.user?.name;
-        this.currentOrder.phone = this.user?.phone;
-      } else {
-        this.currentOrder.name = '';
-        this.currentOrder.phone = '';
-      }
-    }
-
-    this.getGaps();
-    this.intervalId = setInterval(() => {
-      this.getGaps();
-    }, 2000);
   }
 
   ionViewDidLoad() {
@@ -94,6 +105,7 @@ export class CartPage implements OnInit {
 
   async ionViewDidEnter() {
     // check if logged
+    /*
     if (this.userService.isWaitingForCode()) {
       this.router.navigate(['/code']);
       return;
@@ -101,28 +113,46 @@ export class CartPage implements OnInit {
       this.router.navigate(['/register']);
       return;
     }
+    */
 
-    this.userService.getUser().then((user: any) => {
-      this.user = user;
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.previousUrl = event.url;
+      }
     });
 
-    this.getCurrentOrder();
-    this.isManager = await this.userService.isManager();
+    this.userService.getUser().then(async (user: any) => {
+      this.user = user;
+      console.log('USER: ', this.user);
+
+      if(user == null){
+        this.router.navigate(['/register']);
+      }
+
+      if(user.codeValidated == false){
+        this.router.navigate(['/code']);
+      }
+
+      this.getCurrentOrder();
+      this.isManager = await this.userService.isManager();
 
 
-    this.currentOrder.email = this.user?.login;
-    if (!this.isManager) {
-      this.currentOrder.name = this.user?.name;
-      this.currentOrder.phone = this.user?.phone;
-    } else {
-      this.currentOrder.name = '';
-      this.currentOrder.phone = '';
-    }
+      this.currentOrder.email = this.user?.login;
+      if (!this.isManager) {
+        this.currentOrder.name = this.user?.name;
+        this.currentOrder.phone = this.user?.phone;
+      } else {
+        this.currentOrder.name = '';
+        this.currentOrder.phone = '';
+      }
 
-    this.getGaps();
-    this.intervalId = setInterval(() => {
       this.getGaps();
-    }, 2000);
+      this.intervalId = setInterval(() => {
+        this.getGaps();
+      }, 2000);
+    });
+
+
   }
 
   ionViewDidLeave() {
@@ -130,16 +160,19 @@ export class CartPage implements OnInit {
   }
 
   getCurrentOrder() {
-    this.order = this.orderService.getOrder();
-    if (this.order == undefined) {
-      this.order = new Order();
-    }
-    if(this.user != undefined) {
-      this.order.userId = this.user.id;
-    }
-    this.currentOrder = this.order;
-    console.log('CURRENT ORDER: ', this.currentOrder);
-
+    this.orderService.getOrder().then((order: any) => {
+      this.order = order;
+      /*
+      if(this.order == null) {
+        this.order = new Order();
+      }
+      */
+      if(this.user != undefined) {
+        this.order.userId = this.user.id;
+      }
+      this.currentOrder = this.order;
+      console.log('CURRENT ORDER: ', this.currentOrder);
+    });
   }
 
   getGaps() {
@@ -162,8 +195,6 @@ export class CartPage implements OnInit {
         );
       }
     });
-
-
 
   }
 
@@ -242,49 +273,56 @@ export class CartPage implements OnInit {
     this.presentSuccessAlert();
   }
 
-  canDoOrder() {
-    let sUserOrders = localStorage.getItem('userOrders');
+  async canDoOrder(): Promise<boolean> {
+    try {
+      const sUserOrders = await this.loadUserOrders();
+      if (sUserOrders != undefined) {
+        const userOrders = JSON.parse(sUserOrders);
+        const max: number = this.config_storage['orders-max'];
 
-    if (sUserOrders != undefined) {
-      let userOrders = JSON.parse(sUserOrders);
-      //let max: number = MenuPage.sConfig['orders-max'];
-      let max: number = 1;
+        if (this.isManager) {
+          return true;
+        }
 
-      if (this.isManager) {
-        return true;
-      }
-
-      if (Date.now() - userOrders.date < 86400 * 1000) {
-        if (userOrders.num >= max) {
-          return false;
+        if (Date.now() - userOrders.date < 86400 * 1000) {
+          if (userOrders.num >= max) {
+            return false;
+          }
         }
       }
-    }
 
-    return true;
+      return true;
+    } catch (error) {
+      console.error('Error loading user orders:', error);
+      return false;
+    }
   }
 
   addOrderPerDay() {
-    let sUserOrders = localStorage.getItem('userOrders');
-    let userOrders: any;
-
-    if (sUserOrders == undefined) {
-      userOrders = {
-        num: 1,
-        date: Date.now(),
-      };
-    } else {
-      userOrders = JSON.parse(sUserOrders);
-      if (Date.now() - userOrders.date < 86400 * 1000) {
-        userOrders.num += 1;
-      } else {
+    //let sUserOrders = localStorage.getItem('userOrders');
+    this.loadUserOrders().then((sUserOrders) => {
+      let userOrders: any;
+      if (sUserOrders == undefined) {
         userOrders = {
           num: 1,
           date: Date.now(),
         };
+      } else {
+        userOrders = JSON.parse(sUserOrders);
+        if (Date.now() - userOrders.date < 86400 * 1000) {
+          userOrders.num += 1;
+        } else {
+          userOrders = {
+            num: 1,
+            date: Date.now(),
+          };
+        }
       }
-    }
-    localStorage.setItem('userOrders', JSON.stringify(userOrders));
+
+      this.saveUserOrders(userOrders);
+    });
+
+    //localStorage.setItem('userOrders', JSON.stringify(userOrders));
   }
 
   orderReady() {
@@ -352,4 +390,21 @@ export class CartPage implements OnInit {
       this.config_storage = JSON.parse(value);
     }
   }
+
+  async saveUserOrders(userOrders: any) {
+    const userOrdersPref = JSON.stringify(userOrders);
+    await Preferences.set({
+      key: 'userOrders',
+      value: userOrdersPref,
+    });
+  }
+
+  async loadUserOrders() {
+    const { value } = await Preferences.get({ key: 'userOrders' });
+    if (value) {
+      return JSON.parse(value);
+    }
+    return null;
+  }
+
 }

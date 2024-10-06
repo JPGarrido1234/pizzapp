@@ -45,12 +45,10 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-      console.log(this.loginForm.login, this.loginForm.password);
       this.userService.login(this.loginForm.login, this.loginForm.password)
       .subscribe(
         async (data: any) => {
-          let user: User
-          console.log('USER: '+this.loginForm.login, this.loginForm.password, data);
+          let user: User;
           try {
             user = User.populate(data);
             console.log('USER2: '+user);

@@ -56,13 +56,11 @@ export class UserService {
       this.loadUserStore().then((user: any) => {
         try {
           const storedData = user;
-          let data = JSON.parse(storedData);
-          if (data) {
-            console.log('Data: ', data);
-            resolve(data);
+          //let data = JSON.parse(storedData);
+          if (storedData) {
+            resolve(storedData);
           } else {
-            //reject('User not found');
-            data = null;
+            resolve(null);
           }
         } catch (error) {
           console.error('Error parsing JSON from localStorage', error);
@@ -75,13 +73,14 @@ export class UserService {
     });
   }
 
-  async isLogged() {
+  async isLogged(): Promise<boolean> {
     try {
-      let user: User = await this.getUser() as User;
-      if (user == null) return false
-      return user.codeValidated
+      const user: any = await this.getUser();
+      console.log('User: ', user);
+      if (user == null) return false;
+      return user.codeValidated;
     } catch (e) {
-      return false
+      return false;
     }
   }
 

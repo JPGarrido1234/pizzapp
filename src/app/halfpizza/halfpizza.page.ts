@@ -42,17 +42,14 @@ export class HalfPizzaPage implements OnInit{
         this.loadCategories()
         .then(() => {
           console.log('Categories loaded');
-          console.log(this.categories_storage);
         });
         this.loadIngredients()
         .then(() => {
           console.log('Ingredients loaded');
-          console.log(this.ingredients_storage);
         });
         this.loadSizes()
         .then(() => {
           console.log('Sizes loaded');
-          console.log(this.sizes_storage);
       });
     }
 

@@ -91,7 +91,7 @@ export class CategoryPage implements OnInit {
     refreshCartUnds() {
         //this.unds = CartPage.order.unds;
         this.unds = this.order.unds;
-        this.orderService.setOrder(this.order);
+        //this.orderService.setOrder(this.order);
     }
 
     getProducts() {
@@ -146,9 +146,6 @@ export class CategoryPage implements OnInit {
     addLineToOrder(product: Product) {
       if(!product.available) return;
         this.loadSizes().then(() => {
-          console.log('Sizes loaded');
-          console.log(this.sizes_storage);
-
           let currentLine = new OrderLine(
             this.order,
             product,
@@ -156,16 +153,14 @@ export class CategoryPage implements OnInit {
             this.ingredients_storage,
             this.sizes_storage
           );
-          console.log('Current Line');
-          console.log(currentLine);
+
           if (this.category.name.toLowerCase().includes('pizzas')) {
               let code = 'IND'; // por defecto añadimos la pizza en tamaño individual
               currentLine.setSize(code);
           }
 
           this.order.addLine(currentLine);
-          console.log('Order');
-          console.log(this.order);
+          this.orderService.setOrder(this.order);
           this.refreshCartUnds();
         });
       }
