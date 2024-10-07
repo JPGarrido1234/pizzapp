@@ -26,7 +26,6 @@ export class CartPage implements OnInit {
 
   pickupTime: string = '';
   gaps: Gap[] = [];
-  isOpen: boolean = true;
   orderInProccess: boolean = false;
   isManager: boolean = false;
   user: User | any = null;
@@ -44,7 +43,7 @@ export class CartPage implements OnInit {
   ) {}
 
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit() {
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -52,33 +51,27 @@ export class CartPage implements OnInit {
       }
     });
 
-    /*
-    // check if logged
-    if (this.userService.isWaitingForCode()) {
-      //this.navCtrl.setRoot(CodePage);
-      this.router.navigate(['/code']);
-      return;
-    } else if (!this.userService.isLogged()) {
-      //this.navCtrl.setRoot(RegisterPage);
-      this.router.navigate(['/register']);
-      return;
-    }
-    */
 
-    this.userService.getUser().then(async (user: any) => {
-      this.user = user;
-
-      if(user == null){
-        this.router.navigate(['/register']);
-      }
-
-      if(user.codeValidated == false){
+    try {
+      // Check if logged
+      if (await this.userService.isWaitingForCode()) {
         this.router.navigate(['/code']);
+        return;
+      } else if (!(await this.userService.isLogged())) {
+        this.router.navigate(['/register']);
+        return;
       }
 
+      // Fetch user data
+      this.user = await this.userService.getUser();
+      if (!this.user) {
+        throw new Error('User is null');
+      }
+
+      // Additional initialization logic here
+      console.log('User: ', this.user);
       this.getCurrentOrder();
       this.isManager = await this.userService.isManager();
-
 
       if (this.currentOrder) {
         this.currentOrder.email = this.user?.login;
@@ -89,13 +82,18 @@ export class CartPage implements OnInit {
           this.currentOrder.name = '';
           this.currentOrder.phone = '';
         }
+      } else {
+        console.error('currentOrder is null');
       }
 
       this.getGaps();
       this.intervalId = setInterval(() => {
-        this.getGaps();
-      }, 2000);
-    });
+        // Lógica del intervalo
+      }, 1000);
+    } catch (error) {
+      console.error('Error in ngOnInit:', error);
+      this.router.navigate(['/register']);
+    }
 
   }
 
@@ -105,15 +103,6 @@ export class CartPage implements OnInit {
 
   async ionViewDidEnter() {
     // check if logged
-    /*
-    if (this.userService.isWaitingForCode()) {
-      this.router.navigate(['/code']);
-      return;
-    } else if (!this.userService.isLogged()) {
-      this.router.navigate(['/register']);
-      return;
-    }
-    */
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -121,36 +110,48 @@ export class CartPage implements OnInit {
       }
     });
 
-    this.userService.getUser().then(async (user: any) => {
-      this.user = user;
-      console.log('USER: ', this.user);
-
-      if(user == null){
-        this.router.navigate(['/register']);
-      }
-
-      if(user.codeValidated == false){
+    try {
+      // Check if logged
+      if (await this.userService.isWaitingForCode()) {
         this.router.navigate(['/code']);
+        return;
+      } else if (!(await this.userService.isLogged())) {
+        this.router.navigate(['/register']);
+        return;
       }
 
+      // Fetch user data
+      this.user = await this.userService.getUser();
+      if (!this.user) {
+        throw new Error('User is null');
+      }
+
+      // Additional initialization logic here
+      console.log('User: ', this.user);
       this.getCurrentOrder();
       this.isManager = await this.userService.isManager();
 
-
-      this.currentOrder.email = this.user?.login;
-      if (!this.isManager) {
-        this.currentOrder.name = this.user?.name;
-        this.currentOrder.phone = this.user?.phone;
+      if (this.currentOrder) {
+        this.currentOrder.email = this.user?.login;
+        if (!this.isManager) {
+          this.currentOrder.name = this.user?.name;
+          this.currentOrder.phone = this.user?.phone;
+        } else {
+          this.currentOrder.name = '';
+          this.currentOrder.phone = '';
+        }
       } else {
-        this.currentOrder.name = '';
-        this.currentOrder.phone = '';
+        console.error('currentOrder is null');
       }
 
       this.getGaps();
       this.intervalId = setInterval(() => {
-        this.getGaps();
-      }, 2000);
-    });
+        // Lógica del intervalo
+      }, 1000);
+    } catch (error) {
+      console.error('Error in ngOnInit:', error);
+      this.router.navigate(['/register']);
+    }
 
 
   }

@@ -58,7 +58,7 @@ export class CategoryPage implements OnInit {
             }
         });
       });
-      this.refreshCartUnds();
+      //this.refreshCartUnds();
     }
 
     ionViewDidLoad() {
@@ -91,7 +91,7 @@ export class CategoryPage implements OnInit {
     refreshCartUnds() {
         //this.unds = CartPage.order.unds;
         this.unds = this.order.unds;
-        //this.orderService.setOrder(this.order);
+        this.orderService.setOrder(this.order);
     }
 
     getProducts() {
@@ -160,7 +160,7 @@ export class CategoryPage implements OnInit {
           }
 
           this.order.addLine(currentLine);
-          this.orderService.setOrder(this.order);
+          //this.orderService.setOrder(this.order);
           this.refreshCartUnds();
         });
       }

@@ -65,15 +65,52 @@
 
     .butnsholder {
         margin-top: 20px;
-
-        .loginbtn {
+        button {
+            margin-top: 10px;
             border-radius: 25px;
             color: #ffffff !important;
-            font-size: 1.5em;
+            font-size: 1.6em;
             height: 50px;
             background-color: #e30025;
+            width: 90%;
+            margin-left: 5%;
+            margin-right: 5%;
+            box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.4);
         }
     }
+
+    .butnsholder2 {
+      margin-top: 20px;
+      button {
+          margin-top: 10px;
+          border-radius: 25px;
+          color: #ffffff !important;
+          font-size: 1.6em;
+          height: 50px;
+          background-color: #e30025;
+          width: 100%;
+          box-shadow: 3px 4px 6px rgba(0, 0, 0, 0.4);
+      }
+  }
+
+    .countbtn {
+      height: 30px;
+      width: 30px;
+      background-color: white;
+      color: #E30025;
+      font-size: 2em;
+      margin-top: -10px;
+
+      ion-icon {
+        height: 30px;
+        width: 30px;
+      }
+
+      span {
+          font-size: 20px;
+      }
+    }
+
 
     .disabled {
         pointer-events:none; //This makes it not clickable

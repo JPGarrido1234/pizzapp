@@ -66,6 +66,7 @@ export class Product {
 
     if (this.id != 'half') {
       this.getImage();
+      console.log('Getting image for product ' + this.id);
     }
 
     this.setIngredientsNotAvailable();

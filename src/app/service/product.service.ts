@@ -19,7 +19,7 @@ export class ProductService {
         return this.http.get<Product[]>(url, Utils.getHeaders()).toPromise() as Promise<Product[]>;
     }
 
-    async findById(productId: string): Promise<Observable<Product>> {
+    findById(productId: string): Observable<any> {
         const url = environment.API_URL + '/products/' + productId;
         return this.http.get<Product>(url, Utils.getHeaders());
     }

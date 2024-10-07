@@ -9,7 +9,7 @@
 <ion-content>
     <div class="icontent" *ngIf="currentOrder != undefined">
         <ion-list *ngIf="currentOrder.lines.length > 0">
-            <ion-card class="pizzacard" *ngFor="let line of currentOrder.lines">
+            <ion-card class="ion-padding" class="pizzacard" *ngFor="let line of currentOrder.lines">
                 <ion-row>
                     <ion-col size="4">
                         <ion-thumbnail item-start padding (click)="editLine(line)">
@@ -17,47 +17,51 @@
                         </ion-thumbnail>
                     </ion-col>
                     <ion-col size="8">
-                        <div class="details">
-                            <h2>{{line.productName}}</h2>
-                            <p *ngIf="line.sizeText != ''"><small>Tamaño: {{line.sizeText}}</small> <span *ngIf="line.half">(1/2 pizza)</span></p>
+                        <ion-col size="12" class="ion-no-padding">
+                          <div class="details">
+                            <span style="font-size: 1.2rem; color: #e30025;">{{line.productName}}</span>
+                            <p *ngIf="line.sizeText != ''"><small style="font-weight: bold;">Tamaño: {{line.sizeText}}</small> <span *ngIf="line.half">(1/2 pizza)</span></p>
                             <p *ngIf="line.ingredientsToRemoveText != ''"><small>Quitar: {{line.ingredientsToRemoveText}}</small></p>
                             <p *ngIf="line.ingredientsToAddText != ''"><small>Añadir: {{line.ingredientsToAddText}}</small></p>
                             <p *ngIf="line.product && line.product.ingredientsNotAvailable.length > 0">
                                 Ingredientes no disponibles: <strong style="color: red;">{{ line.product.ingredientsNotAvailable.join(', ') }}</strong>
                             </p>
                         </div>
-
-                        <ion-item>
-                            <ion-label></ion-label>
-                            <button *ngIf="!line.isHalfAndHalf" ion-button icon-only class="countbtn" no-margin item-left clear color="lred" (click)="removeUnd(line);">
-                                <ion-icon name="remove-circle-outline"></ion-icon>
-                            </button>
-                            <button *ngIf="!line.isHalfAndHalf" class="countbtn" ion-button item-left color="lred" clear>
+                        </ion-col>
+                        <ion-col size="12" style="padding-left: 0; margin-top: 5px;">
+                          <ion-row style="display: flex; align-items: center; margin-top: 8px;">
+                            <ion-col size="6" style="padding-left: 0; display: flex; align-items: center;">
+                              <button *ngIf="!line.isHalfAndHalf" ion-button icon-only class="countbtn" no-margin item-left clear color="lred" (click)="removeUnd(line);">
+                                <ion-icon class="icon-custom-cart" name="remove-circle-outline"></ion-icon>
+                              </button>
+                              <button *ngIf="!line.isHalfAndHalf" class="countbtn unidades" ion-button item-left color="lred" clear>
                                 {{line.und}}
-                            </button>
-                            <button *ngIf="!line.isHalfAndHalf" class="countbtn" ion-button icon-only no-margin item-left clear color="lred" (click)="addUnd(line);">
-                                <ion-icon name="add-circle-outline">
-                                </ion-icon>
-                            </button>
-                            <div class="price" item-right>{{line.priceTotal | number: '1.2-2'}} €</div>
-                        </ion-item>
-
-                        <ion-item (click)="removeLine(line)">
-                            <div class="trash-container">
-                                <div><img class="ico-trash" src="assets/imgs/trash.png" alt="Eliminar"></div>
-                                <div>
-                                    <div style="height: 6px;"></div>
-                                    Eliminar
-                                </div>
-                            </div>
-                        </ion-item>
+                              </button>
+                              <button *ngIf="!line.isHalfAndHalf" class="countbtn" ion-button icon-only no-margin item-left clear color="lred" (click)="addUnd(line);">
+                                <ion-icon class="icon-custom-cart" name="add-circle-outline"></ion-icon>
+                              </button>
+                            </ion-col>
+                            <ion-col size="6" style="display: flex; justify-content: flex-end; align-items: center;">
+                              <div class="price" item-right>{{line.priceTotal | number: '1.2-2'}} €</div>
+                            </ion-col>
+                          </ion-row>
+                        </ion-col>
+                        <ion-col size="12" style="padding-left: 0;">
+                          <ion-row (click)="removeLine(line)">
+                              <div class="trash-container">
+                                  <div><img class="ico-trash" src="assets/imgs/trash.png" alt="Eliminar"></div>
+                                  <div>
+                                      <div style="height: 6px;"></div>
+                                      Eliminar
+                                  </div>
+                              </div>
+                          </ion-row>
+                        </ion-col>
                     </ion-col>
                 </ion-row>
             </ion-card>
         </ion-list>
-
-        <ion-list padding *ngIf="isOpen && currentOrder.total > 0">
-
+        <ion-list padding *ngIf="currentOrder.total > 0">
             <span *ngIf="isManager">
                 <ion-list-header>
                     Escribe los datos del cliente
@@ -73,7 +77,7 @@
                 </ion-item>-->
             </span>
 
-            <ion-item *ngIf="!numProductsOverload">
+            <ion-item *ngIf="!numProductsOverload" lines="none">
                 <ion-select label="Hora de recogida" [(ngModel)]="pickupTime">
                   <ion-select-option *ngFor="let gap of gaps" value="{{gap.timestamp}}" [disabled]="!gap.available">{{gap.text}}</ion-select-option>
                 </ion-select>
@@ -85,10 +89,11 @@
             </div>
 
         </ion-list>
-
-        <div class="butnsholder" *ngIf="isOpen && currentOrder != null && currentOrder.lines.length > 0 && !numProductsOverload" padding-horizontal>
-            <ion-button class="loginbtn" color="light" ion-button block (click)="goCheckout()" [disabled]="!orderReady() || orderInProccess">Confirmar pedido</ion-button>
-        </div>
+        <ion-row class="butnsholder">
+          <ion-col size="12" *ngIf="currentOrder != null && currentOrder.lines.length > 0 && !numProductsOverload">
+              <button expand="block" (click)="goCheckout()" [disabled]="!orderReady() || orderInProccess">Confirmar pedido</button>
+          </ion-col>
+        </ion-row>
         <div style="height: 80px;"></div>
         &nbsp;
     </div>

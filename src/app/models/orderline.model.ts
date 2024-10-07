@@ -60,13 +60,15 @@ export class OrderLine {
     this.ingredientsToRemoveText = '';
 
     //if (this.category.isPizzaCategory()) {
-    if(this.category.name.toLowerCase().includes('pizzas')) {
-      // this.ingredientsToRemove = this.product.ingredients;
-      if (this.sizes && this.sizes.length > 0) {
-        this.size = this.sizes[0].code;
+    //if(this.category != undefined){
+      if(this.category.name.toLowerCase().includes('pizzas')) {
+        // this.ingredientsToRemove = this.product.ingredients;
+        if (this.sizes && this.sizes.length > 0) {
+          this.size = this.sizes[0].code;
+        }
+        this.pizza = true;
       }
-      this.pizza = true;
-    }
+    //}
 
     this.calculateTotal();
   }
@@ -105,14 +107,16 @@ export class OrderLine {
   }
 
   calculateTotal() {
-    if (!this.category.name.toLowerCase().includes('pizzas')) {
-      this.priceTotal = this.und * this.priceUnd;
+    //if(this.category != undefined){
+      if (!this.category.name.toLowerCase().includes('pizzas')) {
+        this.priceTotal = this.und * this.priceUnd;
 
-      if (this.order != null) {
-        this.order.calculateTotal();
-      }
+        if (this.order != null) {
+          this.order.calculateTotal();
+        }
 
-      return;
+        return;
+      //}
     }
 
     let priceUnd = this.priceUnd;

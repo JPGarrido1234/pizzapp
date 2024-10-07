@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../service/product.service';
 import { Product } from '../models/product.model';
 import { Category } from '../models/category.model';
@@ -14,7 +14,7 @@ import { Preferences } from '@capacitor/preferences';
   templateUrl: './product.page.html',
   styleUrls: ['./product.page.scss']
 })
-export class ProductPage {
+export class ProductPage implements OnInit {
 
     product: Product | any;
     currentLine: OrderLine | any;
@@ -39,14 +39,33 @@ export class ProductPage {
     ingredients_storage: any[] = [];
     sizes_storage: any[] = [];
     config_storage: any = {};
+    //unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
+    unds: number = this.order != undefined ? this.order.unds : 0;
 
     constructor(
       public productService: ProductService,
       private route: ActivatedRoute,
       private router: Router) {}
 
-    //unds: number = CartPage.order != undefined ? CartPage.order.unds : 0;
-    unds: number = this.order != undefined ? this.order.unds : 0;
+
+    ngOnInit(): void {
+      if(this.order == undefined) {
+            this.order = new Order();
+        }
+
+        this.loadCategories().then(() => {
+            this.loadIngredients().then(() => {
+                this.loadSizes().then(() => {
+                    this.loadConfig().then(() => {
+                        this.getProduct();
+                    });
+                });
+            });
+        })
+        //this.getProduct();
+    }
+
+
 
     ionViewDidLoad() {
         if(this.order == undefined) {
@@ -65,37 +84,42 @@ export class ProductPage {
     }
 
     getProduct() {
-      this.loadCategories();
-      this.loadIngredients()
-      .then(() => {
-        this.route.paramMap.subscribe(params => {
-          let productId = params.get('productId');
-          if(productId){
-            this.productService.findById(productId)
-            .then((item: any) => {
-                this.product = new Product(item, this.productService, this.ingredients_storage);
+      this.route.paramMap.subscribe(params => {
+        let productId = params.get('productId');
+        if (productId) {
+          console.log('Product ID: ' + productId);
+          this.productService.findById(productId).subscribe(
+            (item: Product) => {
+              this.product = new Product(item, this.productService, this.ingredients_storage);
 
-                try {
-                    this.category = this.categories_storage.find(category => category.id == this.product.category);
-                } catch (e) {
-                    console.error("Can not find product category ");
-                }
+              try {
+                this.category = this.categories_storage.find((category: Category) => category.id == this.product.category);
+                console.log('Category:', this.category);
+                var array = this.categories_storage;
+                console.log('Categories_storage:', array);
+              } catch (e) {
+                console.error("Can not find product category");
+              }
+              console.log('Product:', this.product);
 
-                this.getCurrentLine();
-                this.buildSizesCheckboxes();
-                this.buildIngredientsCheckboxes();
+              //this.loadCategories();
+              //this.loadIngredients()
+              this.getCurrentLine();
+              this.buildSizesCheckboxes();
+              this.buildIngredientsCheckboxes();
             },
-            (error) => {
-                console.error(error);
-            });
-          }
-        });
+            (error: any) => {
+              console.error(error);
+            }
+          );
+        }
       });
     }
 
     getCurrentLine() {
       this.route.paramMap.subscribe(params => {
         this.currentLine = params.get('currentLine');
+        console.log('Current Line: ' + this.currentLine);
         if(this.currentLine == undefined) {
             this.mode = 'add';
             this.currentLine = new OrderLine(
@@ -112,8 +136,10 @@ export class ProductPage {
     }
 
     buildSizesCheckboxes() {
-      this.loadSizes();
-        if(!this.category.isPizzaCategory()) return;
+      this.loadSizes().then(() => {
+
+        if(this.category == undefined) return;
+        if(!this.category.name.toLowerCase().includes('pizzas')) return;
 
         this.product.sizes.forEach((size: any) => {
             if(size.price <= 0){
@@ -136,11 +162,13 @@ export class ProductPage {
 
         // this.setSize(this.product.sizes[0].code);
         this.setSize('IND');
+      });
     }
 
     buildIngredientsCheckboxes() {
-      this.loadIngredients();
-        if(!this.category.isPizzaCategory()) return;
+      this.loadIngredients().then(() => {
+        if(this.category == undefined) return;
+        if(!this.category.name.toLowerCase().includes('pizzas')) return;
 
         this.product.ingredients.forEach((ingredient: any) => {
             try {
@@ -185,6 +213,8 @@ export class ProductPage {
                 base: ingredient.base
             });
         });
+      });
+
     }
 
     setIngredientsToRemove(ingredient: any) {
@@ -291,7 +321,7 @@ export class ProductPage {
     async loadCategories() {
       const { value } = await Preferences.get({ key: 'categories' });
       if (value) {
-        this.categories_storage = JSON.parse(value);
+        this.categories_storage = JSON.parse(value) as Category[];
       }
     }
 

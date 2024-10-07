@@ -44,6 +44,17 @@
   justify-content: center;
 }
 
+.icon-custom-cart {
+  fill: #E30025;
+  color: #E30025; /* Color de relleno */
+  border-radius: 50%; /* Hacer el fondo circular */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
 ion-title{
   font-size: 20px;
   font-weight: bold;

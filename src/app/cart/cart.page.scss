@@ -12,47 +12,48 @@
     }
 
     ion-card {
-        margin-right: 0;
-
-        h2 {
-            color: #e30025 !important;
-        }
-
         ion-thumbnail {
-            padding: 0 !important;
-            height: 80px;
-            background-color: #f9f9f9 !important;
-            overflow: hidden;
+              padding: 0 !important;
+              height: 80px;
+              background-color: #f9f9f9 !important;
+              overflow: hidden;
+              width: 105px;
             img {
                 height: 100%;
-                width: auto;
+                width: 105px;
                 min-width: 100%;
                 max-width: inherit;
             }
         }
     }
 
-    ion-item {
-        padding-left: 0 !important;
+    .countbtn {
+      height: 30px;
+      width: 30px;
+      background-color: white;
+      color: #E30025;
+      font-size: 2em;
+      margin-top: -10px;
 
-        .countbtn {
-            height: 34px !important;
+      ion-icon {
+        height: 30px;
+        width: 30px;
+      }
 
-            ion-icon {
-                font-size: 30px;
-            }
+      span {
+          font-size: 20px;
+      }
+    }
 
-            span {
-                font-size: 20px;
-            }
-        }
+    .unidades{
+      margin-top: -10px;
+    }
 
-        .price {
-            color: #e30025;
-            font-size: 25px;
-            font-weight: bold;
-            font-family: Serif;
-        }
+    .price {
+        color: #e30025;
+        font-size: 25px;
+        font-weight: bold;
+        font-family: Serif;
     }
 
     .long-text {
@@ -60,20 +61,24 @@
     }
 
     .details {
-        p {margin-bottom: 0;}
+        p {
+          margin-bottom: 0;
+          margin-top: 5px;
+        }
     }
 
     .trash-container {
         display: flex;
 
         div {
-            margin-right: 5px;
+            margin-right: 0px;
         }
     }
 
     .ico-trash {
         height: 30px;
         width: auto;
+        margin-right: 5px;
     }
 
     ion-footer {
@@ -100,3 +105,18 @@
         text-align: center;
         white-space: normal;
     }
+
+    .butnsholder {
+      margin-top: 20px;
+      button {
+          margin-top: 10px;
+          border-radius: 25px;
+          color: #ffffff !important;
+          font-size: 1.6em;
+          height: 50px;
+          background-color: #e30025;
+          width: 90%;
+          margin-left: 5%;
+          margin-right: 5%;
+      }
+  }

@@ -1,87 +1,84 @@
-<ion-header>
-    <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
-        <div>{{unds}}</div>
-    </div>
-    <!--
-    <ion-navbar color="lred">
-        <button ion-button menuToggle>
-            <ion-icon name="menu"></ion-icon>
-        </button>
-        <ion-title text-center *ngIf="category != undefined">{{category.name}}</ion-title>
-        <ion-buttons end>
-            <button large ion-button icon-only (click)="goCart()">
-                <ion-icon name="ios-cart-outline"></ion-icon>
-            </button>
-        </ion-buttons>
-    </ion-navbar>
-    -->
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title text-center *ngIf="category != undefined">{{category.name}}</ion-title>
-        <ion-buttons end>
-            <button large ion-button icon-only (click)="goCart()">
-                <ion-icon name="ios-cart-outline"></ion-icon>
-            </button>
-        </ion-buttons>
-    </ion-toolbar>
+<ion-header [translucent]="true">
+  <ion-toolbar class="red-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
+          <div>{{unds}}</div>
+      </div>
+      <ion-button (click)="goCart()">
+        <ion-icon slot="icon-only" name="cart-outline" class="icon-custom"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center" *ngIf="category" style="font-size: 22px;">{{ category.name }}</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
     <div class="icontent" *ngIf="product != undefined && category != undefined">
         <div class="image" padding>
             <img src="{{product.image}}" alt="{{product.name}}">
         </div>
         <div class="details">
-            <ion-card padding>
-                <h1 text-center>{{product.name}}</h1>
-                <div padding>
-                    <p>{{product.description}}</p>
-                    <div class="butnsholder" *ngIf="category.isPizzaCategory()">
-                        <button *ngIf="mode == 'add'" class="loginbtn" color="light" ion-button block
-                                (click)="addLineToOrder()">Añadir
-                        </button>
-                    </div>
+            <ion-card class="ion-padding">
+                <h1 class="ion-text-center" style="color: #000;">{{product.name}}</h1>
+                <div class="ion-padding">
+                    <p style="color: #000;">{{product.description}}</p>
+                    <ion-row>
+                      <ion-col class="butnsholder2" size="12" *ngIf="category.name.toLowerCase().includes('pizzas')">
+                        <button *ngIf="mode == 'add'" color="light" ion-button block (click)="addLineToOrder()">A&Ntilde;ADIR</button>
+                      </ion-col>
+                    </ion-row>
                     <div class="allergen-container" *ngIf="product.allergens != null && product.allergens.length > 0">
                         <div *ngFor="let allergen of product.allergens" class="allergen">
                             <img src="{{backend_url}}/assets/allergens/{{allergen}}.png"/>
                         </div>
                     </div>
                 </div>
-
-
-                <ion-row radio-group [(ngModel)]="currentLine.size" (ngModelChange)="setSize($event)" *ngIf="category.isPizzaCategory()">
-                    <ion-col col-12>
-                        <ion-list-header>
-                            Selecciona tamaño
-                        </ion-list-header>
-                        <ion-item col-8 *ngFor="let size of sizesForCheckbox">
-                            <ion-label>{{size.name}} - <strong>{{size.price | number:'1.2-2'}} €</strong></ion-label>
-                            <ion-radio color="lred" value="{{size.code}}"></ion-radio>
-                        </ion-item>
-                    </ion-col>
-                </ion-row>
-
                 <ion-row>
-                    <ion-list-header>
+                  <ion-col size="12">
+                    <ion-list-header style="color:gray;">
+                      Selecciona tamaño
+                    </ion-list-header>
+                    <ion-radio-group [(ngModel)]="currentLine.size" (ngModelChange)="setSize($event)" name="size">
+                      <ion-item *ngFor="let size of sizesForCheckbox">
+                        <ion-label>{{size.name}} - <strong>{{size.price | number:'1.2-2'}} €</strong></ion-label>
+                        <ion-radio slot="start" [value]="size.code"></ion-radio>
+                      </ion-item>
+                    </ion-radio-group>
+                  </ion-col>
+                </ion-row>
+                <!--
+                <ion-item col-8 *ngFor="let size of sizesForCheckbox">
+                    <ion-label>{{size.name}} - <strong>{{size.price | number:'1.2-2'}} €</strong></ion-label>
+                    <ion-radio color="lred" value="{{size.code}}" [checked]="currentLine.size == size.code"
+                                (click)="setSize(size.code)"></ion-radio>
+                </ion-item>
+                -->
+                <ion-row>
+                    <ion-list-header style="color:gray;">
                         Selecciona cantidad
                     </ion-list-header>
-                    <ion-item no-lines text-center padding-vertical>
-                        <button ion-button color="lred" icon-only class="countbtn" no-margin item-left clear
-                                (click)="removeUnd();">
-                            <ion-icon ios="ios-remove-circle-outline" md="ios-remove-circle-outline"></ion-icon>
-                        </button>
-                        <button class="countbtn" ion-button item-left color="lred" clear>{{currentLine.und}}</button>
-                        <button ion-button icon-only class="countbtn" no-margin item-left clear color="lred"
-                                (click)="addUnd();">
-                            <ion-icon ios="ios-add-circle-outline" md="ios-add-circle-outline"></ion-icon>
-                        </button>
-                        <div class="price" item-right>{{currentLine.priceTotal | number:'1.2-2'}} €</div>
+                    <ion-col size="12" style="padding-left: 5%; margin-top: 5px;">
+                      <ion-row style="display: flex; align-items: center; margin-top: 8px;">
+                        <ion-col size="6" style="padding-left: 0; display: flex; align-items: center;">
+                          <button ion-button icon-only class="countbtn" no-margin item-left clear color="lred" (click)="removeUnd();">
+                            <ion-icon class="icon-custom-cart" name="remove-circle-outline"></ion-icon>
+                          </button>
+                          <button class="countbtn" ion-button item-left color="lred" clear>{{currentLine.und}}</button>
+                          <button ion-button icon-only class="countbtn" no-margin item-left clear color="lred" (click)="addUnd();">
+                            <ion-icon class="icon-custom-cart" name="add-circle-outline"></ion-icon>
+                          </button>
+                        </ion-col>
+                        <ion-col size="6" style="display: flex; justify-content: flex-end; align-items: center;">
+                            <div class="price" item-right>{{currentLine.priceTotal | number:'1.2-2'}} €</div>
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
 
-                    </ion-item>
-
-                    <ion-item *ngIf="category.isPizzaCategory() && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf(product.id, currentLine.size)" class="halfpizza">
+                    <ion-item *ngIf="category.name.toLowerCase().includes('pizzas') && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf(product.id, currentLine.size)" class="halfpizza">
                         <div style="display: flex; justify-content: center">
                             <div>
                                 <img src="assets/imgs/half-pizza.png">
@@ -95,9 +92,9 @@
 
                 </ion-row>
                 <br>
-                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
                     <ion-list>
-                        <ion-list-header (click)="ingredientsBaseVisible = !ingredientsBaseVisible">
+                        <ion-list-header style="color:gray;" (click)="ingredientsBaseVisible = !ingredientsBaseVisible">
                             <span item-left *ngIf="!ingredientsBaseVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
                             <span item-left *ngIf="ingredientsBaseVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
                             Ingredientes base
@@ -115,9 +112,9 @@
                     </ion-list>
                 </ion-row>
 
-                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
                     <ion-list>
-                        <ion-list-header (click)="ingredientsPizzaVisible = !ingredientsPizzaVisible">
+                        <ion-list-header style="color:gray;" (click)="ingredientsPizzaVisible = !ingredientsPizzaVisible">
                             <span item-left *ngIf="!ingredientsPizzaVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
                             <span item-left *ngIf="ingredientsPizzaVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
                             Ingredientes de la pizza
@@ -135,9 +132,9 @@
                     </ion-list>
                 </ion-row>
 
-                <ion-row radio-group *ngIf="category.isPizzaCategory()">
+                <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
                     <ion-list>
-                        <ion-list-header (click)="ingredientsExtraVisible = !ingredientsExtraVisible">
+                        <ion-list-header style="color:gray;" (click)="ingredientsExtraVisible = !ingredientsExtraVisible">
                             <span item-left *ngIf="!ingredientsExtraVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
                             <span item-left *ngIf="ingredientsExtraVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
                             Ingredientes extra
@@ -157,8 +154,8 @@
                 </ion-row>
 
                 <div class="butnsholder" padding-horizontal>
-                    <button *ngIf="mode == 'add'" class="loginbtn" color="light" ion-button block
-                            (click)="addLineToOrder()">Añadir
+                    <button *ngIf="mode == 'add'" color="light" ion-button block
+                            (click)="addLineToOrder()">A&Ntilde;ADIR
                     </button>
                     <button *ngIf="mode == 'edit'" class="loginbtn" color="light" ion-button block (click)="editLine()">
                         Actualizar

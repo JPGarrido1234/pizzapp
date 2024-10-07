@@ -47,7 +47,41 @@ export class MenuPage implements OnInit {
     private alertController: AlertController) {}
 
   ngOnInit() {
+    if (this.order == undefined) {
+      this.order = new Order();
+    }
     this.getCategories();
+
+    try{
+      this.userService.getUser().then(async (user: any) => {
+        this.user = user;
+        console.log('User_menu: ' + JSON.stringify(this.user));
+        if (this.user && (!(await this.userService.isLogged()))) {
+          this.alertController
+            .create({
+              header: 'ATENCIÓN',
+              message:
+                'Por favor, accede cuanto antes a editar tus datos personales y cambia tu contraseña. Gracias.',
+              buttons: [
+                {
+                  text: 'Ok, más tarde lo hago',
+                },
+                {
+                  text: 'Venga, llévame a cambiarla',
+                  handler: () => {
+                    //this.navCtrl.push(UserPage);
+                    this.router.navigate(['/user']);
+                  },
+                },
+              ],
+            })
+            .then(alert => alert.present());
+        }
+      });
+    } catch (error) {
+      console.error('Error in ngOnInit:', error);
+      this.router.navigate(['/register']);
+    }
   }
 
   ionViewDidLoad() {
@@ -56,29 +90,31 @@ export class MenuPage implements OnInit {
     }
     this.getCategories();
 
-    this.user = this.userService.getUser();
-    if (this.user && !this.user.isLogged()) {
-      this.alertController
-        .create({
-          header: 'ATENCIÓN',
-          message:
-            'Por favor, accede cuanto antes a editar tus datos personales y cambia tu contraseña. Gracias.',
-          buttons: [
-            {
-              text: 'Ok, más tarde lo hago',
-            },
-            {
-              text: 'Venga, llévame a cambiarla',
-              handler: () => {
-                //this.navCtrl.push(UserPage);
-                this.router.navigate(['/user']);
+    this.userService.getUser().then(async (user: any) => {
+      this.user = user;
+      console.log('User_menu: ' + JSON.stringify(this.user));
+      if (this.user && !this.user.isLogged()) {
+        this.alertController
+          .create({
+            header: 'ATENCIÓN',
+            message:
+              'Por favor, accede cuanto antes a editar tus datos personales y cambia tu contraseña. Gracias.',
+            buttons: [
+              {
+                text: 'Ok, más tarde lo hago',
               },
-            },
-          ],
-        })
-        .then(alert => alert.present());
-    }
-
+              {
+                text: 'Venga, llévame a cambiarla',
+                handler: () => {
+                  //this.navCtrl.push(UserPage);
+                  this.router.navigate(['/user']);
+                },
+              },
+            ],
+          })
+          .then(alert => alert.present());
+      }
+    });
   }
 
   ionViewDidEnter() {
