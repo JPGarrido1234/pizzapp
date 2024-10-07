@@ -1,55 +1,71 @@
-<ion-header>
-  <!--
-  <ion-navbar #navbar color='lred'>
-    <ion-title text-center>Tus datos personales</ion-title>
-  </ion-navbar>
-  -->
+<ion-header [translucent]="true">
+  <ion-toolbar class="red-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center" style="font-size: 22px;">Tus datos personales</ion-title>
+  </ion-toolbar>
 </ion-header>
-
 <ion-content>
   <div class='icontent' padding-vertical>
     <div *ngIf='userForm' class='detailsholder' padding text-center>
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.name' placeholder='Nombre' type='text'></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.login' placeholder='Email' type='text'></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.address' placeholder='Dirección' type='text'></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.zip' placeholder='Código postal' type='text'></ion-input>
-      </ion-item>
-      <ion-item>
-
-        <ion-datetime
-          [(ngModel)]='userForm.birthDate'
-          displayFormat='DD-MM-YYYY'
-          placeholder='Fecha de nacimiento'
-          presentation='date'
-        ></ion-datetime>
-      </ion-item>
-
+      <ion-row>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.name' class="custom" placeholder='Nombre' type='text'></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.login' placeholder='Email' type='text'></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.address' placeholder='Dirección' type='text'></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.zip' placeholder='Código postal' type='text'></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.birthDate' type='date' placeholder='Fecha de nacimiento'></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
       <div class='text'>
         Completa los siguientes campos si quieres cambiar tu contraseña
       </div>
-
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.password' placeholder='Contraseña' type='password'></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]='userForm.repeated' placeholder='Repetir contraseña' type='password'></ion-input>
-      </ion-item>
+      <ion-row>
+        <ion-col size="12">
+            <ion-item class="ion-text-center padding">
+              <ion-input [(ngModel)]='userForm.password' placeholder='Contraseña' type='password'></ion-input>
+            </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-item class="ion-text-center padding">
+            <ion-input [(ngModel)]='userForm.repeated' placeholder='Repetir contraseña' type='password'></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
     </div>
-
-    <div class='butnsholder' padding>
-      <button (click)='updateUser()' block class='registerbtn' color='light' ion-button>CAMBIAR DATOS</button>
-
-      <button (click)='removeUser()' block class='registerbtn registerbtn-dark' color='light' ion-button>
-        ELIMINAR CUENTA
-      </button>
-    </div>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)='updateUser()' color="light" size="large" expand="block" shape="round">
+          <span style="color: #E30025; font-weight: bold; font-size: 22px;">CAMBIAR DATOS</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-button (click)='removeUser()' color="medium" size="large" expand="block" shape="round">
+          <span style="color: #E30025; font-weight: bold; font-size: 22px;">ELIMINAR CUENTA</span>
+        </ion-button>
+      </ion-col>
+    </ion-row>
 
   </div>
 

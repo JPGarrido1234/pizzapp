@@ -15,9 +15,9 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Inicio', url: '/menu', icon: 'home-outline' },
-    { title: 'Tu pedido actual', url: '/order/:id', icon: 'cart-outline' },
+    { title: 'Tu pedido actual', url: '/myorder', icon: 'cart-outline' },
     { title: 'Tus pedidos', url: '/orders', icon: 'basket-outline' },
-    { title: 'Tus datos personales', url: '/datos', icon: 'person-outline' },
+    { title: 'Tus datos personales', url: '/user', icon: 'person-outline' },
     { title: 'Quienes somos', url: '/who', icon: 'pizza-outline' },
     { title: 'Aviso legal', url: '/legal', icon: 'book-outline' },
     { title: 'Cerrar sesión', url: '/logout', icon: 'log-out-outline' },
@@ -26,7 +26,7 @@ export class AppComponent {
     addIcons({cartOutline,basketOutline,personOutline,pizzaOutline,bookOutline,homeOutline,heartOutline,settingsOutline,mailOutline,mailSharp,paperPlaneOutline,paperPlaneSharp,heartSharp,archiveOutline,archiveSharp,trashOutline,trashSharp,warningOutline,warningSharp,bookmarkOutline,bookmarkSharp});
     this.userService.getUser().then(async (user: any) => {
       this.user = user;
-      console.log('User: ', this.user);
+      //console.log('User: ', this.user);
     });
 
   }

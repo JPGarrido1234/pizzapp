@@ -22,19 +22,22 @@ export class UserPage {
 
 
 
-  ionViewDidEnter() {
-    if (!this.userService.isLogged()) {
-      //this.navCtrl.setRoot(RegisterPage);
+  async ionViewDidEnter() {
+
+    // Check if logged
+    if (! await this.userService.isLogged()) {
       this.router.navigate(['/register']);
       return;
-    } else if (this.userService.isWaitingForCode()) {
-      //this.navCtrl.setRoot(CodePage);
+    } else if (await this.userService.isWaitingForCode()) {
       this.router.navigate(['/code']);
+      return;
     }
 
-    this.userService.getUser().then((user : any) => {
-      this.myUser = user;
-    });
+    // Fetch user data
+    this.myUser = await this.userService.getUser();
+    if (!this.myUser) {
+      throw new Error('User is null');
+    }
 
     this.userForm = {
       id: this.myUser.id,

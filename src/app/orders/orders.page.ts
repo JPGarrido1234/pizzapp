@@ -1,5 +1,5 @@
 import { AlertController } from '@ionic/angular';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Order } from '../models/order.model';
@@ -19,7 +19,7 @@ import { Size } from '../models/size.model';
   styleUrls: ['./orders.page.scss']
 })
 
-export class OrdersPage {
+export class OrdersPage implements OnInit {
   orders: Order[] = [];
   //STORAGE
   categories_storage: Category[] = [];
@@ -49,30 +49,64 @@ export class OrdersPage {
     private alertController: AlertController
   ) {}
 
+  ngOnInit(): void {
+    this.userService.getUser().then(async (user: any) => {
+      this.myUser = user;
+
+      this.userService.getOrders(this.myUser.id).subscribe((orders: any) => {
+          this.orders = Array.isArray(orders) ? orders.map((order: any) => {
+            order.date = moment(order.date).format('DD.MM.YYYY');
+            return order;
+          }) : [];
+
+          if (!Array.isArray(orders)) {
+            console.error('Expected orders to be an array, but got:', orders);
+          }
+        },
+        async (error: any) => {
+            const alert = await this.alertController.create({
+              header: 'Error',
+              message: error.message,
+              buttons: ['OK'],
+            });
+
+            await alert.present();
+        }
+      );
+    });
+  }
+
   ionViewDidLoad() {}
 
   ionViewDidEnter() {
-    this.userService.getUser().then((user: any) => {
+    this.userService.getUser().then(async (user: any) => {
       this.myUser = user;
+      //console.log('User: ', this.user);
+
+      console.log('User: ' + this.myUser.id);
+      this.userService.getOrders(this.myUser.id).subscribe(
+        (orders: any) => {
+          console.log('Orders: ' + JSON.stringify(orders));
+          this.orders = Array.isArray(orders) ? orders.map((order: any) => {
+            order.date = moment(order.date).format('DD.MM.YYYY');
+            return order;
+          }) : [];
+
+          if (!Array.isArray(orders)) {
+            console.error('Expected orders to be an array, but got:', orders);
+          }
+        },
+        async (error) => {
+            const alert = await this.alertController.create({
+              header: 'Error',
+              message: error.message,
+              buttons: ['OK'],
+            });
+
+            await alert.present();
+        }
+      );
     });
-
-    this.userService.getOrders(this.myUser.id).then(
-      (orders: any) => {
-        this.orders = orders.map((order: any) => {
-          order.date = moment(order.date).format('DD.MM.YYYY');
-          return order;
-        });
-      },
-      async (error) => {
-          const alert = await this.alertController.create({
-            header: 'Error',
-            message: error.message,
-            buttons: ['OK'],
-          });
-
-          await alert.present();
-      }
-    );
   }
 
   async cloneOrder(order: Order) {
@@ -112,7 +146,7 @@ export class OrdersPage {
       );
 
       if(category !== undefined) {
-        if (category.isPizzaCategory()) {
+        if (category.name.toLowerCase().includes('pizzas')) {
           let size = product.sizes.filter((s) => s.code == 'IND')[0];
           if(size.price !== undefined) {
             product.price = size.price;
@@ -179,7 +213,7 @@ export class OrdersPage {
         this.sizes_storage
       );
 
-      if (category.isPizzaCategory()) {
+      if (category.name.toLowerCase().includes('pizzas')) {
         if (allIngredientsOk) {
           orderLine.ingredientsToAdd = line.ingredientsToAdd;
           orderLine.ingredientsToAddText = line.ingredientsToAddText;

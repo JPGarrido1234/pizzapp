@@ -133,7 +133,7 @@ export class UserService {
     return this.http.post(url, userForm, Utils.getHeaders())
   }
 
-  async getOrders(userId: string): Promise<Observable<any>> {
+  getOrders(userId: string):Observable<any> {
     const url = environment.API_URL + '/userorders?userId=' + userId
     return this.http.get(url, Utils.getHeaders())
   }
