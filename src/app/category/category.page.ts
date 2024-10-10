@@ -22,7 +22,7 @@ export class CategoryPage implements OnInit {
   disable: boolean = false;
   constructor(private route: ActivatedRoute, private router: Router, public productService: ProductService, private orderService: OrderService) {}
 
-    order = new Order();
+    order: Order = new Order();
     products: Product[] = [];
     categoryId: string | null = null;
     categoryName: string | null = null;
@@ -89,9 +89,9 @@ export class CategoryPage implements OnInit {
     }
 
     refreshCartUnds() {
-        //this.unds = CartPage.order.unds;
-        this.unds = this.order.unds;
-        this.orderService.setOrder(this.order);
+      this.unds = this.order.unds;
+      console.log('Order:', this.order, 'Unds:', this.unds);
+      this.orderService.setOrder(this.order);
     }
 
     getProducts() {

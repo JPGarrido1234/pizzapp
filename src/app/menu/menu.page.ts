@@ -12,6 +12,7 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Preferences } from '@capacitor/preferences';
 import { Order } from '../models/order.model';
+import { OrderService } from '../service/order.service';
 
 @Component({
   selector: 'app-menu',
@@ -27,8 +28,9 @@ export class MenuPage implements OnInit {
   static isOpen: boolean = true;
   categories: Category[] = [];
   holidays: any[] = [];
-  order: Order | any = null;
-  unds: number = this.order != undefined ? this.order.unds : 0;
+  order: Order | any;
+  //unds: number = this.order != undefined ? this.order.unds : 0;
+  unds: number = 0
   user: User | any = null;
 
 
@@ -44,13 +46,23 @@ export class MenuPage implements OnInit {
     private ingredientService: IngredientService,
     private configService: ConfigService,
     private productService: ProductService,
-    private alertController: AlertController) {}
+    private alertController: AlertController,
+    private orderService: OrderService) {}
 
   ngOnInit() {
-    if (this.order == undefined) {
-      this.order = new Order();
-    }
-    this.getCategories();
+    try{
+      this.loadUserOrders().then((orders: Order[]) => {
+        this.orderService.getOrder().then((order: Order) => {
+          console.log('Order_menu: ' + orders);
+          //console.log('Order_menu: ' + JSON.stringify(order));
+          this.order = order;
+          this.refreshCartUnds();
+          this.getCategories();
+        });
+      });
+      } catch (error) {
+        console.error('Error in ngOnInit Order:', error);
+      }
 
     try{
       this.userService.getUser().then(async (user: any) => {
@@ -85,9 +97,25 @@ export class MenuPage implements OnInit {
   }
 
   ionViewDidLoad() {
-    if (this.order == undefined) {
-      this.order = new Order();
+
+    try{
+      this.loadUserOrders().then((orders: Order[]) => {
+        this.orderService.getOrder().then((order: Order) => {
+          console.log('Order_menu: ' + orders);
+          this.order = order;
+
+          if (this.order == undefined) {
+            this.order = new Order();
+          }
+
+          this.refreshCartUnds();
+        });
+      });
+
+    } catch (error) {
+      console.error('Error in ionViewDidLoad:', error);
     }
+
     this.getCategories();
 
     this.userService.getUser().then(async (user: any) => {
@@ -118,18 +146,28 @@ export class MenuPage implements OnInit {
   }
 
   ionViewDidEnter() {
-    this.getIngredients();
-    this.getConfig();
-    this.getSizes();
-    this.checkIfIsOpen();
+    try{
+      this.orderService.getOrder().then((order: Order) => {
+        this.order = order;
 
-    this.refreshCartUnds();
+        this.getIngredients();
+        this.getConfig();
+        this.getSizes();
+        this.checkIfIsOpen();
+
+        this.refreshCartUnds();
+      });
+
+    } catch (error) {
+      console.error('Error in ionViewDidLoad:', error);
+    }
   }
 
   refreshCartUnds() {
     if(this.order != undefined && this.order.unds != null) {
       this.unds = this.order.unds ? this.order.unds : 0;
     }
+    console.log('unds: ' + this.unds);
   }
 
   async getCategories() {
@@ -301,5 +339,13 @@ export class MenuPage implements OnInit {
       key: 'config',
       value: configString,
     });
+  }
+
+  async loadUserOrders() {
+    const { value } = await Preferences.get({ key: 'userOrders' });
+    if (value) {
+      return JSON.parse(value);
+    }
+    return null;
   }
 }
