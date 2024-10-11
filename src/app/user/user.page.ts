@@ -20,7 +20,9 @@ export class UserPage {
     private router: Router
   ) {}
 
+ ionViewDidLoad() {
 
+  }
 
   async ionViewDidEnter() {
 

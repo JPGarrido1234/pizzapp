@@ -1,108 +1,121 @@
 
+  ion-content {
+    --background: #E30025;
+  }
 
-    .logo {
-        height: 150px;
-    }
+  ion-input{
+    border-radius: 10px; /* Ajusta el valor según tus necesidades */
+    border: 1px solid #ccc;
+  }
 
-    .text {
-        color: white;
-        width: 90%;
-        margin: auto;
-        font-size: 1.2em;
-    }
+  ion-input.custom {
+    font-size: 22px;
+    font-weight: bold;
+    --placeholder-color: #000;
+    --placeholder-opacity: 0.4;
+  }
 
-    a {
-        color: white;
-        text-decoration: underline;
-    }
+  .logo {
+      height: 150px;
+  }
 
-    ion-content {
-        background-color: #E30025 !important;
-    }
+  .text {
+      color: white;
+      width: 90%;
+      margin: auto;
+      font-size: 1.2em;
+  }
 
-    .logoholder {
-        text-align: center;
-        margin-left: auto;
-        margin-right: auto;
-
-        p {
-            color: #A5A5A5 !important;
-        }
-    }
-
-    .detailsholder {
-        ion-item {
-            border-radius: 25px !important;
-            margin-left: -0.1rem;
-            padding-left: 30px !important;
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            border-bottom: 0px !important;
-            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.103);
-            height: 20px;
-
-            ion-icon {
-                color: #E30025 !important;
-            }
-        }
-
-        ion-input {
-            background-color: #ffffff;
-            width: 90vw;
-
-            margin: 10px;
-            padding-top: 10px;
-            padding-bottom: 10px;
+  a {
+      color: white;
+      text-decoration: underline;
+  }
 
 
-            ::-webkit-input-placeholder {
 
-                // text-align: center;
-                //  color: rgb(169, 253, 207);
+  .logoholder {
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
 
-            }
+      p {
+          color: #A5A5A5 !important;
+      }
+  }
 
-            :-moz-placeholder { /* Firefox 18- */
+  .detailsholder {
+      ion-item {
+          border-radius: 25px !important;
+          margin-left: -0.1rem;
+          padding-left: 30px !important;
+          font-size: 1.5em;
+          margin-bottom: 10px;
+          border-bottom: 0px !important;
+          box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.103);
+          height: 20px;
 
-                text-align: center;
+          ion-icon {
+              color: #E30025 !important;
+          }
+      }
 
-            }
+      ion-input {
+          background-color: #ffffff;
+          width: 90vw;
 
-            ::-moz-placeholder { /* Firefox 19+ */
-
-                text-align: center;
-
-            }
-
-            :-ms-input-placeholder {
-
-                text-align: center;
-
-            }
-        }
-    }
-
-    .butnsholder {
-        .loginbtn {
-            border-radius: 25px;
-            color: #ffffff !important;
-            font-size: 1.5em;
-            height: 50px;
-            // margin-top:2vh;
-            // background-color: rgb(237, 255, 244);
-            background-color: #CC0020;
+          margin: 10px;
+          padding-top: 10px;
+          padding-bottom: 10px;
 
 
-        }
+          ::-webkit-input-placeholder {
 
-        .registerbtn {
-            border-radius: 25px;
-            color: #CC0020 !important;
-            font-size: 1.5em;
-            height: 50px;
-            margin-top: 10px;
-            // background-color: rgb(237, 255, 244);
-            // border: 1px solid #20C46B;
+              // text-align: center;
+              //  color: rgb(169, 253, 207);
 
-        }
-    }
+          }
+
+          :-moz-placeholder { /* Firefox 18- */
+
+              text-align: center;
+
+          }
+
+          ::-moz-placeholder { /* Firefox 19+ */
+
+              text-align: center;
+
+          }
+
+          :-ms-input-placeholder {
+
+              text-align: center;
+
+          }
+      }
+  }
+
+  .butnsholder {
+      .loginbtn {
+          border-radius: 25px;
+          color: #ffffff !important;
+          font-size: 1.5em;
+          height: 50px;
+          // margin-top:2vh;
+          // background-color: rgb(237, 255, 244);
+          background-color: #CC0020;
+
+
+      }
+
+      .registerbtn {
+          border-radius: 25px;
+          color: #CC0020 !important;
+          font-size: 1.5em;
+          height: 50px;
+          margin-top: 10px;
+          // background-color: rgb(237, 255, 244);
+          // border: 1px solid #20C46B;
+
+      }
+  }

@@ -44,13 +44,16 @@ export class RegisterPage {
   async ionViewDidEnter() {
     if (await this.userService.isLogged()) {
       this.userService.logOut();
-    } else if (this.userService.isWaitingForCode()) {
+    } else if (await this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage);
       this.router.navigate(['/code']);
     }
   }
 
-  public register() {
+  async register() {
+
+    //console.log('USER: ' + this.registerForm.name);
+
     try {
       Utils.checkPassword(
         this.registerForm.password,
@@ -71,7 +74,9 @@ export class RegisterPage {
       this.presentAlert(e);
       return;
     }
-    this.userService.register(user).then(
+
+
+    this.userService.register(user).subscribe(
       (data: any) => {
         const user = User.populate(data);
         user.setLogged(true);
@@ -98,6 +103,7 @@ export class RegisterPage {
         }
       }
     );
+
   }
 
   async presentAlert(message: string) {

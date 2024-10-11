@@ -1,4 +1,4 @@
-<ion-content>
+<ion-content [fullscreen]="true">
     <div class="icontent" padding-vertical>
         <div class="logoholder animated pulse" text-center>
             <img class="logo" src="assets/imgs/logo.png" alt="">
@@ -6,17 +6,21 @@
         <div class="text">
             <p>Introduce el código que te habrá llegado al móvil en un mensaje de texto</p>
         </div>
-
-        <div class="detailsholder" text-center padding>
-            <ion-item>
-                <span  item-left><ion-icon name="ios-lock-outline"></ion-icon> </span>
-                <ion-input type="number" [(ngModel)]="code" placeholder="Código" maxlength="4"></ion-input>
+        <ion-row class="ion-padding">
+          <ion-col size="12">
+            <ion-item class="ion-text-center padding" style="border-radius: 25px;">
+              <ion-input [(ngModel)]='codeData.code' color="light" class="custom" placeholder='Código' type='number' maxlength="4"></ion-input>
             </ion-item>
-        </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-padding">
+          <ion-col size="12">
+            <ion-button (click)='checkCode()' color="light" size="large" expand="block" shape="round">
+              <span style="color: #E30025; font-weight: bold; font-size: 22px;">ACEPTAR</span>
+            </ion-button>
+          </ion-col>
+        </ion-row>
 
-        <div class="butnsholder" padding>
-            <button class="registerbtn" color="light" ion-button block (click)="checkCode()">ACEPTAR</button>
-        </div>
 
         <div class="text">
             <p>¿No has recibido el mensaje con el código? <a (click)="reSendCode()">Pulsa aquí para intentar enviarte un nuevo código</a></p>

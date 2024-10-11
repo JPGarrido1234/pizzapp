@@ -27,11 +27,9 @@ export class User {
     role: string
   ) {
 
-    /*
     if (role === 'ROLE_SUPERADMIN') {
       throw 'El usuario no puede ser superadmin';
     }
-    */
 
     if (name == null || name == '') {
       throw 'El nombre es requerido';

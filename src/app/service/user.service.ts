@@ -20,12 +20,12 @@ export class UserService {
   constructor(private http: HttpClient) {
   }
 
-  async register(user: User): Promise<Observable<any>> {
+  register(user: User) {
     const url = environment.API_URL + '/register'
     return this.http.post(url, user, Utils.getHeaders())
   }
 
-  async checkCode(phone: string, code: string): Promise<Observable<any>> {
+  checkCode(phone: string, code: string) {
     const url =
       environment.API_URL + '/checkcode?phone=' + phone + '&code=' + code
     return this.http.get(url, Utils.getHeaders())
@@ -75,7 +75,7 @@ export class UserService {
 
   async isLogged(): Promise<boolean> {
     try {
-      const user: any = await this.getUser();
+      let user: User = await this.getUser() as User;
       console.log('User: ', user);
       if (user == null) return false;
       return user.codeValidated;
@@ -84,10 +84,10 @@ export class UserService {
     }
   }
 
-  public isWaitingForCode() {
+  async isWaitingForCode(): Promise<boolean> {
     try {
-      //let user: User = this.getUser()
-      let user: any;
+      let user: User = await this.getUser() as User;
+      console.log('UserCode: ', user);
       if (user == null) return false
       return !user.codeValidated
     } catch (e) {

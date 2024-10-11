@@ -4,6 +4,10 @@ import { AlertController } from '@ionic/angular';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 
+type codeData = {
+  code: string;
+};
+
 @Component({
   selector: 'app-code',
   templateUrl: './code.page.html',
@@ -13,6 +17,7 @@ import { User } from '../models/user.model';
 
 export class CodePage {
   code: string | any;
+  codeData: codeData = { code: '' };
 
   constructor(
     private router: Router,
@@ -20,61 +25,68 @@ export class CodePage {
     private alertController: AlertController
   ) {}
 
-  ionViewDidLoad() {}
+  ionViewDidLoad() {
 
-  ionViewDidEnter() {
-    if (this.userService.isLogged()) {
-      //this.navCtrl.setRoot(MenuPage);
+  }
+
+  async ionViewDidEnter() {
+    /*
+    if (await this.userService.isLogged()) {
       this.router.navigate(['/menu']);
     } else if (!this.userService.isWaitingForCode()) {
-      //this.navCtrl.setRoot(LoginPage);
+      //this.navCtrl.setRoot(CodePage);
       this.router.navigate(['/login']);
     }
+    */
   }
+
 
   public checkCode() {
     let phone: string = '';
     let user: User | any;
-    if (this.code == '') return;
-    this.userService.getUser().then((userPhone : any) => {
-      phone = userPhone;
-    });
+    if (this.codeData.code == '') return;
+    this.userService.getUser().then(async (userPhone: any) => {
+      phone = userPhone.phone;
 
-    this.userService.checkCode(phone, this.code).then(
-      () => {
-        this.userService.getUser().then((user : any) => {
-          user.codeValidated = true;
-          this.userService.storeUserData(user);
-          //this.navCtrl.setRoot(MenuPage);
-          this.router.navigate(['/menu']);
-        });
-      },
-      (e) => {
-        this.presentAlert(
-          'El código introducido no es corrrecto. Por favor, inténtalo de nuevo'
-        );
-      }
-    );
+      console.log('PHONE: ' + phone);
+      console.log('CODE: ' + this.codeData.code);
+
+      this.userService.checkCode(phone, this.codeData.code).subscribe(
+        () => {
+          this.userService.getUser().then((user : any) => {
+            user.codeValidated = true;
+            this.userService.storeUserData(user);
+            //this.navCtrl.setRoot(MenuPage);
+            this.router.navigate(['/menu']);
+          });
+        },
+        (e) => {
+          this.presentAlert(
+            'El código introducido no es corrrecto. Por favor, inténtalo de nuevo'
+          );
+        }
+      );
+    });
   }
 
   public reSendCode() {
     let phone: string = '';
-    this.userService.getUser().then((user : any) => {
+    this.userService.getUser().then(async (user: any) => {
       phone = user.phone;
-    });
 
-    this.userService.resendCode(phone).then(
-      () => {
-        this.presentAlert(
-          'Te hemos enviado un nuevo código, intenta introducirlo ahora'
-        );
-      },
-      () => {
-        this.presentAlert(
-          'Error al solicitar el nuevo código. Por favor, inténtalo de nuevo más tarde'
-        );
-      }
-    );
+      this.userService.resendCode(phone).then(
+        () => {
+          this.presentAlert(
+            'Te hemos enviado un nuevo código, intenta introducirlo ahora'
+          );
+        },
+        () => {
+          this.presentAlert(
+            'Error al solicitar el nuevo código. Por favor, inténtalo de nuevo más tarde'
+          );
+        }
+      );
+    });
   }
 
   async presentAlert(message: string) {

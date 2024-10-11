@@ -38,7 +38,7 @@ export class LoginPage implements OnInit {
   async ionViewDidEnter() {
     if (await this.userService.isLogged()) {
       this.userService.logOut()
-    } else if (this.userService.isWaitingForCode()) {
+    } else if (await this.userService.isWaitingForCode()) {
       //this.navCtrl.setRoot(CodePage)
       this.router.navigate(['/code']);
     }

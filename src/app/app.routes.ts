@@ -62,6 +62,10 @@ export const routes: Routes = [
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
   {
+    path: 'code',
+    loadChildren: () => import('./code/code.module').then( m => m.CodePageModule)
+  },
+  {
     path: 'logout',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   },
