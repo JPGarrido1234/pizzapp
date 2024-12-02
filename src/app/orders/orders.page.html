@@ -7,44 +7,52 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div class='icontent' padding-vertical>
-    <div padding-vertical>
-      <ion-list>
-        <ion-item *ngFor='let order of orders'>
+  <ion-content class="icontent" padding>
+    <ion-list>
+      <ion-item *ngFor="let order of orders">
+        <ion-grid>
+          <!-- Fecha del pedido -->
           <ion-row>
-            <div class='orderDate'>
-              {{order.date}}
-            </div>
+            <ion-col>
+              <div class="orderDate">
+                {{ order.date }}
+              </div>
+            </ion-col>
           </ion-row>
-          <div style='height: 5px'></div>
+
+          <!-- Espaciado -->
           <ion-row>
-            <div class='orderInfo'>
-              <ion-row>
-                <ion-col col-7>
-                  <div style='height: 10px'></div>
-                  PEDIDO #{{order.number}}
-                  <br>
-                  {{order.total | number: '1.2-2'}} €
-                  <br>
-                  <div *ngFor='let line of order.lines' class='productsDiv'>
-                    <small>
-                      {{line.und}} x {{line.productName}}
-                    </small>
-                  </div>
-                </ion-col>
-                <ion-col class='butnsholder' col-5>
-                  <button (click)='cloneOrder(order)' block color='light' ion-button>
-                    REPETIR
-                  </button>
-                </ion-col>
-              </ion-row>
-            </div>
+            <ion-col>
+              <div style="height: 5px;"></div>
+            </ion-col>
           </ion-row>
-        </ion-item>
-      </ion-list>
-    </div>
 
+          <!-- Información del pedido -->
+          <ion-row>
+            <ion-col size="7">
+              <div style="height: 10px;"></div>
+              <div>
+                PEDIDO #{{ order.number }}
+              </div>
+              <div>
+                {{ order.total | number: '1.2-2' }} €
+              </div>
+              <div *ngFor="let line of order.lines" class="productsDiv">
+                <small>
+                  {{ line.und }} x {{ line.productName }}
+                </small>
+              </div>
+            </ion-col>
+            <ion-col size="5">
+              <ion-button (click)="cloneOrder(order)" expand="block" class="btn_red">
+                REPETIR
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-content>
 
-  </div>
 
 </ion-content>

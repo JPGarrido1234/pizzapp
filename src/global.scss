@@ -55,6 +55,13 @@
   height: 30px;
 }
 
+.btn_red {
+  --background: #E30025; /* Rojo brillante */
+  --background-hover: #E30025; /* Rojo más oscuro al pasar el cursor */
+  --background-activated: #E30025; /* Rojo más intenso al hacer clic */
+  --color: #ffffff; /* Texto blanco */
+}
+
 ion-title{
   font-size: 20px;
   font-weight: bold;

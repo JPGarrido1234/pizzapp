@@ -348,7 +348,7 @@ export class CartPage implements OnInit {
   async presentSuccessAlert() {
     const alert = await this.alertController.create({
       header: 'Success',
-      message: `Pickup time: ${moment(parseInt(this.pickupTime) * 1000).format('HH:mm')}`,
+      message: `Hora de recogida: ${moment(parseInt(this.pickupTime) * 1000).format('HH:mm')}`,
       buttons: [{
         text: 'OK',
         handler: () => {

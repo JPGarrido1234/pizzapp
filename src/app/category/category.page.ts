@@ -44,6 +44,10 @@ export class CategoryPage implements OnInit {
         this.isLoading = false;
       }, 2000);
 
+      this.orderService.getOrder().then((order: Order) => {
+        this.order = order;
+        this.refreshCartUnds();
+      });
       this.route.paramMap.subscribe(params => {
         this.categoryId = params.get('categoryId');
         console.log('Category ID: ' + this.categoryId);
@@ -67,6 +71,12 @@ export class CategoryPage implements OnInit {
         this.isLoading = false;
       }, 2000);
 
+
+      this.orderService.getOrder().then((order: Order) => {
+        this.order = order;
+        this.refreshCartUnds();
+      });
+
       this.route.paramMap.subscribe(params => {
         this.categoryId = params.get('categoryId');
         console.log('Category ID: ' + this.categoryId);
@@ -85,7 +95,11 @@ export class CategoryPage implements OnInit {
     }
 
     ionViewDidEnter() {
+      this.orderService.getOrder().then((order: Order) => {
+        this.order = order;
         this.refreshCartUnds();
+      });
+      this.refreshCartUnds();
     }
 
     refreshCartUnds() {
