@@ -160,7 +160,7 @@ export class CategoryPage implements OnInit {
           }
 
           this.order.addLine(currentLine);
-          //this.orderService.setOrder(this.order);
+          this.orderService.setOrder(this.order);
           this.refreshCartUnds();
         });
       }

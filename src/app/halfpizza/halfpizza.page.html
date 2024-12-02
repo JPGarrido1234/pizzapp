@@ -1,15 +1,17 @@
-<ion-header>
-    <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
-        <div>{{unds}}</div>
-    </div>
-    <!--
-    <ion-navbar color="lred">
-        <ion-title text-center>Selecciona la otra mitad</ion-title>
-    </ion-navbar>
-    -->
+<ion-header [translucent]="true">
+  <ion-toolbar class="red-toolbar">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/menu"></ion-back-button>
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <div class="ico-und" (click)="goCart()" *ngIf="unds > 0">
+          <div>{{unds}}</div>
+      </div>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
-
-<ion-content>
+<ion-content [fullscreen]="true">
     <div class="icontent">
         <ion-list>
             <ion-card *ngFor="let product of products" class="pizzacard animated">

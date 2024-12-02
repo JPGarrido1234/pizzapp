@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ionic.pizzapp',
+  appId: 'io.davidsantiago.riccoricco',
   appName: 'pizzapp',
   webDir: 'www',
   server: {

@@ -1,4 +1,4 @@
-package ionic.pizzapp;
+package io.davidsantiago.riccoricco;
 
 import com.getcapacitor.BridgeActivity;
 

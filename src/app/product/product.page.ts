@@ -7,6 +7,7 @@ import { Order } from '../models/order.model';
 import { environment } from '../../environments/environment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
+import { OrderService } from '../service/order.service';
 
 
 @Component({
@@ -44,11 +45,13 @@ export class ProductPage implements OnInit {
 
     constructor(
       public productService: ProductService,
+      public orderService: OrderService,
       private route: ActivatedRoute,
       private router: Router) {}
 
 
     ngOnInit(): void {
+      //this.order = this.orderService.getOrder();
       if(this.order == undefined) {
             this.order = new Order();
         }
@@ -63,19 +66,38 @@ export class ProductPage implements OnInit {
             });
         })
         //this.getProduct();
-    }
 
+    }
 
 
     ionViewDidLoad() {
-        if(this.order == undefined) {
-            this.order = new Order();
-        }
+      //this.order = this.orderService.getOrder();
+      if(this.order == undefined) {
+          this.order = new Order();
+      }
 
-        this.getProduct();
+      this.loadCategories().then(() => {
+        this.loadIngredients().then(() => {
+            this.loadSizes().then(() => {
+                this.loadConfig().then(() => {
+                    this.getProduct();
+                });
+            });
+        });
+      })
     }
 
     ionViewDidEnter() {
+      //this.order = this.orderService.getOrder();
+      this.loadCategories().then(() => {
+          this.loadIngredients().then(() => {
+              this.loadSizes().then(() => {
+                  this.loadConfig().then(() => {
+                      this.getProduct();
+                  });
+              });
+          });
+      })
         this.refreshCartUnds();
     }
 
@@ -87,23 +109,28 @@ export class ProductPage implements OnInit {
       this.route.paramMap.subscribe(params => {
         let productId = params.get('productId');
         if (productId) {
-          console.log('Product ID: ' + productId);
+          //console.log('Product ID: ' + productId);
+          this.order = this.orderService.getOrder().then((result: any) => {
+            this.order = result;
+            console.log('Order:', this.order, 'Unds:', this.unds);
+          });
+
           this.productService.findById(productId).subscribe(
             (item: Product) => {
               this.product = new Product(item, this.productService, this.ingredients_storage);
 
               try {
                 this.category = this.categories_storage.find((category: Category) => category.id == this.product.category);
-                console.log('Category:', this.category);
+                //console.log('Category:', this.category);
                 var array = this.categories_storage;
-                console.log('Categories_storage:', array);
+                //console.log('Categories_storage:', array);
               } catch (e) {
                 console.error("Can not find product category");
               }
-              console.log('Product:', this.product);
+              //console.log('Product:', this.product);
 
               //this.loadCategories();
-              //this.loadIngredients()
+              //this.loadIngredients();
               this.getCurrentLine();
               this.buildSizesCheckboxes();
               this.buildIngredientsCheckboxes();
@@ -136,6 +163,7 @@ export class ProductPage implements OnInit {
     }
 
     buildSizesCheckboxes() {
+      this.sizesForCheckbox = [];
       this.loadSizes().then(() => {
 
         if(this.category == undefined) return;
@@ -166,6 +194,8 @@ export class ProductPage implements OnInit {
     }
 
     buildIngredientsCheckboxes() {
+      this.ingredientsBaseForCheckbox = [];
+      this.ingredientsExtraForCheckbox = [];
       this.loadIngredients().then(() => {
         if(this.category == undefined) return;
         if(!this.category.name.toLowerCase().includes('pizzas')) return;
@@ -213,6 +243,8 @@ export class ProductPage implements OnInit {
                 base: ingredient.base
             });
         });
+
+        console.log(this.ingredientsBaseForCheckbox);
       });
 
     }
@@ -260,6 +292,7 @@ export class ProductPage implements OnInit {
         let ingredientsToAdd: string[] = [];
         this.ingredientsExtraForCheckbox.forEach(ingredientObj => {
             if(ingredientObj.isChecked) {
+                console.log(ingredientObj);
                 ingredientsToAdd.push(ingredientObj.val);
             }
         });
@@ -293,20 +326,20 @@ export class ProductPage implements OnInit {
         this.currentLine.removeUnd();
     }
 
-    setHalf(halfPizzaId: string, pizzaSize: string) {
+    setHalf(halfPizzaId: string, pizzaSize: string, categoryId: string) {
       /*
       this.navCtrl.push(HalfPizzaPage, {
           halfPizzaId: this.product.id,
           pizzaSize: this.currentLine.size
       });
       */
-      this.router.navigate(['/halfpizza', halfPizzaId, pizzaSize]);
+     this.router.navigate(['/halfpizza', halfPizzaId, pizzaSize, categoryId]);
     }
 
-    addLineToOrder() {
-        this.currentLine.setOrder(this.order);
-        this.order.addLine(this.currentLine);
-        this.goCart();
+    addLineToOrder(product: Product) {
+      this.currentLine.setOrder(this.order);
+      this.order.addLine(this.currentLine);
+      this.goCart();
     }
 
     editLine() {

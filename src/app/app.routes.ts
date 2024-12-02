@@ -1,6 +1,7 @@
 
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { HalfPizzaPage } from './halfpizza/halfpizza.page';
 
 export const routes: Routes = [
   {
@@ -72,6 +73,10 @@ export const routes: Routes = [
   {
     path: 'cart',
     loadChildren: () => import('./cart/cart.module').then( m => m.CartPageModule)
+  },
+  {
+    path: 'halfpizza/:halfPizzaId/:pizzaSize/:categoryId',
+    loadChildren: () => import('./halfpizza/halfpizza.module').then( m => m.HalfPizzaPageModule)
   }
 ];
 

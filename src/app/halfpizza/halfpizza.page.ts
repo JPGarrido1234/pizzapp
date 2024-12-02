@@ -8,6 +8,7 @@ import { Ingredient } from '../models/ingredient.model';
 import { Order } from '../models/order.model';
 import { Preferences } from '@capacitor/preferences';
 import { Size } from '../models/size.model';
+import { OrderService } from '../service/order.service';
 
 
 @Component({
@@ -33,12 +34,14 @@ export class HalfPizzaPage implements OnInit{
     sizes_storage: Size[] = [];
 
     constructor(
+      private orderService: OrderService,
         public productService: ProductService,
         private route: ActivatedRoute,
         private router: Router
     ) {}
 
     ngOnInit(): void {
+      /*
         this.loadCategories()
         .then(() => {
           console.log('Categories loaded');
@@ -51,35 +54,70 @@ export class HalfPizzaPage implements OnInit{
         .then(() => {
           console.log('Sizes loaded');
       });
+
+      this.getProducts();
+      */
+      this.loadCategories().then(() => {
+        this.loadIngredients().then(() => {
+            this.loadSizes().then(() => {
+              this.route.paramMap.subscribe(params => {
+                this.halfPizzaId = params.get('halfPizzaId') || '';
+                this.pizzaSize = params.get('pizzaSize') || '';
+                this.categoryId = params.get('categoryId') || '';
+
+                console.log('Category ID: ' + this.categoryId);
+                this.setCategoryPizzaId();
+                this.getProducts();
+
+                this.getCurrentOrder().then((result: any) => {
+                  this.order = result;
+                  this.unds = this.order.unds;
+                  console.log('CURRENT ORDER: ', this.order);
+                  this.goCart();
+                });
+              });
+            });
+        });
+    })
     }
 
     ionViewDidLoad() {
       this.route.paramMap.subscribe(params => {
-        this.halfPizzaId ? params.get('halfPizzaId') : '';
-        this.pizzaSize ? params.get('pizzaSize') : '';
+        this.halfPizzaId = params.get('halfPizzaId') || '';
+        this.pizzaSize = params.get('pizzaSize') || '';
+        this.categoryId = params.get('categoryId') || '';
 
         this.setCategoryPizzaId();
         this.getProducts();
+
+        this.getCurrentOrder().then((result: any) => {
+          this.order = result;
+          this.unds = this.order.unds;
+          //console.log('CURRENT ORDER: ', this.order);
+          this.goCart();
+        });
       });
     }
 
     setCategoryPizzaId() {
         //this.category = MenuPage.sCategories.find((category: any) => category.isPizzaCategory());
-        this.category = null;
+        this.category = this.categories_storage.find((category: any) => category.name.toLowerCase().includes('pizzas'));
+        //this.category = null;
         this.categoryId = this.category.id;
-        this.isPizzaCategory = this.category.isPizzaCategory();
+        this.isPizzaCategory = this.category.name.toLowerCase().includes('pizzas');
     }
 
     getProducts() {
         this.productService.findAll(this.categoryId)
-            .then((data: any) => {
+            .then((data:  Product[]) => {
                     data.forEach((item: any) => {
+                        console.log('Item:', item);
                         if(item.type === "CUSTOMIZABLE_TOTAL") return;
                         //let product: Product = new Product(item, this.productService, MenuPage.sIngredients);
-                        let product: Product | any;
-                        if (this.category.isPizzaCategory()) {
+                        let product: Product = new Product(item, this.productService, this.ingredients_storage);
+                        if (this.category.name.toLowerCase().includes('pizzas')) {
                             let size = product.sizes.filter((s: any) => s.code == this.pizzaSize)[0];
-                            product.price = size.price;
+                            product.price ? size.price : '';
                         }
                         this.products.push(product);
                     });
@@ -93,7 +131,7 @@ export class HalfPizzaPage implements OnInit{
         try {
             // montamos un nuevo producto, de estos dos
             //const product1: Product = this.products.find(product => product.id == this.halfPizzaId);
-            let product1: Product | any;
+            let product1: Product | any = this.products.find(product => product.id == this.halfPizzaId);
             const size1: any = product1.sizes.find((size: any) => size.code === this.pizzaSize);
             const size2: any = product2.sizes.find(size => size.code === this.pizzaSize);
 
@@ -159,12 +197,22 @@ export class HalfPizzaPage implements OnInit{
             currentLine.setImage('assets/imgs/half-pizza.png');
             currentLine.setSizeText(this.pizzaSize);
 
-            this.order.addLine(currentLine);
-            this.goCart();
+            this.getCurrentOrder().then(() => {
+              this.unds = this.order.unds;
+              this.order.addLine(currentLine);
+              console.log('CURRENT ORDER: ', this.order);
+              this.goCart();
+            });
         } catch(e) {
             console.error(e);
             alert("Ha habido un problema interno, por favor inténtelo de nuevo más tarde o seleccione otra pizza");
         }
+    }
+
+    getCurrentOrder(): Promise<any> {
+      return this.orderService.getOrder().then((order: any) => {
+        this.order = order;
+      });
     }
 
     goCart() {

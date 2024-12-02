@@ -103,7 +103,7 @@ export class LoginPage implements OnInit {
   }
 
   async sendPasswordSMS() {
-    if (this.loginData === '') {
+    if (this.loginForm.login === '') {
       const alert = await this.alertController
         .create({
           message: 'El email no puede estar vacío',
@@ -121,7 +121,8 @@ export class LoginPage implements OnInit {
           {
             text: 'OK',
             handler: () => {
-              this.userService.sendPassword(this.loginData).then(
+              console.log(this.loginForm.login);
+              this.userService.sendPassword(this.loginForm.login).then(
                 async () => {
                     const alert = await this.alertController
                     .create({

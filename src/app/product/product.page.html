@@ -28,7 +28,7 @@
                     <p style="color: #000;">{{product.description}}</p>
                     <ion-row>
                       <ion-col class="butnsholder2" size="12" *ngIf="category.name.toLowerCase().includes('pizzas')">
-                        <button *ngIf="mode == 'add'" color="light" ion-button block (click)="addLineToOrder()">A&Ntilde;ADIR</button>
+                        <button *ngIf="mode == 'add'" color="light" ion-button block (click)="addLineToOrder(product)">A&Ntilde;ADIR</button>
                       </ion-col>
                     </ion-row>
                     <div class="allergen-container" *ngIf="product.allergens != null && product.allergens.length > 0">
@@ -78,7 +78,7 @@
                       </ion-row>
                     </ion-col>
 
-                    <ion-item *ngIf="category.name.toLowerCase().includes('pizzas') && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf(product.id, currentLine.size)" class="halfpizza">
+                    <ion-item *ngIf="category.name.toLowerCase().includes('pizzas') && product.type != 'CUSTOMIZABLE_TOTAL'" (click)="setHalf(product.id, currentLine.size, category.id)" class="halfpizza">
                         <div style="display: flex; justify-content: center">
                             <div>
                                 <img src="assets/imgs/half-pizza.png">
@@ -93,18 +93,17 @@
                 </ion-row>
                 <br>
                 <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
-                    <ion-list>
+                    <ion-list style="width: 100%;">
                         <ion-list-header style="color:gray;" (click)="ingredientsBaseVisible = !ingredientsBaseVisible">
-                            <span item-left *ngIf="!ingredientsBaseVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
-                            <span item-left *ngIf="ingredientsBaseVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            <span item-left *ngIf="!ingredientsBaseVisible"><ion-icon name="chevron-forward"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsBaseVisible"><ion-icon name="chevron-down"></ion-icon> </span>
                             Ingredientes base
                         </ion-list-header>
                         <div *ngIf="ingredientsBaseVisible">
                             <div *ngFor="let ingredient of ingredientsBaseForCheckbox">
                                 <ion-item *ngIf="ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
                                     <ion-label>{{ingredient.name}}</ion-label>
-                                    <ion-checkbox color="lred" [checked]="ingredient.isChecked"
-                                                  [(ngModel)]="ingredient.isChecked"
+                                    <ion-checkbox color="danger" [(ngModel)]="ingredient.isChecked"
                                                   (ionChange)="setIngredientsToRemove(ingredient)"></ion-checkbox>
                                 </ion-item>
                             </div>
@@ -113,41 +112,39 @@
                 </ion-row>
 
                 <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
-                    <ion-list>
+                    <ion-list style="width: 100%;">
                         <ion-list-header style="color:gray;" (click)="ingredientsPizzaVisible = !ingredientsPizzaVisible">
-                            <span item-left *ngIf="!ingredientsPizzaVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
-                            <span item-left *ngIf="ingredientsPizzaVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            <span item-left *ngIf="!ingredientsPizzaVisible"><ion-icon name="chevron-forward"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsPizzaVisible"><ion-icon name="chevron-down"></ion-icon> </span>
                             Ingredientes de la pizza
                         </ion-list-header>
                         <div *ngIf="ingredientsPizzaVisible">
                             <div *ngFor="let ingredient of ingredientsBaseForCheckbox">
                                 <ion-item *ngIf="!ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
                                     <ion-label>{{ingredient.name}}</ion-label>
-                                    <ion-checkbox color="lred" [checked]="ingredient.isChecked"
-                                                  [(ngModel)]="ingredient.isChecked"
+                                    <ion-checkbox color="danger" [(ngModel)]="ingredient.isChecked"
                                                   (ionChange)="setIngredientsToRemove(ingredient)"></ion-checkbox>
                                 </ion-item>
                             </div>
+
                         </div>
                     </ion-list>
                 </ion-row>
 
                 <ion-row radio-group *ngIf="category.name.toLowerCase().includes('pizzas')">
-                    <ion-list>
+                    <ion-list style="width: 100%;">
                         <ion-list-header style="color:gray;" (click)="ingredientsExtraVisible = !ingredientsExtraVisible">
-                            <span item-left *ngIf="!ingredientsExtraVisible"><ion-icon name="arrow-dropright"></ion-icon> </span>
-                            <span item-left *ngIf="ingredientsExtraVisible"><ion-icon name="arrow-dropdown"></ion-icon> </span>
+                            <span item-left *ngIf="!ingredientsExtraVisible"><ion-icon name="chevron-forward"></ion-icon> </span>
+                            <span item-left *ngIf="ingredientsExtraVisible"><ion-icon name="chevron-down"></ion-icon> </span>
                             Ingredientes extra
                         </ion-list-header>
                         <div *ngIf="ingredientsExtraVisible">
                             <div *ngFor="let ingredient of ingredientsExtraForCheckbox">
-                                <ion-item *ngIf="!ingredient.base" [ngClass]="{'disabled' : !ingredient.available}">
-                                    <ion-label>{{ingredient.name}}
-                                        (+{{(ingredient.price * currentLine.getMultiplier()) | number:'1.2-2'}}€)
-                                    </ion-label>
-                                    <ion-checkbox color="lred" [(ngModel)]="ingredient.isChecked"
-                                                  (click)="setIngredientsToAdd(ingredient)"></ion-checkbox>
-                                </ion-item>
+                              <ion-item *ngIf="!ingredient.base" [ngClass]="{'disabled': !ingredient.available}">
+                              <ion-checkbox color="danger" [(ngModel)]="ingredient.isChecked" (ionChange)="setIngredientsToAdd(ingredient)">
+                                {{ ingredient.name }} (+{{ (ingredient.price * currentLine.getMultiplier()) | number: '1.2-2' }}€)
+                              </ion-checkbox>
+                            </ion-item>
                             </div>
                         </div>
                     </ion-list>
@@ -155,7 +152,7 @@
 
                 <div class="butnsholder" padding-horizontal>
                     <button *ngIf="mode == 'add'" color="light" ion-button block
-                            (click)="addLineToOrder()">A&Ntilde;ADIR
+                            (click)="addLineToOrder(product)">A&Ntilde;ADIR
                     </button>
                     <button *ngIf="mode == 'edit'" class="loginbtn" color="light" ion-button block (click)="editLine()">
                         Actualizar
