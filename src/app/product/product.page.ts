@@ -21,6 +21,10 @@ export class ProductPage implements OnInit {
     currentLine: OrderLine | any;
     category: Category | any;
 
+    ingredient: any = {
+      isChecked: false,
+      name: ''
+    };
 
     ingredientsBaseVisible = false;
     ingredientsPizzaVisible = false;

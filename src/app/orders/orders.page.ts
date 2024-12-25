@@ -117,11 +117,13 @@ export class OrdersPage implements OnInit {
     order = new Order();
     const productsFromServer: Product[] = await Promise.all(
       order.lines.map(async (line) => {
-        return (await this.productService
+        return (this.productService
           .findById(line.productId))
           .toPromise() as Promise<Product>;
       })
     );
+
+    console.log('Products from server: ' + JSON.stringify(productsFromServer));
 
     const products: Product[] = productsFromServer.map((pfs) => {
       /*
