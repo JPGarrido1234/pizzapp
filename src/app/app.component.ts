@@ -16,12 +16,11 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Inicio', url: '/menu', icon: 'home-outline' },
-    { title: 'Tu pedido actual', url: '/myorder', icon: 'cart-outline' },
+    { title: 'Tu pedido actual', url: '/cart', icon: 'cart-outline' }, //url: '/myorder'
     { title: 'Tus pedidos', url: '/orders', icon: 'basket-outline' },
     { title: 'Tus datos personales', url: '/user', icon: 'person-outline' },
     { title: 'Quienes somos', url: '/who', icon: 'pizza-outline' },
     { title: 'Aviso legal', url: '/legal', icon: 'book-outline' },
-    { title: 'Cerrar sesión', url: '/logout', icon: 'log-out-outline' },
   ];
   constructor(private userService: UserService) {
     addIcons({cartOutline,basketOutline,personOutline,pizzaOutline,bookOutline,homeOutline,heartOutline,settingsOutline,mailOutline,mailSharp,paperPlaneOutline,paperPlaneSharp,heartSharp,archiveOutline,archiveSharp,trashOutline,trashSharp,warningOutline,warningSharp,bookmarkOutline,bookmarkSharp});

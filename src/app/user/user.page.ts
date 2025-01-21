@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./user.page.scss']
 })
 export class UserPage {
-  myUser: User | any;
+  myUser: User | any; // = new User('', 'jpgl@gmail.com', '', 'jp', '', '', '666', '01/01/2024', false, false, false, '');
   userForm: UserForm | any;
   constructor(
     private userService: UserService,
@@ -47,18 +47,29 @@ export class UserPage {
       login: this.myUser.login,
       address: this.myUser.address,
       zip: this.myUser.zip,
-      birthDate: this.myUser.birthDate,
+      birthDate: this.myUser.birthDate ? this.myUser.birthDate : '',
       password: '',
       repeated: '',
     };
+
+    /*
+    if (this.userForm.birthDate) {
+      const formattedDate = this.formatDate(this.userForm.birthDate);
+      console.log('Formatted date', formattedDate);
+      this.userForm.birthDate = formattedDate;
+    }
+    */
   }
 
   async checkUserData() {
     let msg: any = '';
 
+    /*
     if (this.userForm.birthDate === '') {
       msg = 'La fecha de nacimiento no puede estar vacía';
     }
+    */
+
 
     if (this.userForm.login === '') {
       msg = 'El email es requerido';
@@ -93,6 +104,10 @@ export class UserPage {
   public updateUser() {
     if (!this.checkUserData()) return;
 
+    let birthDay = this.userForm.birthDate;
+    const formattedDate = this.formatDate(birthDay);
+    this.userForm.birthDate = formattedDate;
+
     this.userService.updateUser(this.userForm).then(
       async (user: any) => {
         const alert = await this.alertController.create({
@@ -106,9 +121,13 @@ export class UserPage {
         this.myUser.name = this.userForm.name;
         this.myUser.login = this.userForm.login;
         this.myUser.address = this.userForm.address;
-        this.myUser.birthDate = this.userForm.birthDate;
+        this.myUser.zip = this.userForm.zip;
+        if (this.userForm.birthDate != '') {
+          this.myUser.birthDate = this.userForm.birthDate;
+        }
 
-        this.myUser.setLogged(true);
+        //console.log('User updated', this.myUser);
+        this.myUser.logged = true;
 
         this.userService.storeUserData(this.myUser);
 
@@ -125,6 +144,41 @@ export class UserPage {
         await alert.present();
       }
     );
+  }
+
+  parseDate(date: string): Date | null {
+    const parts = date.split('-'); // Split the date by the hyphen (-)
+    if (parts.length === 3) {
+      const day = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JavaScript
+      const year = parseInt(parts[2], 10);
+
+      const parsedDate = new Date(year, month, day); // Create Date object
+
+      // Check if the parsed date is valid
+      if (!isNaN(parsedDate.getTime())) {
+        return parsedDate;
+      }
+    }
+
+    // Return null if invalid date
+    return null;
+  }
+
+  // Function to format the date input to YYYY-MM-DD format
+  formatDate(date: string): string {
+    const formattedDate = this.parseDate(date);
+
+    if(formattedDate) {
+
+      const day = formattedDate.getDate().toString().padStart(2, '0'); // Get day with leading zero
+      const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0'); // Get month with leading zero
+      const year = formattedDate.getFullYear(); // Get the full year
+
+      return `${year}-${month}-${day}`; // Format as DD-MM-YYYY
+    }
+
+    return '';
   }
 
   async removeUser() {

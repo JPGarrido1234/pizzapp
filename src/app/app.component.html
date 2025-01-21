@@ -11,12 +11,6 @@
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
           </div>
-          <div *ngIf="user != null && p.url == '/logout'">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="full" detail="false" routerLinkActive="selected">
-              <ion-icon aria-hidden="true" slot="start" name="{{ p.icon }}" class="icon-custom"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </div>
         </ion-menu-toggle>
       </ion-content>
     </ion-menu>

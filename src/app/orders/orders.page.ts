@@ -12,6 +12,9 @@ import { Preferences } from '@capacitor/preferences';
 import * as moment from 'moment';
 import { Ingredient } from '../models/ingredient.model';
 import { Size } from '../models/size.model';
+import { lastValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
+import { OrderService } from '../service/order.service';
 
 @Component({
   selector: 'app-orders',
@@ -21,6 +24,7 @@ import { Size } from '../models/size.model';
 
 export class OrdersPage implements OnInit {
   orders: Order[] = [];
+  order: Order | any = null;
   //STORAGE
   categories_storage: Category[] = [];
   ingredients_storage: Ingredient[] = [];
@@ -46,7 +50,9 @@ export class OrdersPage implements OnInit {
   constructor(
     private userService: UserService,
     private productService: ProductService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private orderService: OrderService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -114,54 +120,62 @@ export class OrdersPage implements OnInit {
     this.loadCategories();
     this.loadIngredients();
     this.loadSizes();
-    order = new Order();
-    const productsFromServer: Product[] = await Promise.all(
-      order.lines.map(async (line) => {
-        return (this.productService
-          .findById(line.productId))
-          .toPromise() as Promise<Product>;
-      })
-    );
-
-    console.log('Products from server: ' + JSON.stringify(productsFromServer));
-
-    const products: Product[] = productsFromServer.map((pfs) => {
-      /*
-      const product: Product = new Product(
-        pfs,
-        this.productService,
-        MenuPage.sIngredients
-      );
-      */
-      const product: Product = new Product(
-        pfs,
-        this.productService,
-        this.ingredients_storage
-      );
-      /*
-      const category = MenuPage.sCategories.find(
-        (category: Category) => category.id == pfs.category
-      );
-      */
-      const category = this.categories_storage.find(
-        (category: Category) => category.id == pfs.category
+    //order = new Order();
+    this.order = order;
+    try {
+      const productsFromServer: Product[] = await Promise.all(
+        this.order.lines.map(async (line: OrderLine) => {
+          console.log('Fetching product with ID:', line.productId);
+          try {
+            // Ensure the product ID is valid
+            if (!line.productId) {
+              throw new Error(`Invalid product ID: ${line.productId}`);
+            }
+            return lastValueFrom(this.productService.findById(line.productId));
+          } catch (error) {
+            console.error('Error fetching product:', error);
+            return null; // Or handle it accordingly (e.g., returning default or placeholder product)
+          }
+        })
       );
 
-      if(category !== undefined) {
-        if (category.name.toLowerCase().includes('pizzas')) {
-          let size = product.sizes.filter((s) => s.code == 'IND')[0];
-          if(size.price !== undefined) {
-            product.price = size.price;
+      const products: Product[] = productsFromServer.map((pfs) => {
+        /*
+        const product: Product = new Product(
+          pfs,
+          this.productService,
+          MenuPage.sIngredients
+        );
+        */
+        const product: Product = new Product(
+          pfs,
+          this.productService,
+          this.ingredients_storage
+        );
+        /*
+        const category = MenuPage.sCategories.find(
+          (category: Category) => category.id == pfs.category
+        );
+        */
+        const category = this.categories_storage.find(
+          (category: Category) => category.id == pfs.category
+        );
+
+        if(category !== undefined) {
+          if (category.name.toLowerCase().includes('pizzas')) {
+            let size = product.sizes.filter((s) => s.code == 'IND')[0];
+            if(size.price !== undefined) {
+              product.price = size.price;
+            }
           }
         }
-      }
 
-      return product;
-    });
+        return product;
+      });
 
-    const error: string[] = [];
+      const error: string[] = [];
 
-    order.lines.map((line: OrderLine) => {
+    this.order.lines.map((line: OrderLine) => {
       const product = products.find((p) => p.id == line.productId);
 
       if (!product || !product.active || !product.available) {
@@ -230,13 +244,11 @@ export class OrdersPage implements OnInit {
         orderLine.priceTotal = line.priceTotal;
       }
 
+      //this.order.addLine(orderLine);
+      this.orderService.setOrder(order);
       return orderLine;
+
     });
-
-    //CartPage.order.lines = lines.filter((line) => line != null);
-    //CartPage.order.calculateTotal();
-
-    //this.navCtrl.push(CartPage);
 
     if (error.length > 0) {
       const alert = await this.alertController.create({
@@ -247,6 +259,22 @@ export class OrdersPage implements OnInit {
 
       await alert.present();
     }
+
+
+
+      console.log('Products from server: ' + JSON.stringify(productsFromServer));
+    } catch (error) {
+      console.error('Error fetching products from server:', error);
+    }
+
+
+
+    //CartPage.order.lines = lines.filter((line) => line != null);
+    //CartPage.order.calculateTotal();
+
+    //this.navCtrl.push(CartPage);
+
+    //this.router.navigate(['/cart']);
   }
 
   async loadCategories() {

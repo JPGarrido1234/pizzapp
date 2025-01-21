@@ -177,7 +177,7 @@ export class OrderLine {
     this.priceTotal = priceUnd * this.und;
 
     if (this.order != null) {
-      this.order.calculateTotal();
+      //this.order.calculateTotal();
     }
   }
 

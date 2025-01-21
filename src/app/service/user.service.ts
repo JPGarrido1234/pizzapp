@@ -76,7 +76,7 @@ export class UserService {
   async isLogged(): Promise<boolean> {
     try {
       let user: User = await this.getUser() as User;
-      console.log('User: ', user);
+      //console.log('User: ', user);
       if (user == null) return false;
       return user.codeValidated;
     } catch (e) {
@@ -84,10 +84,14 @@ export class UserService {
     }
   }
 
+  public setLogged(logged: boolean): void {
+    this.user.logged = logged;
+  }
+
   async isWaitingForCode(): Promise<boolean> {
     try {
       let user: User = await this.getUser() as User;
-      console.log('UserCode: ', user);
+      //console.log('UserCode: ', user);
       if (user == null) return false
       return !user.codeValidated
     } catch (e) {
