@@ -25,6 +25,8 @@ import { OrderService } from '../service/order.service';
 export class OrdersPage implements OnInit {
   orders: Order[] = [];
   order: Order | any = null;
+  unds: number = 0;
+  total: number = 0;
   //STORAGE
   categories_storage: Category[] = [];
   ingredients_storage: Ingredient[] = [];
@@ -245,7 +247,17 @@ export class OrdersPage implements OnInit {
       }
 
       //this.order.addLine(orderLine);
+      //this.order.lines.push(orderLine);
+      /*
+      this.unds = 0;
+      this.total = 0;
+      this.order.lines.forEach((line: any) => {
+        this.total += line.priceTotal;
+        this.unds += line.und;
+      });
+      */
       this.orderService.setOrder(order);
+
       return orderLine;
 
     });
@@ -270,11 +282,12 @@ export class OrdersPage implements OnInit {
 
 
     //CartPage.order.lines = lines.filter((line) => line != null);
+    this.order.lines = this.order.lines.filter((line: any) => line != null);
     //CartPage.order.calculateTotal();
 
     //this.navCtrl.push(CartPage);
 
-    //this.router.navigate(['/cart']);
+    this.router.navigate(['/cart']);
   }
 
   async loadCategories() {

@@ -213,7 +213,7 @@ export class MenuPage implements OnInit {
   }
 
   getConfig() {
-    this.configService.findAll().then(
+    this.configService.findAll().subscribe(
       (data: any) => {
         //MenuPage.sConfig = data;
         this.saveConfig(data); // Guarda la configuración en Storage

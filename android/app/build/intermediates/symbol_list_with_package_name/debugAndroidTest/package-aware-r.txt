@@ -1,0 +1,3 @@
+io.davidsantiago.riccoricco.test
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme

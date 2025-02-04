@@ -1,0 +1,8 @@
+{
+	"appId": "io.davidsantiago.riccoricco",
+	"appName": "pizzapp",
+	"webDir": "www",
+	"server": {
+		"androidScheme": "https"
+	}
+}

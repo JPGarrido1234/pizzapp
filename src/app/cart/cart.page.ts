@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 import { Order } from '../models/order.model';
 import { OrderLine } from '../models/orderline.model';
 import { OrderService } from '../service/order.service';
@@ -10,6 +10,7 @@ import { Utils } from '../../utils/utils';
 import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Preferences } from '@capacitor/preferences';
+import { App } from '@capacitor/app';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class CartPage implements OnInit {
   user: User | any = null;
   intervalId: any;
   previousUrl: string | null = null;
+  lines: OrderLine[] = [];
 
   //STORAGE
   config_storage: any = {};
@@ -39,7 +41,8 @@ export class CartPage implements OnInit {
     private orderService: OrderService,
     private router: Router,
     private alertController: AlertController,
-    private userService: UserService
+    private userService: UserService,
+    private platform: Platform
   ) {}
 
 
@@ -49,6 +52,13 @@ export class CartPage implements OnInit {
       if (event instanceof NavigationEnd) {
         this.previousUrl = event.url;
       }
+    });
+
+    this.platform.ready().then(() => {
+      // Escuchar el evento del botón 'Atrás'
+      App.addListener('backButton', () => {
+          window.history.back();  // Retrocede en el historial de navegación
+      });
     });
 
 
@@ -180,12 +190,12 @@ export class CartPage implements OnInit {
     this.numProductsOverload = false;
     this.loadConfig().then(() => {
       if(this.currentOrder != undefined) {
-        if (this.currentOrder.getPizzasUnd() > this.config_storage['products-per-gap']) {
+        if (this.getPizzasUnd() > this.config_storage['products-per-gap']) {
           this.numProductsOverload = true;
           return;
         }
 
-        this.orderService.gaps(this.currentOrder.getPizzasUnd()).subscribe(
+        this.orderService.gaps(this.getPizzasUnd()).subscribe(
           (data: any) => {
             this.gaps = data;
           },
@@ -197,6 +207,16 @@ export class CartPage implements OnInit {
       }
     });
 
+  }
+
+  getPizzasUnd() {
+    let unds = 0;
+    this.order.lines.forEach((line: any) => {
+      if (line.pizza) {
+        unds += line.half ? 0.5 : line.und;
+      }
+    });
+    return parseInt(unds.toString());
   }
 
   removeUnd(line: OrderLine) {
@@ -347,12 +367,13 @@ export class CartPage implements OnInit {
 
   async presentSuccessAlert() {
     const alert = await this.alertController.create({
-      header: 'Success',
+      header: 'Pedido enviado',
       message: `Hora de recogida: ${moment(parseInt(this.pickupTime) * 1000).format('HH:mm')}`,
       buttons: [{
         text: 'OK',
         handler: () => {
           setTimeout(() => {
+            alert.dismiss();
             this.router.navigate(['/menu']);
           }, 60 * 1000);
         }
@@ -389,6 +410,7 @@ export class CartPage implements OnInit {
     const { value } = await Preferences.get({ key: 'config' });
     if (value) {
       this.config_storage = JSON.parse(value);
+      console.log('CONFIG: ', this.config_storage);
     }
   }
 

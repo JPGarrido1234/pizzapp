@@ -127,7 +127,7 @@ export class UserService {
     return this.http.post(url, { login: login, password: password })
   }
 
-  async sendPassword(email: string): Promise<Observable<any>> {
+  public sendPassword(email: string) {
     const url = environment.API_URL + '/generatepassword?login=' + email
     return this.http.get(url)
   }
@@ -142,7 +142,7 @@ export class UserService {
     return this.http.get(url, Utils.getHeaders())
   }
 
-  async removeUser(userId: string): Promise<Observable<any>> {
+  public removeUser(userId: string) {
     const url = environment.API_URL + '/unsuscribe?userId=' + userId
     return this.http.get(url, Utils.getHeaders())
   }

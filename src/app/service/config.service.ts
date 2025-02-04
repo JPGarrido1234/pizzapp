@@ -13,7 +13,7 @@ export class ConfigService {
     private http: HttpClient
 ) { }
 
-async findAll(): Promise<Observable<any>> {
+public findAll() {
     const url = environment.API_URL + '/config';
     return this.http.get(url, Utils.getHeaders());
 }

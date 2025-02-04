@@ -29,6 +29,11 @@ export class OrderLine {
   product: Product;
   category: Category;
 
+  unds: number = 0;
+  total: number = 0;
+  lines: OrderLine[] = [];
+
+
   constructor(
     order: Order,
     product: Product,
@@ -112,7 +117,13 @@ export class OrderLine {
         this.priceTotal = this.und * this.priceUnd;
 
         if (this.order != null) {
-          this.order.calculateTotal();
+          //this.order.calculateTotal();
+          this.unds = 0;
+          this.total = 0;
+          this.lines.forEach((line) => {
+            this.total += line.priceTotal;
+            this.unds += line.und;
+          });
         }
 
         return;

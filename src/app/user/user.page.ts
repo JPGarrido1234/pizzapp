@@ -203,7 +203,7 @@ export class UserPage {
   }
 
   private doRemove() {
-    this.userService.removeUser(this.myUser.id).then(
+    this.userService.removeUser(this.myUser.id).subscribe(
       async (user: any) => {
         const alert = await this.alertController
           .create({

@@ -122,7 +122,7 @@ export class LoginPage implements OnInit {
             text: 'OK',
             handler: () => {
               console.log(this.loginForm.login);
-              this.userService.sendPassword(this.loginForm.login).then(
+              this.userService.sendPassword(this.loginForm.login).subscribe(
                 async () => {
                     const alert = await this.alertController
                     .create({

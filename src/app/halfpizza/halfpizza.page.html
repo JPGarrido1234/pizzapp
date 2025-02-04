@@ -16,21 +16,21 @@
         <ion-list>
             <ion-card *ngFor="let product of products" class="pizzacard animated">
                 <ion-row *ngIf="product.id != halfPizzaId">
-                    <ion-col col-4>
-                        <ion-thumbnail item-start padding (click)="setHalf(product)">
-                            <img src="{{product.image}}" alt="{{product.name}}">
-                        </ion-thumbnail>
+                    <ion-col size="4">
+                      <img (click)="setHalf(product)" [src]="product.image" [alt]="product.name">
                     </ion-col>
-                    <ion-col col-8>
-                        <div class="details" (click)="setHalf(product)">
-                            <h2>{{product.name}}</h2>
-                            <p text-wrap>{{product.description}}</p>
+                    <ion-col size="8">
+                      <ion-item class="details" (click)="setHalf(product)" lines="none">
+                        <ion-label style="margin-top: 0;">
+                          <h2>{{ product.name }}</h2>
+                          <p text-wrap>{{product.description}}</p>
                             <div class="price">
                                 {{product.price | number:'1.2-2'}} €
                             </div>
-                        </div>
+                        </ion-label>
+                      </ion-item>
                     </ion-col>
-                </ion-row>
+                  </ion-row>
             </ion-card>
         </ion-list>
     </div>
