@@ -147,7 +147,8 @@ export class UserPage {
   }
 
   parseDate(date: string): Date | null {
-    const parts = date.split('-'); // Split the date by the hyphen (-)
+    // Split the date by any of the delimiters '-', '/' or ' ' using a regular expression
+    const parts = date.split(/[-/ ]/);
     if (parts.length === 3) {
       const day = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10) - 1; // Month is 0-indexed in JavaScript
@@ -175,7 +176,7 @@ export class UserPage {
       const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0'); // Get month with leading zero
       const year = formattedDate.getFullYear(); // Get the full year
 
-      return `${year}-${month}-${day}`; // Format as DD-MM-YYYY
+      return `${day}-${month}-${year}`; // Format as DD-MM-YYYY
     }
 
     return '';

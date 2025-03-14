@@ -22,7 +22,7 @@ import { App } from '@capacitor/app';
 export class CartPage implements OnInit {
   order: Order | any = null;
   //@ViewChild('navbar') navBar: Navbar;
-  currentOrder: Order | any = null;
+  currentOrder: Order = new Order();
   numProductsOverload: boolean = false;
 
   pickupTime: string = '';
@@ -171,17 +171,29 @@ export class CartPage implements OnInit {
   }
 
   getCurrentOrder() {
+    let total = 0;
+    let unds = 0;
     this.orderService.getOrder().then((order: any) => {
       this.order = order;
-      /*
+
       if(this.order == null) {
         this.order = new Order();
       }
-      */
+
       if(this.user != undefined) {
         this.order.userId = this.user.id;
       }
+
+      this.order.lines.forEach((line: any) => {
+        if(line.product !== undefined){
+          total += line.priceTotal;
+          unds += line.und;
+        }
+      });
+
       this.currentOrder = this.order;
+      this.currentOrder.total = total;
+      this.currentOrder.unds = unds;
       console.log('CURRENT ORDER: ', this.currentOrder);
     });
   }
@@ -229,11 +241,34 @@ export class CartPage implements OnInit {
     line.addUnd();
     this.getGaps();
   }
-
+/*
   removeLine(line: OrderLine) {
     this.pickupTime = '';
+    console.log(this.currentOrder);
     this.currentOrder.removeLine(line);
     this.getGaps();
+  }
+*/
+
+  removeLine(line: OrderLine) {
+    let unds = 0;
+    let total = 0;
+    let newLines: any = [];
+    this.order.lines.forEach((l: any) => {
+      if (l.id != line.id) {
+        newLines.push(l);
+      }
+    });
+    this.order.lines = newLines;
+    this.order.lines.forEach((line: any) => {
+      if(line.product !== undefined){
+        total += line.priceTotal;
+        unds += line.und;
+      }
+    });
+    this.currentOrder.removeLine(line);
+    this.currentOrder.total = total;
+    this.currentOrder.unds = unds;
   }
 
   goCheckout() {

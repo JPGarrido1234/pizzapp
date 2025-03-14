@@ -254,14 +254,14 @@ export class ProductPage implements OnInit {
     }
 
     setIngredientsToRemove(ingredient: any) {
-      /*
+
         if(!this.checkIfCanRemoveIngredient()) {
             setTimeout(() => {
                 ingredient.isChecked = true;
             }, 100);
             return;
         }
-      */
+
         let ingredientsToRemove: string[] = [];
         this.ingredientsBaseForCheckbox.forEach(ingredientObj => {
             if(!ingredientObj.isChecked) {
@@ -289,14 +289,14 @@ export class ProductPage implements OnInit {
     }
 
     setIngredientsToAdd(ingredient: any) {
-      /*
+
         if(!this.checkIfCanAddIngredient()) {
             setTimeout(() => {
                 ingredient.isChecked = false;
             }, 100);
             return;
         }
-      */
+
         let ingredientsToAdd: string[] = [];
         this.ingredientsExtraForCheckbox.forEach(ingredientObj => {
             if(ingredientObj.isChecked) {

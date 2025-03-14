@@ -8,7 +8,7 @@ import { Order } from '../models/order.model';
   providedIn: 'root'
 })
 export class OrderService {
-  private order: Order | any = null;
+  private order: Order = new Order();
   private data: any;
 
   constructor(

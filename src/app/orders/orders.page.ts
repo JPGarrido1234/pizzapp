@@ -27,6 +27,7 @@ export class OrdersPage implements OnInit {
   order: Order | any = null;
   unds: number = 0;
   total: number = 0;
+  lines: OrderLine[] = [];
   //STORAGE
   categories_storage: Category[] = [];
   ingredients_storage: Ingredient[] = [];
@@ -93,8 +94,7 @@ export class OrdersPage implements OnInit {
 
       console.log('User: ' + this.myUser.id);
       this.userService.getOrders(this.myUser.id).subscribe(
-        (orders: any) => {
-          console.log('Orders: ' + JSON.stringify(orders));
+        (orders: Order) => {
           this.orders = Array.isArray(orders) ? orders.map((order: any) => {
             order.date = moment(order.date).format('DD.MM.YYYY');
             return order;
@@ -119,175 +119,159 @@ export class OrdersPage implements OnInit {
 
   async cloneOrder(order: Order) {
     //CartPage.order = new Order();
-    this.loadCategories();
-    this.loadIngredients();
-    this.loadSizes();
+    this.loadCategories().then(() => {
+      this.loadIngredients().then(() => {
+          this.loadSizes().then(async () => {
+            this.order = order;
+            try {
+              const productsFromServer: Product[] = await Promise.all(
+                this.order.lines.map(async (line: OrderLine) => {
+                  console.log('Fetching product with ID:', line.productId);
+                  try {
+                    // Ensure the product ID is valid
+                    if (!line.productId) {
+                      throw new Error(`Invalid product ID: ${line.productId}`);
+                    }
+                    return lastValueFrom(this.productService.findById(line.productId));
+                  } catch (error) {
+                    console.error('Error fetching product:', error);
+                    return null; // Or handle it accordingly (e.g., returning default or placeholder product)
+                  }
+                })
+              );
+
+              const products: Product[] = productsFromServer.map((pfs) => {
+                const product: Product = new Product(
+                  pfs,
+                  this.productService,
+                  this.ingredients_storage
+                );
+
+                const category = this.categories_storage.find(
+                  (category: Category) => category.id == pfs.category
+                );
+
+                if(category !== undefined) {
+                  if (category.name.toLowerCase().includes('pizzas')) {
+                    let size = product.sizes.filter((s) => s.code == 'IND')[0];
+                    if(size.price !== undefined) {
+                      product.price = size.price;
+                    }
+                  }
+                }
+                //console.log('Product: ' + product.name);
+                return product;
+              });
+
+              const error: string[] = [];
+
+            this.order.lines.map((line: OrderLine) => {
+              const product = products.find((p) => p.id == line.productId);
+
+              if (!product || !product.active || !product.available) {
+                if (product) {
+                  error.push(`${product.name} no está disponible`);
+                } else {
+                  error.push(`Producto con ID ${line.productId} no encontrado`);
+                }
+                return null;
+              }
+
+              const allIngredientsOk = line.ingredientsToAdd.every((ingredientId) => {
+                const ingredient = product.allIngredients.find(
+                  (ingredient) => ingredient.id == ingredientId
+                );
+
+                if (!ingredient || !ingredient.active || !ingredient.available) {
+                  error.push(
+                    `${product.name} no se puede aplicar la misma configuración de ingredientes extra a añadir`
+                  );
+                  return false;
+                }
+                return true;
+              });
+
+              const category = this.categories_storage.find(
+                (category: Category) => category.id == product.category
+              );
+
+              if (!category) {
+                error.push(`Category not found for product ${product.name}`);
+                return null;
+              }
+
+              const orderLine: OrderLine = new OrderLine(
+                this.order,
+                product,
+                category,
+                this.ingredients_storage,
+                this.sizes_storage
+              );
+
+              if (category.name.toLowerCase().includes('pizzas')) {
+                if (allIngredientsOk) {
+                  orderLine.ingredientsToAdd = line.ingredientsToAdd;
+                  orderLine.ingredientsToAddText = line.ingredientsToAddText;
+                }
+                orderLine.ingredientsToRemove = line.ingredientsToRemove;
+                orderLine.ingredientsToRemoveText = line.ingredientsToRemoveText;
+                orderLine.notes = line.notes;
+                orderLine.isHalfAndHalf = line.isHalfAndHalf;
+                orderLine.half = line.half;
+                orderLine.und = line.und;
+                orderLine.priceUnd = line.priceUnd;
+                orderLine.priceTotal = line.priceTotal;
+              }
+
+              //this.order.addLine(orderLine);
+              this.order.lines.push(orderLine);
+              console.log(orderLine);
+              this.unds = 0;
+              this.total = 0;
+              this.lines.forEach((line: any) => {
+                if(line.product !== undefined) {
+                  this.total += line.priceTotal;
+                  this.unds += line.und;
+                }
+              });
+
+
+              return orderLine;
+            //}
+            //return null;
+
+            });
+
+            if (error.length > 0) {
+              const alert = await this.alertController.create({
+                header: 'ATENCIÓN',
+                message: error.join('<br>'),
+                buttons: ['OK'],
+              });
+
+              await alert.present();
+            }
+
+              //console.log('Products from server: ' + JSON.stringify(productsFromServer));
+            } catch (error) {
+              console.error('Error fetching products from server:', error);
+            }
+
+
+
+            //CartPage.order.lines = lines.filter((line) => line != null);
+            this.lines = this.lines.filter((line: any) => line.product !== undefined);
+            this.orderService.setOrder(this.order);
+            //console.log('Order: ' + JSON.stringify(this.order.lines));
+            //CartPage.order.calculateTotal();
+
+
+            this.router.navigate(['/cart']);
+          });
+      });
+  })
     //order = new Order();
-    this.order = order;
-    try {
-      const productsFromServer: Product[] = await Promise.all(
-        this.order.lines.map(async (line: OrderLine) => {
-          console.log('Fetching product with ID:', line.productId);
-          try {
-            // Ensure the product ID is valid
-            if (!line.productId) {
-              throw new Error(`Invalid product ID: ${line.productId}`);
-            }
-            return lastValueFrom(this.productService.findById(line.productId));
-          } catch (error) {
-            console.error('Error fetching product:', error);
-            return null; // Or handle it accordingly (e.g., returning default or placeholder product)
-          }
-        })
-      );
 
-      const products: Product[] = productsFromServer.map((pfs) => {
-        /*
-        const product: Product = new Product(
-          pfs,
-          this.productService,
-          MenuPage.sIngredients
-        );
-        */
-        const product: Product = new Product(
-          pfs,
-          this.productService,
-          this.ingredients_storage
-        );
-        /*
-        const category = MenuPage.sCategories.find(
-          (category: Category) => category.id == pfs.category
-        );
-        */
-        const category = this.categories_storage.find(
-          (category: Category) => category.id == pfs.category
-        );
-
-        if(category !== undefined) {
-          if (category.name.toLowerCase().includes('pizzas')) {
-            let size = product.sizes.filter((s) => s.code == 'IND')[0];
-            if(size.price !== undefined) {
-              product.price = size.price;
-            }
-          }
-        }
-
-        return product;
-      });
-
-      const error: string[] = [];
-
-    this.order.lines.map((line: OrderLine) => {
-      const product = products.find((p) => p.id == line.productId);
-
-      if (!product || !product.active || !product.available) {
-        if (product)
-        error.push(`${product.name} no está disponible`);
-        return null;
-      }
-
-      const allIngredientsOk = line.ingredientsToAdd.every((ingredientId) => {
-        const ingredient = product.allIngredients.find(
-          (ingredient) => ingredient.id == ingredientId
-        );
-
-        if (!ingredient || !ingredient.active || !ingredient.available) {
-          error.push(
-            `${product.name} no se puede aplicar la misma configuración de ingredientes extra a añadir`
-          );
-          return false;
-        }
-        return true;
-      });
-
-      /*
-      const category = MenuPage.sCategories.find(
-        (category: Category) => category.id == product.category
-      );
-      */
-      const category = this.categories_storage.find(
-        (category: Category) => category.id == product.category
-      );
-
-      /*
-      const orderLine: OrderLine = new OrderLine(
-        CartPage.order,
-        product,
-        category,
-        MenuPage.sIngredients,
-        MenuPage.sSizes
-      );
-      */
-      if (!category) {
-        error.push(`Category not found for product ${product.name}`);
-        return null;
-      }
-
-      const orderLine: OrderLine = new OrderLine(
-        order,
-        product,
-        category,
-        this.ingredients_storage,
-        this.sizes_storage
-      );
-
-      if (category.name.toLowerCase().includes('pizzas')) {
-        if (allIngredientsOk) {
-          orderLine.ingredientsToAdd = line.ingredientsToAdd;
-          orderLine.ingredientsToAddText = line.ingredientsToAddText;
-        }
-        orderLine.ingredientsToRemove = line.ingredientsToRemove;
-        orderLine.ingredientsToRemoveText = line.ingredientsToRemoveText;
-        orderLine.notes = line.notes;
-        orderLine.isHalfAndHalf = line.isHalfAndHalf;
-        orderLine.half = line.half;
-        orderLine.und = line.und;
-        orderLine.priceUnd = line.priceUnd;
-        orderLine.priceTotal = line.priceTotal;
-      }
-
-      //this.order.addLine(orderLine);
-      //this.order.lines.push(orderLine);
-      /*
-      this.unds = 0;
-      this.total = 0;
-      this.order.lines.forEach((line: any) => {
-        this.total += line.priceTotal;
-        this.unds += line.und;
-      });
-      */
-      this.orderService.setOrder(order);
-
-      return orderLine;
-
-    });
-
-    if (error.length > 0) {
-      const alert = await this.alertController.create({
-        header: 'ATENCIÓN',
-        message: error.join('<br>'),
-        buttons: ['OK'],
-      });
-
-      await alert.present();
-    }
-
-
-
-      console.log('Products from server: ' + JSON.stringify(productsFromServer));
-    } catch (error) {
-      console.error('Error fetching products from server:', error);
-    }
-
-
-
-    //CartPage.order.lines = lines.filter((line) => line != null);
-    this.order.lines = this.order.lines.filter((line: any) => line != null);
-    //CartPage.order.calculateTotal();
-
-    //this.navCtrl.push(CartPage);
-
-    this.router.navigate(['/cart']);
   }
 
   async loadCategories() {

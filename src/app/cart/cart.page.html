@@ -10,7 +10,7 @@
     <div class="icontent" *ngIf="currentOrder != undefined">
         <ion-list *ngIf="currentOrder.lines.length > 0">
             <ion-card class="ion-padding" class="pizzacard" *ngFor="let line of currentOrder.lines">
-                <ion-row>
+                <ion-row *ngIf="line.product != undefined">
                     <ion-col size="4">
                         <ion-thumbnail item-start padding (click)="editLine(line)">
                             <img *ngIf="line.product != undefined" src="{{line.product.image}}" alt="{{line.productName}}">
