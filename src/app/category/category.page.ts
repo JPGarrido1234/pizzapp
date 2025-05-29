@@ -10,6 +10,7 @@ import { Order } from '../models/order.model';
 import { Ingredient } from '../models/ingredient.model';
 import { Preferences } from '@capacitor/preferences';
 import { Size } from '../models/size.model';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-pedido',
@@ -20,6 +21,10 @@ export class CategoryPage implements OnInit {
 
   error_msg: string = '';
   disable: boolean = false;
+  user: User | any = null;
+  total: number = 0;
+  lines: OrderLine[] = [];
+  currentOrder: Order = new Order();
   constructor(private route: ActivatedRoute, private router: Router, public productService: ProductService, private orderService: OrderService) {}
 
     order: Order = new Order();
@@ -158,6 +163,7 @@ export class CategoryPage implements OnInit {
     }
 
     addLineToOrder(product: Product) {
+
       if(!product.available) return;
         this.loadSizes().then(() => {
           let currentLine = new OrderLine(
@@ -173,8 +179,14 @@ export class CategoryPage implements OnInit {
               currentLine.setSize(code);
           }
 
-          this.order.addLine(currentLine);
-          this.orderService.setOrder(this.order);
+          this.order.lines.push(currentLine);
+          this.unds = 0;
+          this.total = 0;
+          this.order.lines.forEach((line) => {
+            this.order.total += line.priceTotal;
+            //this.order.unds += line.und;
+            this.order.lines.length > 0 ? this.order.unds = this.order.lines.length : this.order.unds = 0;
+          });
           this.refreshCartUnds();
         });
       }
