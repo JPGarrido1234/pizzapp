@@ -109,7 +109,6 @@ export class CategoryPage implements OnInit {
 
     refreshCartUnds() {
       this.unds = this.order.unds;
-      console.log('Order:', this.order, 'Unds:', this.unds);
       this.orderService.setOrder(this.order);
     }
 

@@ -11,6 +11,8 @@ import { UserService } from '../service/user.service';
 import { User } from '../models/user.model';
 import { Preferences } from '@capacitor/preferences';
 import { App } from '@capacitor/app';
+import { Product } from '../models/product.model';
+import { Category } from '../models/category.model';
 
 
 @Component({
@@ -34,8 +36,19 @@ export class CartPage implements OnInit {
   previousUrl: string | null = null;
   lines: OrderLine[] = [];
 
+  products: Product[] = [];
+  categoryId: string | null = null;
+  categoryName: string | null = null;
+  category: Category | any = null;
+  isPizzaCategory: boolean = false;
+
   //STORAGE
   config_storage: any = {};
+  ingredients_storage: any = [];
+  sizes_storage: any = [];
+  unds: number = 0;
+  total: number = 0;
+  categories_storage: Category[] = [];
 
   constructor(
     private orderService: OrderService,
@@ -79,7 +92,7 @@ export class CartPage implements OnInit {
       }
 
       // Additional initialization logic here
-      console.log('User: ', this.user);
+      //console.log('User: ', this.user);
       this.getCurrentOrder();
       this.isManager = await this.userService.isManager();
 
@@ -137,7 +150,7 @@ export class CartPage implements OnInit {
       }
 
       // Additional initialization logic here
-      console.log('User: ', this.user);
+      //console.log('User: ', this.user);
       this.getCurrentOrder();
       this.isManager = await this.userService.isManager();
 
@@ -238,9 +251,54 @@ export class CartPage implements OnInit {
 
   addUnd(line: OrderLine) {
     this.pickupTime = '';
+
+    /*
+    let categoryId = line.category.id;
+    console.log('Category: ', line.category);
+    this.loadCategories()
+    .then(() => {
+      //this.category = MenuPage.sCategories.find(category => category.id == this.categoryId);
+      this.category = this.categories_storage.find((category: Category) => category.id == categoryId);
+
+      if(this.category) {
+          this.isPizzaCategory = this.category.name.toLowerCase().includes('pizzas');
+        }
+
+        this.loadSizes().then(() => {
+        let currentLine = new OrderLine(
+          this.order,
+          line.product,
+          line.category,
+          this.ingredients_storage,
+          this.sizes_storage
+        );
+
+        if (this.category.name.toLowerCase().includes('pizzas')) {
+            let code = 'IND'; // por defecto añadimos la pizza en tamaño individual
+            currentLine.setSize(code);
+        }
+
+        this.order.lines.push(currentLine);
+        this.unds = 0;
+        this.total = 0;
+        this.order.lines.forEach((line: any) => {
+          this.order.total += line.priceTotal;
+          //this.order.unds += line.und;
+          this.order.lines.length > 0 ? this.order.unds = this.order.lines.length : this.order.unds = 0;
+        });
+        //this.refreshCartUnds();
+      });
+    });
+    */
     line.addUnd();
+    //console.log(this.currentOrder);
     this.getGaps();
   }
+
+  refreshCartUnds() {
+      this.unds = this.order.unds;
+      this.orderService.setOrder(this.order);
+    }
 /*
   removeLine(line: OrderLine) {
     this.pickupTime = '';
@@ -249,6 +307,10 @@ export class CartPage implements OnInit {
     this.getGaps();
   }
 */
+
+  goBack() {
+    this.router.navigate(['/menu']);
+  }
 
   removeLine(line: OrderLine) {
     let unds = 0;
@@ -445,7 +507,7 @@ export class CartPage implements OnInit {
     const { value } = await Preferences.get({ key: 'config' });
     if (value) {
       this.config_storage = JSON.parse(value);
-      console.log('CONFIG: ', this.config_storage);
+      //console.log('CONFIG: ', this.config_storage);
     }
   }
 
@@ -463,6 +525,20 @@ export class CartPage implements OnInit {
       return JSON.parse(value);
     }
     return null;
+  }
+
+  async loadSizes() {
+      const { value } = await Preferences.get({ key: 'sizes' });
+      if (value) {
+        this.sizes_storage = JSON.parse(value);
+      }
+  }
+
+  async loadCategories() {
+    const { value } = await Preferences.get({ key: 'categories' });
+    if (value) {
+      this.categories_storage = JSON.parse(value);
+    }
   }
 
 }

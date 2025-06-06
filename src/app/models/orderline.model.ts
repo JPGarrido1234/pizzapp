@@ -112,21 +112,25 @@ export class OrderLine {
   }
 
   calculateTotal() {
-    //if(this.category != undefined){
-      if (!this.category.name.toLowerCase().includes('pizzas')) {
+    if(this.category != undefined){
+      //if (!this.category.name.toLowerCase().includes('pizzas')) {
         this.priceTotal = this.und * this.priceUnd;
 
         if (this.order != null) {
+          console.log('calculateTotal order', this.order);
           //this.order.calculateTotal();
           this.unds = 0;
           this.total = 0;
-          this.lines.forEach((line) => {
+          this.order.lines.forEach((line) => {
             this.total += line.priceTotal;
             this.unds += line.und;
           });
-        }
 
-        return;
+          this.order.total = this.total;
+          this.order.unds = this.unds;
+        }
+        console.log('calculateTotal', this.priceTotal, this.und, this.priceUnd);
+        //return;
       //}
     }
 
